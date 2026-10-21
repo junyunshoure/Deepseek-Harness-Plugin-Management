@@ -1,0 +1,13 @@
+{
+  "version": "0.1.0-demo.1",
+  "tag": "v0.1.0-demo.1",
+  "name": "DeepSeek Harness 插件迁移包 Demo v0.1.0-demo.1",
+  "channel": "demo",
+  "prerelease": true,
+  "snapshotDate": "2026-10-21",
+  "platform": "win32",
+  "arch": "x64",
+  "dshKernelVersion": "0.2.1-rc.2",
+  "migrationId": "plugins-20261021",
+  "originalSnapshotSha256": "60278d4e193ae8b50b88cf8ad745a513d8346dbefbf0ba49a6acabc8e75a3253"
+}

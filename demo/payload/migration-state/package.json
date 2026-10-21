@@ -1,0 +1,17 @@
+{
+  "name": "dsh-migration-plugin-state",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "迁移插件启用状态（不包含账号、模型或密钥）",
+  "icon": "./icon.svg",
+  "license": "UNLICENSED",
+  "engines": {
+    "dsh": "0.2.1-rc.2"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}

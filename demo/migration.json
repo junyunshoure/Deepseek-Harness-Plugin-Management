@@ -1,0 +1,148 @@
+{
+  "schema": 1,
+  "id": "plugins-20261021",
+  "dshVersion": "0.2.1-rc.2",
+  "platform": "win32",
+  "arch": "x64",
+  "profile": "desktop",
+  "builtinBundles": [
+    "@deepseek-ai/dsh-base",
+    "@deepseek-ai/dsh-web-app",
+    "@deepseek-ai/dsh-experimental-agent-team-profile",
+    "@deepseek-ai/dsh-experimental-auto-review"
+  ],
+  "packages": [
+    {
+      "name": "dsh-undo-savepoint",
+      "version": "0.4.9",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "dshmarket",
+      "version": "1.66.28",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "@liustack/modlens",
+      "version": "3.26.6",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "dsh-cost-meter",
+      "version": "1.8.35",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "@linxin666/dsh-web-all",
+      "version": "0.4.6",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "@changfenhuang/dsh-genui",
+      "version": "0.11.4",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "@linxin666/dsh-client-ui-git-graph",
+      "version": "0.4.5",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "@michengai/dsh-code-review",
+      "version": "0.1.12",
+      "install": false,
+      "status": "已安装，版本不兼容，当前被跳过"
+    },
+    {
+      "name": "dsh-plugin-wallpaper-engine",
+      "version": "1.3.1",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "dsh-approval-gate",
+      "version": "0.5.0",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "@tt-a1i/archify-dsh",
+      "version": "1.0.0",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "@michengai/dsh-archive-manager",
+      "version": "1.0.19",
+      "install": false,
+      "status": "已安装，版本不兼容，当前被跳过"
+    },
+    {
+      "name": "dsh-rewind-plugin",
+      "version": "0.15.3",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "dsh-context",
+      "version": "0.72.0",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "dsh-whale-widget",
+      "version": "0.4.2",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "dsh-plugin-whale-pet",
+      "version": "0.2.9",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "dsh-drawai",
+      "version": "0.2.7",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "@kenz1117/dsh-ui-usage-billing",
+      "version": "1.4.34",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "billion-context",
+      "version": "0.1.202",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "dsh-ego-browser",
+      "version": "0.8.6",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "@xmanrui/dsh-im",
+      "version": "4.39.0",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "dsh-zotero",
+      "version": "0.12.1",
+      "install": true,
+      "status": "已安装，已加载"
+    }
+  ]
+}

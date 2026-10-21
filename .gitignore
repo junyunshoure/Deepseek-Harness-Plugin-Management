@@ -1,0 +1,5 @@
+node_modules/
+*.zip
+*.zip.sha256
+installation-result.json
+backups/
