@@ -8,15 +8,15 @@
 
 | 版本 | 日期 | 内容 | Release |
 |---|---|---|---|
-| v0.1.0-demo.1 | 2026-10-21 | 首个 Demo，验证「整包迁移」这条路能走通 | [v0.1.0-demo.1](https://github.com/junyunshoure/deepseek-harness-Plugin-Management/releases/tag/v0.1.0-demo.1)（Pre-release） |
-| v1.0.0 | 2026-10-22 | 正式版第一版：36 bundle / 247 组合行 / 17,453 文件 | [v1.0.0](https://github.com/junyunshoure/deepseek-harness-Plugin-Management/releases/tag/v1.0.0) |
-| v1.0.0-patch.1 | 2026-10-22 | v1.0.0 的**独立补丁**：把逆向工具改成「按需加载」，并补全本说明 | [v1.0.0-patch.1](https://github.com/junyunshoure/deepseek-harness-Plugin-Management/releases/tag/v1.0.0-patch.1) |
+| v0.1.0-demo.1 | 2026-10-21 | 首个 Demo，验证「整包迁移」这条路能走通 | [v0.1.0-demo.1](https://github.com/junyunshoure/Deepseek-Harness-Plugin-Management/releases/tag/v0.1.0-demo.1)（Pre-release） |
+| v1.0.0 | 2026-10-22 | 正式版第一版：36 bundle / 247 组合行 / 17,453 文件 | [v1.0.0](https://github.com/junyunshoure/Deepseek-Harness-Plugin-Management/releases/tag/v1.0.0) |
+| v1.0.0-patch.1 | 2026-10-22 | v1.0.0 的**独立补丁**：把逆向工具改成「按需加载」，并补全本说明 | [v1.0.0-patch.1](https://github.com/junyunshoure/Deepseek-Harness-Plugin-Management/releases/tag/v1.0.0-patch.1) |
 
 ## 正式版第一版 v1.0.0（2026-10-22）
 
 首个**正式版**，基于 2026-10-22 的 DSH Desktop 配置快照（插件、启停状态、界面偏好、模型提供方与模型清单）。
 
-完整安装包请从 [Releases → v1.0.0](https://github.com/junyunshoure/deepseek-harness-Plugin-Management/releases/tag/v1.0.0) 下载：
+完整安装包请从 [Releases → v1.0.0](https://github.com/junyunshoure/Deepseek-Harness-Plugin-Management/releases/tag/v1.0.0) 下载：
 
 - `DSH-Plugins-v1.0.0-Windows-x64.zip`（156,568,436 字节，约 149 MB）
 - `DSH-Plugins-v1.0.0-Windows-x64.zip.sha256`

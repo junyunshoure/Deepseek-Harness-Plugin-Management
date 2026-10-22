@@ -26,4 +26,4 @@
 
 正式版 v1.0.0 的独立补丁，不改动插件本体与已发布附件。下载 `DSH-Plugins-v1.0.0-patch.1-Windows-x64.zip`，
 解压后运行 `install.ps1`（可先加 `-CheckOnly` 自检）。说明见 `patch/README.md`，发布页见
-https://github.com/junyunshoure/deepseek-harness-Plugin-Management/releases/tag/v1.0.0-patch.1
+https://github.com/junyunshoure/Deepseek-Harness-Plugin-Management/releases/tag/v1.0.0-patch.1
