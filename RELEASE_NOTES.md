@@ -21,3 +21,9 @@
 原快照已通过独立环境的官方 CLI 离线安装、包链接、版本与组合配置验证；Demo 仅增加发布标记与说明，并重新验证 ZIP 内每个文件的 SHA-256。未在第二台物理电脑验证 GUI 或账号相关功能。
 
 安装后须保留 `%LOCALAPPDATA%\DSHPluginMigration\plugins-20261021`。不包含个人账号、模型/API 配置、聊天记录、浏览器用户数据或 Zotero 文献库。第三方包的原始版权与许可保留。
+
+## 补丁 v1.0.0-patch.1：逆向能力按需加载（2026-10-22）
+
+正式版 v1.0.0 的独立补丁，不改动插件本体与已发布附件。下载 `DSH-Plugins-v1.0.0-patch.1-Windows-x64.zip`，
+解压后运行 `install.ps1`（可先加 `-CheckOnly` 自检）。说明见 `patch/README.md`，发布页见
+https://github.com/junyunshoure/deepseek-harness-Plugin-Management/releases/tag/v1.0.0-patch.1

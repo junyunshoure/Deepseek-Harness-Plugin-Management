@@ -1,0 +1,43 @@
+{
+  "algorithm": "sha256",
+  "generatedAt": "2026-10-22T11:31:49.435Z",
+  "fileCount": 7,
+  "totalBytes": 19837,
+  "files": [
+    {
+      "path": "INSTALL.cmd",
+      "sha256": "68e6ca48a8d16125e94fde603175db8e00e8128f41f2553b28a60a494e81d6d7",
+      "size": 105
+    },
+    {
+      "path": "README.md",
+      "sha256": "823e364c1a9d04a3f8996310664bce2bb0bdb34c6a90494624e74176b288abdf",
+      "size": 3717
+    },
+    {
+      "path": "install-helper.cjs",
+      "sha256": "c3a0028ba3c41c2057d2a13db20242246e8872b5fdc13dd5a1ec5b54fe647d3e",
+      "size": 5595
+    },
+    {
+      "path": "install.ps1",
+      "sha256": "f85e3c25d391c16c95b30ba6f68485936d6f260f3a2375fa15532f051d753aa8",
+      "size": 764
+    },
+    {
+      "path": "patch.json",
+      "sha256": "127fd9eeda076e7f8f229ef6baec61c6635e9ca63ba23803d51220208827275c",
+      "size": 585
+    },
+    {
+      "path": "skill/reverse-engineer-anything/SKILL.md",
+      "sha256": "18b9b005977f36562126a7a11b2a8c9d1774df050e401838cf09c09efd9072f0",
+      "size": 2781
+    },
+    {
+      "path": "skill/reverse-engineer-anything/references/manual-cli.md",
+      "sha256": "f3c0428d65cacba668f50a10a287c3147ce377f0339704dad4393f5dfde81bc2",
+      "size": 6290
+    }
+  ]
+}

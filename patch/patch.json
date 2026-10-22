@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "kind": "patch",
+  "id": "plugins-20261022-patch1",
+  "name": "逆向能力按需加载补丁",
+  "version": "1.0.0-patch.1",
+  "channel": "stable",
+  "appliesTo": "v1.0.0",
+  "platform": "win32",
+  "arch": "x64",
+  "summary": "把 REA 逆向技能从「大篇幅 MCP 手册」改成「短入口 + 按需 CLI 手册」，不注册 MCP 工具。",
+  "skill": {
+    "name": "reverse-engineer-anything",
+    "root": "~/.agents/skills",
+    "files": [
+      "SKILL.md",
+      "references/manual-cli.md"
+    ]
+  },
+  "touchesDshConfig": false,
+  "requiresReaCli": true
+}
