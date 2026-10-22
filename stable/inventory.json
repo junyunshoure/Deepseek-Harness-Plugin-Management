@@ -1,0 +1,1800 @@
+{
+  "generatedAt": "2026-10-22T07:55:32.463Z",
+  "platform": "win32",
+  "arch": "x64",
+  "dshVersion": "0.2.1-rc.2",
+  "sourceProfile": "desktop",
+  "sourceHome": "C:/Users/dengh/.dsh/profiles/desktop",
+  "counts": {
+    "selectedBundles": 36,
+    "activeBundleLayers": 36,
+    "installedPackages": 32,
+    "installablePackages": 32,
+    "composedPluginRows": 247
+  },
+  "bundles": [
+    {
+      "name": "@deepseek-ai/dsh-base",
+      "version": "0.2.1-rc.2",
+      "description": "",
+      "selected": true,
+      "loaded": true,
+      "installed": false,
+      "rows": 0
+    },
+    {
+      "name": "@deepseek-ai/dsh-web-app",
+      "version": "0.2.1-rc.2",
+      "description": "",
+      "selected": true,
+      "loaded": true,
+      "installed": false,
+      "rows": 1
+    },
+    {
+      "name": "dshmarket",
+      "version": "1.66.28",
+      "description": "Visual plugin market inside DeepSeek Harness — browse, search, and one-click install community plugins. · DSH 可视化插件市场：逛一逛，点一下，装好。",
+      "selected": true,
+      "loaded": true,
+      "installed": true,
+      "rows": 1
+    },
+    {
+      "name": "@linxin666/dsh-web-all",
+      "version": "0.4.6",
+      "description": "DSH Web UI 全家桶聚合插件：一键安装全部功能插件（task-board / git-graph / pet / remote-web-ui / web-ui-settings / skin-center / community-plugins / compat shim）。compat 桥接层已并入本包（src/client），无需独立 compat npm 包。",
+      "selected": true,
+      "loaded": true,
+      "installed": true,
+      "rows": 1
+    },
+    {
+      "name": "@deepseek-ai/dsh-experimental-agent-team-profile",
+      "version": "0.2.1-rc.2",
+      "description": "",
+      "selected": true,
+      "loaded": true,
+      "installed": false,
+      "rows": 0
+    },
+    {
+      "name": "@deepseek-ai/dsh-experimental-auto-review",
+      "version": "0.2.1-rc.2",
+      "description": "",
+      "selected": true,
+      "loaded": true,
+      "installed": false,
+      "rows": 1
+    },
+    {
+      "name": "dsh-undo-savepoint",
+      "version": "0.4.9",
+      "description": "DSH undo/rollback system: snapshot config files on change, undo/redo the last action from the WebUI or by chat, and roll back broken plugin trees without reinstalling. Works even when DSH fails to boot (offline CLI + GUI).",
+      "selected": true,
+      "loaded": true,
+      "installed": true,
+      "rows": 1
+    },
+    {
+      "name": "@liustack/modlens",
+      "version": "3.26.6",
+      "description": "Plug-in vision for text-only LLMs, powered by the free Antigravity CLI",
+      "selected": true,
+      "loaded": true,
+      "installed": true,
+      "rows": 1
+    },
+    {
+      "name": "dsh-cost-meter",
+      "version": "1.8.35",
+      "description": "DeepSeek Harness 会话费用统计插件:本会话成本、当日费用、历史记录与官方价格同步,支持多厂商多模型价格计费(内置 170+ 模型 ID 价格目录与自动匹配)、主流 Coding Plan 订阅额度查询与显示(13 家,含 OpenDesign 工作区查询、含小米 MiMo Token Plan 控制台 Cookie 查询、SCNet Token Plan 本地 Credits 计量与火山方舟 Volcano Ark Coding Plan AK/SK 签名查询)、自定义 Provider 余额查询(可配任意 HTTP 端点)与余额进度条、峰谷计价时段显示与切换前弹窗/系统通知提醒(位置/提前量/类型可配),界面中英双语。Session cost tracking plugin for DeepSeek Harness: per-conversation cost, daily totals, history and official price sync, with multi-vendor model pricing (built-in 170+ model-ID catalog with auto-matching), Coding Plan quota queries & display for 13 vendors (incl. OpenDesign workspace queries, Xiaomi MiMo Token Plan via console cookie, local credits metering for the SCNet Token Plan and Volcano Ark Coding Plan via AK/SK signature), plan/API dual-track billing with per-1% & full-window Token Plan usage estimates, custom provider balance lookup (configurable HTTP endpoint) and balance progress bar, plus peak/off-peak pricing display with pre-switch popup & system-notification alerts (position / lead time / type configurable), in a bilingual (Chinese/English) UI.",
+      "selected": true,
+      "loaded": true,
+      "installed": true,
+      "rows": 1
+    },
+    {
+      "name": "@changfenhuang/dsh-genui",
+      "version": "0.11.4",
+      "description": "GenUI for DeepSeek Harness: interactive UI components rendered inline in assistant replies via the ```dsh-ui fence — layout, charts, plots, forms, quizzes, mermaid, 3D scenes, and an action event loop back to the model. Ships the fence-teaching host plugin, the browser renderer (client half), and the genui skill.",
+      "selected": true,
+      "loaded": true,
+      "installed": true,
+      "rows": 1
+    },
+    {
+      "name": "@linxin666/dsh-client-ui-git-graph",
+      "version": "0.4.5",
+      "description": "External dsh web GUI plugin: a blank-session git branch selector + Git graph, with real host-side git operations and guards, as a dsh profile bundle",
+      "selected": true,
+      "loaded": true,
+      "installed": true,
+      "rows": 1
+    },
+    {
+      "name": "dsh-plugin-wallpaper-engine",
+      "version": "1.3.1",
+      "description": "Wallpaper Engine backgrounds for the DSH web GUI: render your local Wallpaper Engine wallpapers behind the chat — Scene and Web in real time through the bundled WebWallGL engine, Video played directly — with iOS-style liquid glass, adjustable blur/scrim/border/opacity, custom typography and caret, and a liquid-glass makeover of the whole settings window. Prerequisite: DeepSeek Harness kernel >= 0.1.5 (0.1.5-rc.1+ — the official desktop line and DSH Desktop >= 2.0.7 both qualify). No version restriction on dsh-better-sidebar.",
+      "selected": true,
+      "loaded": true,
+      "installed": true,
+      "rows": 1
+    },
+    {
+      "name": "dsh-approval-gate",
+      "version": "0.5.0",
+      "description": "DeepSeek Harness 自动审批门控：Flash 模型预判写入/命令是否不可回补，安全自动批准、危险转人工（fail-safe），最小人工介入，含人工审查 UI",
+      "selected": true,
+      "loaded": true,
+      "installed": true,
+      "rows": 1
+    },
+    {
+      "name": "@tt-a1i/archify-dsh",
+      "version": "1.0.0",
+      "description": "Opt-in DeepSeek Harness Skill-only bundle for the Archify architecture-diagram skill.",
+      "selected": true,
+      "loaded": true,
+      "installed": true,
+      "rows": 0
+    },
+    {
+      "name": "dsh-rewind-plugin",
+      "version": "0.15.3",
+      "description": "In-window conversation rewind with workspace file restore · 同窗口内对话回退并可还原工作区文件",
+      "selected": true,
+      "loaded": true,
+      "installed": true,
+      "rows": 1
+    },
+    {
+      "name": "dsh-context",
+      "version": "0.72.0",
+      "description": "A DeepSeek Harness plugin for context insight and management, with context dashboard and context command, for understanding how the context is made of, and how it evolves.",
+      "selected": true,
+      "loaded": true,
+      "installed": true,
+      "rows": 1
+    },
+    {
+      "name": "dsh-whale-widget",
+      "version": "0.4.2",
+      "description": "DSH Web 界面右下角的 DeepSeek 余额小鲸鱼挂件:余额/今日已用/峰谷定价、自定义泡泡点击序列(文本/余额/今日/峰谷/图片/随机语句与并列加权选择)、逐行样式与字体、悬浮快捷编辑、音效与每轮消耗、自定义角色/动图/音效、吸附与翻转自定义",
+      "selected": true,
+      "loaded": true,
+      "installed": true,
+      "rows": 1
+    },
+    {
+      "name": "dsh-plugin-whale-pet",
+      "version": "0.2.9",
+      "description": "Your little whale buddy for work, wins, and well-earned naps.",
+      "selected": true,
+      "loaded": true,
+      "installed": true,
+      "rows": 1
+    },
+    {
+      "name": "dsh-drawai",
+      "version": "0.2.7",
+      "description": "DSH 右侧栏的可编辑画布 + AI 语义绘图工具（diagram_apply / diagram_read），直接读写原生 .drawio 文件",
+      "selected": true,
+      "loaded": true,
+      "installed": true,
+      "rows": 1
+    },
+    {
+      "name": "@kenz1117/dsh-ui-usage-billing",
+      "version": "1.4.34",
+      "description": "Usage billing dashboard for DeepSeek Harness: sidebar cost metrics plus a full dashboard modal, priced from a current multi-provider catalog with real usage aggregated from session logs.",
+      "selected": true,
+      "loaded": true,
+      "installed": true,
+      "rows": 1
+    },
+    {
+      "name": "billion-context",
+      "version": "0.1.202",
+      "description": "A context-compression plugin — small context windows (a 100K context is enough), 5x fewer tokens, month-long single sessions (billions of tokens), and compression quality — for all agents: pi, OpenCode, Codex, Claude Code, and more. billion-context is all you need.",
+      "selected": true,
+      "loaded": true,
+      "installed": true,
+      "rows": 1
+    },
+    {
+      "name": "dsh-ego-browser",
+      "version": "0.8.6",
+      "description": "ego-browser (ego-lite) integration plugin for DSH: structured browser-automation tools (30+ ego_*) that drive the vendored ego runtime through ctx.subprocess, plus a realtime watch panel (live SSE screencast + direct mouse interaction + download capture + human-verification notice). Web shell: floating watch panel without dsh-better-sidebar, sidebar tab with it. Headless/TUI hosts: tools-only. [0.1.2-rc.1: verified compatible with DSH v0.1.2-rc.1 and v0.1.3-alpha.1]",
+      "selected": true,
+      "loaded": true,
+      "installed": true,
+      "rows": 1
+    },
+    {
+      "name": "@xmanrui/dsh-im",
+      "version": "4.39.0",
+      "description": "把微信、飞书、企微、钉钉、QQ、Telegram、WhatsApp、Slack、Discord、Matrix接入DSH。 Connect Telegram, WhatsApp, Slack, Discord, Matrix, WeChat, Feishu, WeCom, DingTalk, and QQ to DSH.",
+      "selected": true,
+      "loaded": true,
+      "installed": true,
+      "rows": 1
+    },
+    {
+      "name": "dsh-zotero",
+      "version": "0.12.1",
+      "description": "Let agents search, read, and cite your local Zotero library: find papers, browse notes and annotations, pull evidence by question, open the source document, generate citations.",
+      "selected": true,
+      "loaded": true,
+      "installed": true,
+      "rows": 1
+    },
+    {
+      "name": "@local/dsh-client-ui-workbench",
+      "version": "0.1.0",
+      "description": "多场景工作台页：侧边栏一行 + 主区一页，把 workbench/ 下的场景、§〇 交接、待办板、派单台账和体检结果读成可点的一面墙。",
+      "selected": true,
+      "loaded": true,
+      "installed": true,
+      "rows": 1
+    },
+    {
+      "name": "@wxg-prc-cpg/browser-skill-dsh-plugin",
+      "version": "0.3.3",
+      "description": "DeepSeek Harness tool plugin that exposes BrowserSkill browser automation (bsk_* tools) to the model",
+      "selected": true,
+      "loaded": true,
+      "installed": true,
+      "rows": 1
+    },
+    {
+      "name": "dsh-mattpocock-skills-deck",
+      "version": "1.9.0-beta.8",
+      "description": "安装即自带mattpocock/skills v1.3.1的27个工程与效率技能，无需手动装技能。400亿token打造本插件，在原始技能之上提供10倍的开发效率，也能帮助新手更快上手该技能套件。全力支持GitHub issue；Markdown为预览版；GitLab暂不支持。感谢您的使用和支持💗",
+      "selected": true,
+      "loaded": true,
+      "installed": true,
+      "rows": 1
+    },
+    {
+      "name": "dsh-skill-hub",
+      "version": "0.3.26",
+      "description": "In-GUI skill hub for DeepSeek Harness (dsh): browse the full local skill catalog from the official ctx.skills registry (every root + third-party providers), toggle skills on/off, inspect bodies, surface frontmatter diagnostics, and scaffold new skills — plus a codex-style skill market (built-in catalog, upstream update checks, one-click update-all) with tracked source sync. The full manager beyond the read-only dsh-skill-manager browser.",
+      "selected": true,
+      "loaded": true,
+      "installed": true,
+      "rows": 1
+    },
+    {
+      "name": "dsh-my-skill-manager",
+      "version": "0.1.12",
+      "description": "DSH skill 管理：分「全局 / 项目」查看 skill 列表，按项目启用/禁用（禁用即不注入该会话）。DSH web plugin: per-project skill management with global/project views and enable/disable toggles.",
+      "selected": true,
+      "loaded": true,
+      "installed": true,
+      "rows": 1
+    },
+    {
+      "name": "@lemoncat7/dsh-knowledge",
+      "version": "2.15.3",
+      "description": "Local and remote knowledge bases for DeepSeek Harness, with scoped recall, controlled write-back, and a Web management console",
+      "selected": true,
+      "loaded": true,
+      "installed": true,
+      "rows": 1
+    },
+    {
+      "name": "@wxg-prc-cpg/dsh-weknora",
+      "version": "0.1.0",
+      "description": "WeKnora knowledge retrieval tools for DeepSeek Harness (dsh): semantic search, document reading and RAG/agent answers over your own knowledge bases.",
+      "selected": true,
+      "loaded": true,
+      "installed": true,
+      "rows": 1
+    },
+    {
+      "name": "treg-dsh",
+      "version": "0.27.0",
+      "description": "OpenRouter for tools - 4,000+ agent-friendly tools, pay for the usage, not subscription",
+      "selected": true,
+      "loaded": true,
+      "installed": true,
+      "rows": 1
+    },
+    {
+      "name": "@vectorize-io/hindsight-coding-agents",
+      "version": "0.8.2",
+      "description": "Reflect-only Hindsight long-term memory for coding agents (harness-pluggable: opencode, …), with automatic background ingestion (no setup CLI).",
+      "selected": true,
+      "loaded": true,
+      "installed": true,
+      "rows": 0
+    },
+    {
+      "name": "@openviking/dsh-memory-plugin",
+      "version": "0.5.28",
+      "description": "OpenViking memory and context bundle for DeepSeek Harness",
+      "selected": true,
+      "loaded": true,
+      "installed": true,
+      "rows": 1
+    },
+    {
+      "name": "dsh-infinite-gen-5",
+      "version": "1.1.0",
+      "description": "无限五代（IG5）：DeepSeek Harness 统一 Reverse / Ghidra 静态分析与 x64dbg 无头调试工作台。独立 HTTP/HTTPS 流量采集与分析。",
+      "selected": true,
+      "loaded": true,
+      "installed": true,
+      "rows": 1
+    },
+    {
+      "name": "@agentscope-ai/reme-dsh-plugin",
+      "version": "0.1.2",
+      "description": "ReMe memory and context integration for DeepSeek Harness",
+      "selected": true,
+      "loaded": true,
+      "installed": true,
+      "rows": 0
+    }
+  ],
+  "packages": [
+    {
+      "name": "@agentscope-ai/reme-dsh-plugin",
+      "version": "0.1.2",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "@changfenhuang/dsh-genui",
+      "version": "0.11.4",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "@kenz1117/dsh-ui-usage-billing",
+      "version": "1.4.34",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "@lemoncat7/dsh-knowledge",
+      "version": "2.15.3",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "@linxin666/dsh-client-ui-git-graph",
+      "version": "0.4.5",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "@linxin666/dsh-web-all",
+      "version": "0.4.6",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "@liustack/modlens",
+      "version": "3.26.6",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "@local/dsh-client-ui-workbench",
+      "version": "0.1.0",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "@openviking/dsh-memory-plugin",
+      "version": "0.5.28",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "@tt-a1i/archify-dsh",
+      "version": "1.0.0",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "@vectorize-io/hindsight-coding-agents",
+      "version": "0.8.2",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "@wxg-prc-cpg/browser-skill-dsh-plugin",
+      "version": "0.3.3",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "@wxg-prc-cpg/dsh-weknora",
+      "version": "0.1.0",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "@xmanrui/dsh-im",
+      "version": "4.39.0",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "billion-context",
+      "version": "0.1.202",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "dsh-approval-gate",
+      "version": "0.5.0",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "dsh-context",
+      "version": "0.72.0",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "dsh-cost-meter",
+      "version": "1.8.35",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "dsh-drawai",
+      "version": "0.2.7",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "dsh-ego-browser",
+      "version": "0.8.6",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "dsh-infinite-gen-5",
+      "version": "1.1.0",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "dsh-mattpocock-skills-deck",
+      "version": "1.9.0-beta.8",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "dsh-my-skill-manager",
+      "version": "0.1.12",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "dsh-plugin-wallpaper-engine",
+      "version": "1.3.1",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "dsh-plugin-whale-pet",
+      "version": "0.2.9",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "dsh-rewind-plugin",
+      "version": "0.15.3",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "dsh-skill-hub",
+      "version": "0.3.26",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "dsh-undo-savepoint",
+      "version": "0.4.9",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "dsh-whale-widget",
+      "version": "0.4.2",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "dsh-zotero",
+      "version": "0.12.1",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "dshmarket",
+      "version": "1.66.28",
+      "install": true,
+      "status": "已安装，已加载"
+    },
+    {
+      "name": "treg-dsh",
+      "version": "0.27.0",
+      "install": true,
+      "status": "已安装，已加载"
+    }
+  ],
+  "skippedBundles": [],
+  "pluginRows": [
+    {
+      "id": "tool-plugin-manager",
+      "name": "@deepseek-ai/dsh-plugin-manager/tools",
+      "disabled": true
+    },
+    {
+      "id": "plugin-manager",
+      "name": "@deepseek-ai/dsh-plugin-manager",
+      "disabled": false,
+      "disabledExpression": {
+        "__jsExpr": "!ctx.get('profileContext')"
+      }
+    },
+    {
+      "id": "timer",
+      "name": "@deepseek-ai/cordis-plugin-timer",
+      "disabled": false
+    },
+    {
+      "id": "hmr",
+      "name": "@deepseek-ai/dsh-hmr",
+      "disabled": false,
+      "disabledExpression": {
+        "__jsExpr": "!ctx.get('profileContext')"
+      }
+    },
+    {
+      "id": "llm",
+      "name": "@deepseek-ai/dsh-llm",
+      "disabled": false
+    },
+    {
+      "id": "deepseek-llm-api-extensions",
+      "name": "@deepseek-ai/dsh-deepseek-llm-api-extensions",
+      "disabled": false
+    },
+    {
+      "id": "session",
+      "name": "@deepseek-ai/dsh-session",
+      "disabled": false
+    },
+    {
+      "id": "session-log-deepseek",
+      "name": "@deepseek-ai/dsh-session-log-deepseek",
+      "disabled": false
+    },
+    {
+      "id": "typert",
+      "name": "@deepseek-ai/dsh-typert-registry",
+      "disabled": false
+    },
+    {
+      "id": "typert-loader",
+      "name": "@deepseek-ai/dsh-typert-loader",
+      "disabled": false
+    },
+    {
+      "id": "typert-gateway",
+      "name": "@deepseek-ai/dsh-api-gateway",
+      "disabled": false
+    },
+    {
+      "id": "remote-access",
+      "name": "@deepseek-ai/dsh-api-remote-access",
+      "disabled": false
+    },
+    {
+      "id": "session-title",
+      "name": "@deepseek-ai/dsh-session-title",
+      "disabled": false
+    },
+    {
+      "id": "session-title-llm",
+      "name": "@deepseek-ai/dsh-session-title-first-prompt-llm",
+      "disabled": false
+    },
+    {
+      "id": "user-questions",
+      "name": "@deepseek-ai/dsh-user-questions",
+      "disabled": false
+    },
+    {
+      "id": "agent",
+      "name": "@deepseek-ai/dsh-agent",
+      "disabled": false
+    },
+    {
+      "id": "plugin-package-inventory-deepseek",
+      "name": "@deepseek-ai/dsh-plugin-package-inventory-deepseek",
+      "disabled": false
+    },
+    {
+      "id": "agent-default-model",
+      "name": "@deepseek-ai/dsh-agent-default-model",
+      "disabled": false
+    },
+    {
+      "id": "jobs",
+      "name": "@deepseek-ai/dsh-jobs-local",
+      "disabled": false
+    },
+    {
+      "id": "llm-retry",
+      "name": "@deepseek-ai/dsh-llm-retry",
+      "disabled": false
+    },
+    {
+      "id": "config-editor",
+      "name": "@deepseek-ai/dsh-config-editor",
+      "disabled": false,
+      "disabledExpression": {
+        "__jsExpr": "!ctx.get('profileContext')"
+      }
+    },
+    {
+      "id": "settings",
+      "name": "@deepseek-ai/dsh-settings",
+      "disabled": false,
+      "disabledExpression": {
+        "__jsExpr": "!ctx.get('profileContext')"
+      }
+    },
+    {
+      "id": "authorization",
+      "name": "@deepseek-ai/dsh-authorization",
+      "disabled": false
+    },
+    {
+      "id": "deepseek-account",
+      "name": "@deepseek-ai/dsh-deepseek-account-platform",
+      "disabled": false
+    },
+    {
+      "id": "credentials",
+      "name": "@deepseek-ai/dsh-credentials-local",
+      "disabled": false
+    },
+    {
+      "id": "llm-pi-ai",
+      "name": "@deepseek-ai/dsh-llm-pi-ai",
+      "disabled": false
+    },
+    {
+      "id": "session-persistence-jsonl",
+      "name": "@deepseek-ai/dsh-session-persistence-jsonl",
+      "disabled": false
+    },
+    {
+      "id": "attachment-local",
+      "name": "@deepseek-ai/dsh-attachment-local",
+      "disabled": false
+    },
+    {
+      "id": "session-query-sqlite",
+      "name": "@deepseek-ai/dsh-session-query-sqlite",
+      "disabled": false
+    },
+    {
+      "id": "working-directory",
+      "name": "@deepseek-ai/dsh-working-directory",
+      "disabled": false
+    },
+    {
+      "id": "tool-working-directory",
+      "name": "@deepseek-ai/dsh-tool-working-directory",
+      "disabled": false
+    },
+    {
+      "id": "session-projection",
+      "name": "@deepseek-ai/dsh-session-projection",
+      "disabled": false
+    },
+    {
+      "id": "storage",
+      "name": "@deepseek-ai/dsh-storage",
+      "disabled": false
+    },
+    {
+      "id": "storage-json",
+      "name": "@deepseek-ai/dsh-storage-json",
+      "disabled": false
+    },
+    {
+      "id": "storage-domain",
+      "name": "@deepseek-ai/dsh-storage-domain",
+      "disabled": false
+    },
+    {
+      "id": "session-projection-cache",
+      "name": "@deepseek-ai/dsh-session-projection-cache",
+      "disabled": false
+    },
+    {
+      "id": "otel",
+      "name": "@deepseek-ai/dsh-otel",
+      "disabled": false
+    },
+    {
+      "id": "session-telemetry-otel",
+      "name": "@deepseek-ai/dsh-session-telemetry-otel",
+      "disabled": false
+    },
+    {
+      "id": "subprocess",
+      "name": "@deepseek-ai/dsh-subprocess-local",
+      "disabled": false
+    },
+    {
+      "id": "sandbox",
+      "name": "@deepseek-ai/dsh-sandbox-local",
+      "disabled": false
+    },
+    {
+      "id": "sandbox-policy",
+      "name": "@deepseek-ai/dsh-sandbox-policy",
+      "disabled": false
+    },
+    {
+      "id": "bash-sandbox",
+      "name": "@deepseek-ai/dsh-bash-sandbox",
+      "disabled": true
+    },
+    {
+      "id": "pwsh-sandbox",
+      "name": "@deepseek-ai/dsh-pwsh-sandbox",
+      "disabled": false,
+      "disabledExpression": {
+        "__jsExpr": "process.platform !== 'win32'"
+      }
+    },
+    {
+      "id": "approval",
+      "name": "@deepseek-ai/dsh-user-approval",
+      "disabled": false
+    },
+    {
+      "id": "permission",
+      "name": "@deepseek-ai/dsh-permission-presets",
+      "disabled": false
+    },
+    {
+      "id": "shell-env",
+      "name": "@deepseek-ai/dsh-shell-env",
+      "disabled": false
+    },
+    {
+      "id": "tool-bash",
+      "name": "@deepseek-ai/dsh-tool-bash",
+      "disabled": true
+    },
+    {
+      "id": "tool-pwsh",
+      "name": "@deepseek-ai/dsh-tool-pwsh",
+      "disabled": false
+    },
+    {
+      "id": "tool-jobs",
+      "name": "@deepseek-ai/dsh-tool-jobs",
+      "disabled": false
+    },
+    {
+      "id": "fs-observation-policy",
+      "name": "@deepseek-ai/dsh-fs-observation-policy",
+      "disabled": false
+    },
+    {
+      "id": "tool-fs",
+      "name": "@deepseek-ai/dsh-tool-fs",
+      "disabled": false
+    },
+    {
+      "id": "tool-fs-search",
+      "name": "@deepseek-ai/dsh-tool-fs-search",
+      "disabled": false
+    },
+    {
+      "id": "agent-instructions",
+      "name": "@deepseek-ai/dsh-agent-instructions",
+      "disabled": true
+    },
+    {
+      "id": "skill",
+      "name": "@deepseek-ai/dsh-skill",
+      "disabled": false
+    },
+    {
+      "id": "skill-filesystem",
+      "name": "@deepseek-ai/dsh-skill-filesystem",
+      "disabled": true
+    },
+    {
+      "id": "tool-skill",
+      "name": "@deepseek-ai/dsh-tool-skill",
+      "disabled": true
+    },
+    {
+      "id": "commands",
+      "name": "@deepseek-ai/dsh-commands",
+      "disabled": false
+    },
+    {
+      "id": "command-feedback",
+      "name": "@deepseek-ai/dsh-command-feedback",
+      "disabled": false
+    },
+    {
+      "id": "goal",
+      "name": "@deepseek-ai/dsh-goal",
+      "disabled": false
+    },
+    {
+      "id": "goal-round-driver",
+      "name": "@deepseek-ai/dsh-goal-round-driver",
+      "disabled": false
+    },
+    {
+      "id": "command-goal",
+      "name": "@deepseek-ai/dsh-command-goal",
+      "disabled": true
+    },
+    {
+      "id": "plan-mode",
+      "name": "@deepseek-ai/dsh-plan-mode",
+      "disabled": true
+    },
+    {
+      "id": "token-meter",
+      "name": "@deepseek-ai/dsh-token-meter",
+      "disabled": false
+    },
+    {
+      "id": "compaction-basic",
+      "name": "@deepseek-ai/dsh-compaction-basic",
+      "disabled": true
+    },
+    {
+      "id": "command-compact",
+      "name": "@deepseek-ai/dsh-command-compact",
+      "disabled": true
+    },
+    {
+      "id": "subagent",
+      "name": "@deepseek-ai/dsh-subagent",
+      "disabled": false
+    },
+    {
+      "id": "subagent-spawn-in-process",
+      "name": "@deepseek-ai/dsh-subagent-spawn-in-process",
+      "disabled": false
+    },
+    {
+      "id": "subagent-fork-in-process",
+      "name": "@deepseek-ai/dsh-subagent-fork-in-process",
+      "disabled": false
+    },
+    {
+      "id": "tool-subagent-control",
+      "name": "@deepseek-ai/dsh-tool-subagent-control",
+      "disabled": true
+    },
+    {
+      "id": "tool-subagent-list-agents",
+      "name": "@deepseek-ai/dsh-tool-subagent-control/list-agents",
+      "disabled": true
+    },
+    {
+      "id": "tool-subagent",
+      "name": "@deepseek-ai/dsh-tool-subagent",
+      "disabled": true
+    },
+    {
+      "id": "tool-subagent-fork",
+      "name": "@deepseek-ai/dsh-tool-subagent",
+      "disabled": true
+    },
+    {
+      "id": "ptc-runtime",
+      "name": "@deepseek-ai/dsh-ptc-runtime-node",
+      "disabled": false
+    },
+    {
+      "id": "workflow-ptc",
+      "name": "@deepseek-ai/dsh-workflow-ptc",
+      "disabled": true
+    },
+    {
+      "id": "tool-workflow",
+      "name": "@deepseek-ai/dsh-tool-workflow",
+      "disabled": true
+    },
+    {
+      "id": "timeout-policy",
+      "name": "@deepseek-ai/dsh-tool-call-timeout-policy",
+      "disabled": false
+    },
+    {
+      "id": "spill-local",
+      "name": "@deepseek-ai/dsh-spill-local",
+      "disabled": false
+    },
+    {
+      "id": "spill-policy",
+      "name": "@deepseek-ai/dsh-spill-policy",
+      "disabled": false
+    },
+    {
+      "id": "session-checkpoint-policy",
+      "name": "@deepseek-ai/dsh-session-checkpoint-policy",
+      "disabled": false
+    },
+    {
+      "id": "tool-result-pruner",
+      "name": "@deepseek-ai/dsh-compaction-tool-result-pruner",
+      "disabled": true
+    },
+    {
+      "id": "image-offload",
+      "name": "@deepseek-ai/dsh-compaction-image-offload",
+      "disabled": false
+    },
+    {
+      "id": "tool-todo",
+      "name": "@deepseek-ai/dsh-tool-todo",
+      "disabled": true
+    },
+    {
+      "id": "tool-goal",
+      "name": "@deepseek-ai/dsh-tool-goal",
+      "disabled": true
+    },
+    {
+      "id": "repeat-tool-reminder",
+      "name": "@deepseek-ai/dsh-repeat-tool-reminder",
+      "disabled": false
+    },
+    {
+      "id": "web",
+      "name": "@deepseek-ai/dsh-web",
+      "disabled": false
+    },
+    {
+      "id": "web-search-deepseek",
+      "name": "@deepseek-ai/dsh-web-search-deepseek",
+      "disabled": false
+    },
+    {
+      "id": "web-deepseek-api",
+      "name": "@deepseek-ai/dsh-web-deepseek-api",
+      "disabled": false
+    },
+    {
+      "id": "web-fetch-http",
+      "name": "@deepseek-ai/dsh-web-fetch-http",
+      "disabled": false
+    },
+    {
+      "id": "tool-web",
+      "name": "@deepseek-ai/dsh-tool-web",
+      "disabled": true
+    },
+    {
+      "id": "mcp-resources",
+      "name": "@deepseek-ai/dsh-mcp-resources",
+      "disabled": false
+    },
+    {
+      "id": "tools",
+      "name": "@deepseek-ai/dsh-tools",
+      "disabled": false
+    },
+    {
+      "id": "system-prompt",
+      "name": "@deepseek-ai/dsh-system-prompt",
+      "disabled": false
+    },
+    {
+      "id": "agent-loop",
+      "name": "@deepseek-ai/dsh-agent-loop",
+      "disabled": false
+    },
+    {
+      "id": "fs-sandbox",
+      "name": "@deepseek-ai/dsh-fs-sandbox",
+      "disabled": false
+    },
+    {
+      "id": "llm-deepseek",
+      "name": "@deepseek-ai/dsh-llm-deepseek-api-key",
+      "disabled": false
+    },
+    {
+      "id": "llm-deepseek-account",
+      "name": "@deepseek-ai/dsh-llm-deepseek-account",
+      "disabled": false
+    },
+    {
+      "id": "desktop-product-telemetry",
+      "name": "@deepseek-ai/dsh-host-product-telemetry-otel",
+      "disabled": false,
+      "disabledExpression": {
+        "__jsExpr": "ctx.get('profileContext')?.name !== 'desktop'"
+      }
+    },
+    {
+      "id": "product-analytics",
+      "name": "@deepseek-ai/dsh-client-product-analytics",
+      "disabled": false,
+      "disabledExpression": {
+        "__jsExpr": "ctx.get('profileContext')?.name !== 'desktop'"
+      }
+    },
+    {
+      "id": "subagent-model-selection-settings",
+      "name": "@deepseek-ai/dsh-tool-subagent/model-selection-settings",
+      "disabled": false
+    },
+    {
+      "id": "message-feedback",
+      "name": "@deepseek-ai/dsh-message-feedback",
+      "disabled": false
+    },
+    {
+      "id": "session-log-download",
+      "name": "@deepseek-ai/dsh-session-log-export",
+      "disabled": false
+    },
+    {
+      "id": "open-in-app",
+      "name": "@deepseek-ai/dsh-host-open-in-app",
+      "disabled": false
+    },
+    {
+      "id": "ui-open-in-app",
+      "name": "@deepseek-ai/dsh-client-ui-open-in-app",
+      "disabled": false
+    },
+    {
+      "id": "workspace",
+      "name": "@deepseek-ai/dsh-workspace",
+      "disabled": false
+    },
+    {
+      "id": "session-reference",
+      "name": "@deepseek-ai/dsh-session-reference",
+      "disabled": false
+    },
+    {
+      "id": "file-reference-local",
+      "name": "@deepseek-ai/dsh-file-reference-local",
+      "disabled": false
+    },
+    {
+      "id": "session-stats",
+      "name": "@deepseek-ai/dsh-session-stats",
+      "disabled": false
+    },
+    {
+      "id": "session-turn-outline",
+      "name": "@deepseek-ai/dsh-session-turn-outline",
+      "disabled": false
+    },
+    {
+      "id": "directory-picker",
+      "name": "@deepseek-ai/dsh-host-directory-picker-auto",
+      "disabled": false
+    },
+    {
+      "id": "plugin-inventory",
+      "name": "@deepseek-ai/dsh-host-plugin-inventory",
+      "disabled": false
+    },
+    {
+      "id": "session-controller",
+      "name": "@deepseek-ai/dsh-api-session-controller",
+      "disabled": false
+    },
+    {
+      "id": "job-controller",
+      "name": "@deepseek-ai/dsh-api-job-controller",
+      "disabled": false
+    },
+    {
+      "id": "terminal-controller",
+      "name": "@deepseek-ai/dsh-api-terminal-controller",
+      "disabled": false
+    },
+    {
+      "id": "workspace-files",
+      "name": "@deepseek-ai/dsh-api-workspace-files",
+      "disabled": false
+    },
+    {
+      "id": "schedule",
+      "name": "@deepseek-ai/dsh-schedule",
+      "disabled": false
+    },
+    {
+      "id": "ui-settings-account",
+      "name": "@deepseek-ai/dsh-client-ui-settings-account",
+      "disabled": false
+    },
+    {
+      "id": "account-controller",
+      "name": "@deepseek-ai/dsh-api-account-controller",
+      "disabled": false
+    },
+    {
+      "id": "settings-controller",
+      "name": "@deepseek-ai/dsh-api-settings-controller",
+      "disabled": false
+    },
+    {
+      "id": "workspace-controller",
+      "name": "@deepseek-ai/dsh-api-workspace-controller",
+      "disabled": false
+    },
+    {
+      "id": "cordis-host-runner",
+      "name": "@deepseek-ai/dsh-cordis-host-runner",
+      "disabled": false
+    },
+    {
+      "id": "cordis-inspect-providers",
+      "name": "@deepseek-ai/dsh-tool-cordis/host",
+      "disabled": false
+    },
+    {
+      "id": "web-startup",
+      "name": "@deepseek-ai/dsh-web-app/startup",
+      "disabled": false
+    },
+    {
+      "id": "webserver",
+      "name": "@deepseek-ai/dsh-host-webserver",
+      "disabled": false
+    },
+    {
+      "id": "web-runtime",
+      "name": "@deepseek-ai/dsh-web-app",
+      "disabled": false
+    },
+    {
+      "id": "harness-dev-context",
+      "name": "@deepseek-ai/dsh-harness-dev-context",
+      "disabled": false
+    },
+    {
+      "id": "client-hmr",
+      "name": "@deepseek-ai/dsh-client-hmr",
+      "disabled": false
+    },
+    {
+      "id": "modules",
+      "name": "@deepseek-ai/dsh-client-modules",
+      "disabled": false
+    },
+    {
+      "id": "connection",
+      "name": "@deepseek-ai/dsh-client-connection",
+      "disabled": false
+    },
+    {
+      "id": "file-upload",
+      "name": "@deepseek-ai/dsh-client-file-upload",
+      "disabled": false
+    },
+    {
+      "id": "api-remotes",
+      "name": "@deepseek-ai/dsh-api-remotes",
+      "disabled": false
+    },
+    {
+      "id": "cordis-client-runner",
+      "name": "@deepseek-ai/dsh-cordis-client-runner",
+      "disabled": false
+    },
+    {
+      "id": "ui-theme",
+      "name": "@deepseek-ai/dsh-client-ui-theme",
+      "disabled": false
+    },
+    {
+      "id": "locale",
+      "name": "@deepseek-ai/dsh-client-locale",
+      "disabled": false
+    },
+    {
+      "id": "shortcuts",
+      "name": "@deepseek-ai/dsh-client-shortcuts",
+      "disabled": false
+    },
+    {
+      "id": "ui-shortcuts",
+      "name": "@deepseek-ai/dsh-client-ui-shortcuts",
+      "disabled": false
+    },
+    {
+      "id": "ui-layout",
+      "name": "@deepseek-ai/dsh-client-ui-layout",
+      "disabled": false
+    },
+    {
+      "id": "ui-renderer",
+      "name": "@deepseek-ai/dsh-client-ui-renderer",
+      "disabled": false
+    },
+    {
+      "id": "ui-session",
+      "name": "@deepseek-ai/dsh-client-ui-session",
+      "disabled": false
+    },
+    {
+      "id": "resources",
+      "name": "@deepseek-ai/dsh-client-resources",
+      "disabled": false
+    },
+    {
+      "id": "ui-sidebar",
+      "name": "@deepseek-ai/dsh-client-ui-sidebar",
+      "disabled": false
+    },
+    {
+      "id": "ui-sidebar-right",
+      "name": "@deepseek-ai/dsh-client-ui-sidebar-right",
+      "disabled": false
+    },
+    {
+      "id": "office-to-pdf",
+      "name": "@deepseek-ai/dsh-office-to-pdf",
+      "disabled": false
+    },
+    {
+      "id": "ui-sidebar-documentpreview",
+      "name": "@deepseek-ai/dsh-client-ui-sidebar-documentpreview",
+      "disabled": false
+    },
+    {
+      "id": "ui-sidebar-browser",
+      "name": "@deepseek-ai/dsh-client-ui-sidebar-browser",
+      "disabled": false,
+      "disabledExpression": {
+        "__jsExpr": "ctx.get('profileContext')?.name !== 'desktop'"
+      }
+    },
+    {
+      "id": "ui-sidebar-terminal",
+      "name": "@deepseek-ai/dsh-client-ui-sidebar-terminal",
+      "disabled": false
+    },
+    {
+      "id": "ui-sidebar-files",
+      "name": "@deepseek-ai/dsh-client-ui-sidebar-files",
+      "disabled": false
+    },
+    {
+      "id": "ui-settings",
+      "name": "@deepseek-ai/dsh-client-ui-settings",
+      "disabled": false
+    },
+    {
+      "id": "ui-settings-general",
+      "name": "@deepseek-ai/dsh-client-ui-settings-general",
+      "disabled": false
+    },
+    {
+      "id": "ui-settings-models",
+      "name": "@deepseek-ai/dsh-client-ui-settings-models",
+      "disabled": false
+    },
+    {
+      "id": "ui-plugin-manager",
+      "name": "@deepseek-ai/dsh-client-ui-plugin-manager",
+      "disabled": false
+    },
+    {
+      "id": "ui-settings-plugin-inventory",
+      "name": "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
+      "disabled": false
+    },
+    {
+      "id": "ui-conversation",
+      "name": "@deepseek-ai/dsh-client-ui-conversation",
+      "disabled": false
+    },
+    {
+      "id": "ui-approval",
+      "name": "@deepseek-ai/dsh-client-ui-approval",
+      "disabled": false
+    },
+    {
+      "id": "ui-chat",
+      "name": "@deepseek-ai/dsh-client-ui-chat",
+      "disabled": false
+    },
+    {
+      "id": "ui-brand-official",
+      "name": "@deepseek-ai/dsh-client-ui-brand-official",
+      "disabled": false
+    },
+    {
+      "id": "ui-attachment",
+      "name": "@deepseek-ai/dsh-client-ui-attachment",
+      "disabled": false
+    },
+    {
+      "id": "ui-tool",
+      "name": "@deepseek-ai/dsh-client-ui-tool",
+      "disabled": false
+    },
+    {
+      "id": "ui-cordis",
+      "name": "@deepseek-ai/dsh-client-ui-cordis",
+      "disabled": false
+    },
+    {
+      "id": "ui-deliverables",
+      "name": "@deepseek-ai/dsh-client-ui-deliverables",
+      "disabled": false
+    },
+    {
+      "id": "workspace-changes",
+      "name": "@deepseek-ai/dsh-workspace-changes",
+      "disabled": false
+    },
+    {
+      "id": "ui-workspace",
+      "name": "@deepseek-ai/dsh-client-ui-workspace",
+      "disabled": false
+    },
+    {
+      "id": "ui-workflow-run",
+      "name": "@deepseek-ai/dsh-client-ui-workflow-run",
+      "disabled": false
+    },
+    {
+      "id": "ui-input-trigger",
+      "name": "@deepseek-ai/dsh-client-ui-input-trigger",
+      "disabled": false
+    },
+    {
+      "id": "ui-commands",
+      "name": "@deepseek-ai/dsh-client-ui-commands",
+      "disabled": false
+    },
+    {
+      "id": "ui-skill",
+      "name": "@deepseek-ai/dsh-client-ui-skill",
+      "disabled": false
+    },
+    {
+      "id": "ui-subagent",
+      "name": "@deepseek-ai/dsh-client-ui-subagent",
+      "disabled": false
+    },
+    {
+      "id": "ui-reference",
+      "name": "@deepseek-ai/dsh-client-ui-reference",
+      "disabled": false
+    },
+    {
+      "id": "ui-secret-mask",
+      "name": "@deepseek-ai/dsh-client-ui-secret-mask",
+      "disabled": false
+    },
+    {
+      "id": "ui-jobs",
+      "name": "@deepseek-ai/dsh-client-ui-jobs",
+      "disabled": false
+    },
+    {
+      "id": "ui-schedule",
+      "name": "@deepseek-ai/dsh-client-ui-schedule",
+      "disabled": false
+    },
+    {
+      "id": "ui-goal",
+      "name": "@deepseek-ai/dsh-client-ui-goal",
+      "disabled": false
+    },
+    {
+      "id": "ui-message-feedback",
+      "name": "@deepseek-ai/dsh-client-ui-message-feedback",
+      "disabled": false
+    },
+    {
+      "id": "ui-model-selection",
+      "name": "@deepseek-ai/dsh-client-ui-model-selection",
+      "disabled": false
+    },
+    {
+      "id": "ui-deepseek-model-label-1017",
+      "name": "@deepseek-ai/dsh-client-ui-deepseek-model-label-1017",
+      "disabled": false
+    },
+    {
+      "id": "ui-permission",
+      "name": "@deepseek-ai/dsh-client-ui-permission-presets",
+      "disabled": false
+    },
+    {
+      "id": "ui-agent-preset",
+      "name": "@deepseek-ai/dsh-client-ui-agent-preset",
+      "disabled": false
+    },
+    {
+      "id": "ui-settings-session-log",
+      "name": "@deepseek-ai/dsh-client-ui-settings-session-log",
+      "disabled": false
+    },
+    {
+      "id": "ui-settings-plugins",
+      "name": "@deepseek-ai/dsh-client-ui-settings-plugins",
+      "disabled": false
+    },
+    {
+      "id": "ui-settings-shell",
+      "name": "@deepseek-ai/dsh-client-ui-settings-shell",
+      "disabled": false
+    },
+    {
+      "id": "ui-settings-agent-loop",
+      "name": "@deepseek-ai/dsh-client-ui-settings-agent-loop",
+      "disabled": false
+    },
+    {
+      "id": "ui-settings-subagent",
+      "name": "@deepseek-ai/dsh-client-ui-settings-subagent",
+      "disabled": false
+    },
+    {
+      "id": "ui-settings-web-search",
+      "name": "@deepseek-ai/dsh-client-ui-settings-web-search",
+      "disabled": false
+    },
+    {
+      "id": "ui-plan",
+      "name": "@deepseek-ai/dsh-client-ui-plan",
+      "disabled": false
+    },
+    {
+      "id": "ui-user-questions",
+      "name": "@deepseek-ai/dsh-client-ui-user-questions",
+      "disabled": false
+    },
+    {
+      "id": "ui-trajectory",
+      "name": "@deepseek-ai/dsh-client-ui-trajectory",
+      "disabled": false
+    },
+    {
+      "id": "agent-preset-registry",
+      "name": "@deepseek-ai/dsh-agent-preset-registry",
+      "disabled": false
+    },
+    {
+      "id": "preset-standard",
+      "name": "@deepseek-ai/dsh-agent-preset",
+      "disabled": false
+    },
+    {
+      "id": "preset-ptc",
+      "name": "@deepseek-ai/dsh-agent-preset",
+      "disabled": false
+    },
+    {
+      "id": "preset-minimal",
+      "name": "@deepseek-ai/dsh-agent-preset",
+      "disabled": false
+    },
+    {
+      "id": "preset-cordis",
+      "name": "@deepseek-ai/dsh-agent-preset",
+      "disabled": false
+    },
+    {
+      "id": "dsh-market",
+      "name": "dshmarket",
+      "disabled": false
+    },
+    {
+      "id": "web-ui-compat",
+      "name": "@linxin666/dsh-web-all",
+      "disabled": false
+    },
+    {
+      "id": "web-ui-settings",
+      "name": "@linxin666/dsh-web-all/settings",
+      "disabled": false
+    },
+    {
+      "id": "web-ui-plugin-manager",
+      "name": "@linxin666/dsh-web-all/plugin-manager",
+      "disabled": false
+    },
+    {
+      "id": "web-ui-market",
+      "name": "@linxin666/dsh-web-all/market",
+      "disabled": false
+    },
+    {
+      "id": "web-ui-task-board",
+      "name": "@linxin666/dsh-web-all/task-board",
+      "disabled": false
+    },
+    {
+      "id": "web-ui-task-board-github",
+      "name": "@linxin666/dsh-web-all/task-board-github",
+      "disabled": false
+    },
+    {
+      "id": "web-ui-git-graph",
+      "name": "@linxin666/dsh-web-all/git-graph",
+      "disabled": false
+    },
+    {
+      "id": "web-ui-remote-web-ui",
+      "name": "@linxin666/dsh-web-all/remote-web-ui",
+      "disabled": false
+    },
+    {
+      "id": "web-ui-update",
+      "name": "@linxin666/dsh-web-all/update",
+      "disabled": false
+    },
+    {
+      "id": "web-ui-ssh",
+      "name": "@linxin666/dsh-web-all/ssh",
+      "disabled": false
+    },
+    {
+      "id": "web-ui-liangshen",
+      "name": "@linxin666/dsh-web-all/liangshen",
+      "disabled": false
+    },
+    {
+      "id": "web-ui-skill-explorer",
+      "name": "@linxin666/dsh-web-all/skill-explorer",
+      "disabled": false
+    },
+    {
+      "id": "web-ui-usage",
+      "name": "@linxin666/dsh-web-all/usage",
+      "disabled": false
+    },
+    {
+      "id": "web-ui-session-archive",
+      "name": "@linxin666/dsh-web-all/session-archive",
+      "disabled": false
+    },
+    {
+      "id": "web-ui-model-capabilities",
+      "name": "@linxin666/dsh-web-all/model-capabilities",
+      "disabled": false
+    },
+    {
+      "id": "web-ui-i18n",
+      "name": "@linxin666/dsh-i18n",
+      "disabled": false
+    },
+    {
+      "id": "web-ui-community-plugins",
+      "name": "@linxin666/dsh-client-ui-community-plugins",
+      "disabled": false
+    },
+    {
+      "id": "web-ui-pet",
+      "name": "@linxin666/dsh-pet",
+      "disabled": false
+    },
+    {
+      "id": "web-ui-preset-center",
+      "name": "@linxin666/dsh-client-ui-preset-center",
+      "disabled": false
+    },
+    {
+      "id": "web-ui-skin-center",
+      "name": "@linxin666/dsh-client-ui-skin-center",
+      "disabled": false
+    },
+    {
+      "id": "agent-team",
+      "name": "@deepseek-ai/dsh-experimental-agent-team",
+      "disabled": false
+    },
+    {
+      "id": "tool-agent-team",
+      "name": "@deepseek-ai/dsh-experimental-tool-agent-team",
+      "disabled": false
+    },
+    {
+      "id": "ui-agent-team",
+      "name": "@deepseek-ai/dsh-experimental-client-ui-agent-team",
+      "disabled": false
+    },
+    {
+      "id": "auto-review",
+      "name": "@deepseek-ai/dsh-experimental-auto-review",
+      "disabled": false
+    },
+    {
+      "id": "dsh-undo",
+      "name": "dsh-undo-savepoint",
+      "disabled": false
+    },
+    {
+      "id": "modlens",
+      "name": "@liustack/modlens",
+      "disabled": false
+    },
+    {
+      "id": "cost-meter",
+      "name": "dsh-cost-meter",
+      "disabled": false
+    },
+    {
+      "id": "genui",
+      "name": "@changfenhuang/dsh-genui",
+      "disabled": false
+    },
+    {
+      "id": "ui-git-graph",
+      "name": "@linxin666/dsh-client-ui-git-graph",
+      "disabled": false
+    },
+    {
+      "id": "wallpaper-engine",
+      "name": "dsh-plugin-wallpaper-engine",
+      "disabled": false
+    },
+    {
+      "id": "dsh-approval-gate",
+      "name": "dsh-approval-gate",
+      "disabled": false
+    },
+    {
+      "id": "archify-skill-filesystem",
+      "name": "@deepseek-ai/dsh-skill-filesystem",
+      "disabled": false
+    },
+    {
+      "id": "dsh-rewind-plugin",
+      "name": "dsh-rewind-plugin",
+      "disabled": false
+    },
+    {
+      "id": "dsh-context",
+      "name": "dsh-context",
+      "disabled": false
+    },
+    {
+      "id": "dsh-whale-widget",
+      "name": "dsh-whale-widget",
+      "disabled": false
+    },
+    {
+      "id": "whale-pet",
+      "name": "dsh-plugin-whale-pet",
+      "disabled": false
+    },
+    {
+      "id": "drawai",
+      "name": "dsh-drawai",
+      "disabled": false
+    },
+    {
+      "id": "ui-usage-billing",
+      "name": "@kenz1117/dsh-ui-usage-billing",
+      "disabled": false
+    },
+    {
+      "id": "bili-native",
+      "name": "billion-context",
+      "disabled": false
+    },
+    {
+      "id": "ego-browser",
+      "name": "dsh-ego-browser",
+      "disabled": false
+    },
+    {
+      "id": "xmanrui-dsh-im",
+      "name": "@xmanrui/dsh-im",
+      "disabled": false
+    },
+    {
+      "id": "zotero",
+      "name": "dsh-zotero",
+      "disabled": false
+    },
+    {
+      "id": "ui-workbench",
+      "name": "@local/dsh-client-ui-workbench",
+      "disabled": false
+    },
+    {
+      "id": "browserskill",
+      "name": "@wxg-prc-cpg/browser-skill-dsh-plugin",
+      "disabled": false
+    },
+    {
+      "id": "dsh-mattpocock-skills-deck",
+      "name": "dsh-mattpocock-skills-deck",
+      "disabled": false
+    },
+    {
+      "id": "dsh-mattpocock-skills-deck-tools",
+      "name": "dsh-mattpocock-skills-deck/tools",
+      "disabled": false
+    },
+    {
+      "id": "skill-hub",
+      "name": "dsh-skill-hub",
+      "disabled": false
+    },
+    {
+      "id": "my-skill-manager",
+      "name": "dsh-my-skill-manager",
+      "disabled": false
+    },
+    {
+      "id": "knowledge",
+      "name": "@lemoncat7/dsh-knowledge",
+      "disabled": false
+    },
+    {
+      "id": "weknora",
+      "name": "@wxg-prc-cpg/dsh-weknora",
+      "disabled": false
+    },
+    {
+      "id": "treg-skill",
+      "name": "treg-dsh",
+      "disabled": false
+    },
+    {
+      "id": "treg-mcp",
+      "name": "@deepseek-ai/dsh-mcp-client",
+      "disabled": false,
+      "disabledExpression": {
+        "__jsExpr": "(process.env.TREG_TOKEN ?? '') === ''"
+      }
+    },
+    {
+      "id": "hindsight",
+      "name": "@vectorize-io/hindsight-coding-agents/dsh",
+      "disabled": false
+    },
+    {
+      "id": "openviking-memory-runtime",
+      "name": "@openviking/dsh-memory-plugin",
+      "disabled": false
+    },
+    {
+      "id": "dsh-infinite-gen-5",
+      "name": "dsh-infinite-gen-5",
+      "disabled": false
+    },
+    {
+      "id": "reme-memory-scope",
+      "name": "@deepseek-ai/cordis-plugin-group",
+      "disabled": false
+    }
+  ]
+}

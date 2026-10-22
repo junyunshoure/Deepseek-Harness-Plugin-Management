@@ -1,0 +1,12 @@
+{
+  "version": "1.0.0",
+  "tag": "v1.0.0",
+  "name": "DeepSeek Harness 配置包 正式版 v1.0.0",
+  "channel": "stable",
+  "prerelease": false,
+  "snapshotDate": "2026-10-22",
+  "platform": "win32",
+  "arch": "x64",
+  "dshKernelVersion": "0.2.1-rc.2",
+  "migrationId": "plugins-20261022-stable"
+}
