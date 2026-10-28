@@ -128,7 +128,7 @@ function locate(desktop) {
   return { exe, app, cli, version: readJson(bootPkg).version };
 }
 
-function findDesktopDir(given) {
+function findDesktopDir(given, required = true) {
   if (given && fs.existsSync(given)) return path.resolve(given);
   const cands = [
     path.join(process.env.LOCALAPPDATA || '', 'Programs', 'DeepSeek Harness'),
@@ -136,6 +136,7 @@ function findDesktopDir(given) {
     path.join(os.homedir(), 'AppData', 'Local', 'Programs', 'DeepSeek Harness'),
   ].filter(Boolean);
   for (const c of cands) if (fs.existsSync(path.join(c, 'DeepSeek Harness.exe'))) return c;
+  if (!required) return '';
   die('没有自动找到 DeepSeek Harness 安装目录。请用 INSTALL.cmd 的“手动指定目录”方式，或加 --desktop-dir 参数。');
 }
 
@@ -166,8 +167,13 @@ function writeResult(payload) {
   // ---------- 校验包 ----------
   if (!flag('--skip-verify')) verifyFiles(ROOT, flag('--check-only'));
   if (flag('--check-only')) {
-    const d = locate(findDesktopDir(opt('--desktop-dir')));
-    log('✓ 目标内核版本：' + d.version);
+    const target = findDesktopDir(opt('--desktop-dir'), false);
+    if (target) {
+      const d = locate(target);
+      log('✓ 目标内核版本：' + d.version);
+    } else {
+      log('✓ 没有找到 DeepSeek Harness（不影响包校验；安装时再指定安装目录即可）。');
+    }
     log('✓ 本包版本：' + spec.version + '，插件包数：' + spec.packages.length + '，技能：' + (spec.skills || []).length);
     log('✓ 只做校验，未改动任何文件。');
     return;
