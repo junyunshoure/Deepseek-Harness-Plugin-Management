@@ -1,0 +1,220 @@
+# 上下文管理 (context) 附录
+
+本文件是精确参数与原始规范，只在需要具体字段时读取。
+
+## 工具：acp_cache
+
+Prompt-cache reconciliation: grand ledger (total input/cached/output, overall hit rate) with every request's miss split into new content / compression re-pay / upstream-ttl-or-client-rewrite (unattributed stable-prefix misses), plus per-fold economics (breakeven turns vs measured cadence). Defaults to a compact summary (totals + verdicts + anomalies only); pass detail="full" for every fold and line item. Read-only. Call when asked about cache hits, cache invalidation, or what compression costs. Calling convention: if this environment only allows `run_code` to be called directly (code-mode/PTC harness), call this tool from inside a run_code program via the harness's generated SDK; otherwise call it directly as a tool.
+
+参数 JSON Schema：
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "detail": {
+      "type": "string",
+      "enum": [
+        "summary",
+        "full"
+      ],
+      "description": "\"summary\" (default): totals, verdicts, notable folds, anomalous requests only. \"full\": every retained fold and line item."
+    }
+  }
+}
+```
+
+## 工具：acp_read_original_image
+
+Read the ORIGINAL full-resolution image of a message whose picture was downscaled before reaching you. Beside each shrunken image there is a [bili] note quoting its mNNNNN ref and both sizes — pass that ref here. The original bytes are returned as an image attached to this result. The original can be much larger than the downscaled copy, so call this only when you actually need full-resolution detail (small text, colors, pixel alignment); the downscaled version is enough for most work.
+
+参数 JSON Schema：
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "ref": {
+      "type": "string",
+      "description": "The mNNNNN message ref quoted in the [bili] downsample note beside the shrunken image."
+    }
+  },
+  "required": [
+    "ref"
+  ]
+}
+```
+
+## 工具：acp_status
+
+Show context usage and compressible ranges. No args = overview. Use to find what to compress next. Calling convention: if this environment only allows `run_code` to be called directly (code-mode/PTC harness), call this tool from inside a run_code program via the harness's generated SDK; otherwise call it directly as a tool.
+
+参数 JSON Schema：
+
+```json
+{
+  "type": "object",
+  "properties": {}
+}
+```
+
+## 工具：compress
+
+Replace consumed conversation ranges with self-contained summaries you write, identified by their refs. content = ONE plain string holding ALL ranges — each block starts with its 'm00150–m00220 optional topic' header line followed by that block's summary (a valid JSON string — internal quotes \", newlines \n; a JSON-encoded array as that string is also accepted for gateways that stringify arrays). Batch multiple ranges into ONE call — do not split into one call per range. Use when content is genuinely consumed. Calling convention: if this environment only allows `run_code` to be called directly (code-mode/PTC harness), call this tool from inside a run_code program via the harness's generated SDK; otherwise call it directly as a tool. Context management is provided by billion-context — report billion-context problems at github.com/ranxianglei/billion-context/issues.
+
+参数 JSON Schema：
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "topic": {
+      "type": "string",
+      "description": "Optional short title for the compressed range"
+    },
+    "content": {
+      "description": "ONE plain string holding ALL ranges to compress — each block starts with its 'm00150–m00220 optional topic' header line followed by that block's summary markdown (a valid JSON string: internal quotes \\\" and newlines \\n; a JSON-encoded array as that string is also accepted). Batch multiple ranges into ONE call — do not split into one call per range.",
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "string",
+                "description": "Line form: first line 'm00150–m00220 optional topic', remaining lines the summary markdown, verbatim (a JSON string: quotes \\\", newlines \\n). A single string may carry MULTIPLE ranges — each block starts with its own refs header line"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "topic": {
+                    "type": "string"
+                  },
+                  "startId": {
+                    "type": "string",
+                    "description": "mNNNNN ref at the start of the range"
+                  },
+                  "endId": {
+                    "type": "string",
+                    "description": "mNNNNN ref at the end of the range"
+                  },
+                  "startRef": {
+                    "type": "string",
+                    "description": "Alternate spelling of startId"
+                  },
+                  "endRef": {
+                    "type": "string",
+                    "description": "Alternate spelling of endId"
+                  },
+                  "summary": {
+                    "type": "string",
+                    "description": "Self-contained summary replacing the range"
+                  }
+                },
+                "required": [
+                  "startId",
+                  "endId",
+                  "summary"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "topic": {
+                    "type": "string"
+                  },
+                  "startId": {
+                    "type": "string",
+                    "description": "mNNNNN ref at the start of the range"
+                  },
+                  "endId": {
+                    "type": "string",
+                    "description": "mNNNNN ref at the end of the range"
+                  },
+                  "startRef": {
+                    "type": "string",
+                    "description": "Alternate spelling of startId"
+                  },
+                  "endRef": {
+                    "type": "string",
+                    "description": "Alternate spelling of endId"
+                  },
+                  "summary": {
+                    "type": "string",
+                    "description": "Self-contained summary replacing the range"
+                  }
+                },
+                "required": [
+                  "startRef",
+                  "endRef",
+                  "summary"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "type": "string"
+        }
+      ]
+    }
+  }
+}
+```
+
+## 工具：decompress
+
+Restores previously compressed content. Use when you need exact details lost in compression. By default restores one tier up. Use full:true for all the way to original messages. Use toFile to write to file instead of inflating context. Pass imageRef (an mNNNNN ref) to restore a stripped/folded image's original pixels to a file you open with the read tool; imageRef:"list" shows what is restorable. Calling convention: if this environment only allows `run_code` to be called directly (code-mode/PTC harness), call this tool from inside a run_code program via the harness's generated SDK; otherwise call it directly as a tool.
+
+参数 JSON Schema：
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "blockId": {
+      "type": "string",
+      "description": "Block ID to decompress (e.g. b5)"
+    },
+    "toFile": {
+      "type": "string",
+      "description": "Optional: write content to file instead of context"
+    },
+    "full": {
+      "type": "boolean",
+      "description": "Restore all the way to original messages"
+    },
+    "imageRef": {
+      "type": "string",
+      "description": "Optional mNNNNN message ref whose IMAGE payload you want restored (an image that was stripped or folded away). Pass \"list\" to enumerate every image currently restorable. Restored images are written to host-readable files and their paths returned — open them with the read tool. Independent of blockId/range and of CCR."
+    }
+  },
+  "required": [
+    "blockId"
+  ]
+}
+```
+
+## 工具：search_context
+
+Search through compressed block summaries by keyword. Use BEFORE decompressing to find the right block. Calling convention: if this environment only allows `run_code` to be called directly (code-mode/PTC harness), call this tool from inside a run_code program via the harness's generated SDK; otherwise call it directly as a tool.
+
+参数 JSON Schema：
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "query": {
+      "type": "string",
+      "description": "Search query"
+    },
+    "limit": {
+      "type": "number",
+      "description": "Max results (default 5)"
+    }
+  },
+  "required": [
+    "query"
+  ]
+}
+```

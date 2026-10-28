@@ -1,0 +1,99 @@
+{
+ "schema": 1,
+ "generatedAt": "2026-10-28T12:45:01.175Z",
+ "pack": "DSH-Plugins-v2.0.0",
+ "version": "2.0.0",
+ "kernel": {
+  "required": ">=0.2.0 <0.3.0",
+  "recorded": "0.2.1-rc.2",
+  "note": "内核 0.2.x 均可安装；与 recorded 不同时会提示，并建议交给 AI agent 按 docs/AI-agent-适配指南.md 自主适配。"
+ },
+ "platform": "win32/x64",
+ "summary": {
+  "total": 14,
+  "passed": 14,
+  "failed": 0
+ },
+ "checks": [
+  {
+   "name": "32 个插件包存在且版本对齐",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "name": "启停状态 bundle 存在",
+   "ok": true,
+   "detail": "dsh-migration-plugin-state"
+  },
+  {
+   "name": "技能 6 个",
+   "ok": true,
+   "detail": [
+    "dsh/cli-anything",
+    "dsh/cli-hub-meta-skill",
+    "dsh/solidworks-automation",
+    "dsh/writing-for-agents",
+    "agents/hindsight-coding-agent",
+    "agents/reverse-engineer-anything"
+   ]
+  },
+  {
+   "name": "能力手册 47 篇 + always.json + _index.md",
+   "ok": true,
+   "detail": "48 个文件"
+  },
+  {
+   "name": "配置骨架齐全",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "name": "占位符已就位（≥8 处）",
+   "ok": true,
+   "detail": "8 处"
+  },
+  {
+   "name": "无密钥与本机绝对路径泄漏",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "name": "不含 .credentials.yaml",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "安装器与 6 个入口齐全",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "name": "9 份文档齐全且非空",
+   "ok": true,
+   "detail": {
+    "missingDocs": [],
+    "emptyDocs": []
+   }
+  },
+  {
+   "name": "macOS 通道 4 个文件",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "name": "payload 内无符号链接",
+   "ok": true,
+   "detail": "links=0"
+  },
+  {
+   "name": "payload 文件数 ≥ 快照（23168）",
+   "ok": true,
+   "detail": "实际 23171 个 / 503 MB"
+  },
+  {
+   "name": "checksums.json 覆盖 23249 个文件且无悬空条目",
+   "ok": true,
+   "detail": "悬空 0"
+  }
+ ]
+}

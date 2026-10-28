@@ -1,0 +1,26 @@
+# Hindsight 项目记忆 (hindsight)
+
+查询项目知识页、历史决定与实施经验。
+
+加载方式：feature_profiles(action="load", id="hindsight")；返回 nextOffset 时继续读取。读完后本会话显示该功能原始工具。
+
+常开处理：后台服务保持运行；最小检索/读取入口常驻。
+
+## 可用工具
+
+- hindsight_capture_initiative：Record a new feature or initiative as a tracked knowledge…
+- hindsight_diagnose：Report safe Hindsight runtime diagnostics for this coding-…
+- hindsight_ingest_document：Save an external document or a block of durable notes/find…
+- hindsight_list_knowledge_pages：List this repository's Hindsight knowledge pages — curated…
+- hindsight_read_knowledge_page：Read the full content of one knowledge page by its id (fro…
+- hindsight_reflect：Deep memory reasoning…
+- hindsight_search_knowledge_pages：Search this repository's Hindsight knowledge pages for con…
+- hindsight_sync_status：Report whether this repo's memory bank is in sync…
+
+## 原始规范要点
+
+- hindsight:TOOL_GUIDE（详见附录）
+
+## 完整参数与规范
+
+附录：feature_profiles(action="load", id="hindsight.appendix")。参数逐项、JSON Schema 与完整原始规范都在附录，需要精确参数时读它。

@@ -1,0 +1,310 @@
+{
+  "schema": 2,
+  "id": "dsh-plugins-pack-v2",
+  "channel": "stable-v2",
+  "version": "2.0.0",
+  "kernel": {
+    "required": ">=0.2.0 <0.3.0",
+    "recorded": "0.2.1-rc.2",
+    "note": "内核 0.2.x 均可安装；与 recorded 不同时会提示，并建议交给 AI agent 按 docs/AI-agent-适配指南.md 自主适配。"
+  },
+  "platform": "win32",
+  "arch": "x64",
+  "profile": "desktop",
+  "builtinBundles": [
+    "@deepseek-ai/dsh-base",
+    "@deepseek-ai/dsh-web-app",
+    "@deepseek-ai/dsh-experimental-agent-team-profile",
+    "@deepseek-ai/dsh-experimental-auto-review"
+  ],
+  "profileBundles": [
+    "@deepseek-ai/dsh-base",
+    "@deepseek-ai/dsh-web-app",
+    "dshmarket",
+    "@linxin666/dsh-web-all",
+    "@deepseek-ai/dsh-experimental-agent-team-profile",
+    "@deepseek-ai/dsh-experimental-auto-review",
+    "dsh-undo-savepoint",
+    "@liustack/modlens",
+    "dsh-cost-meter",
+    "@changfenhuang/dsh-genui",
+    "@linxin666/dsh-client-ui-git-graph",
+    "dsh-plugin-wallpaper-engine",
+    "dsh-approval-gate",
+    "@tt-a1i/archify-dsh",
+    "dsh-rewind-plugin",
+    "dsh-context",
+    "dsh-whale-widget",
+    "dsh-drawai",
+    "@kenz1117/dsh-ui-usage-billing",
+    "billion-context",
+    "dsh-ego-browser",
+    "@xmanrui/dsh-im",
+    "dsh-zotero",
+    "@local/dsh-client-ui-workbench",
+    "@wxg-prc-cpg/browser-skill-dsh-plugin",
+    "dsh-mattpocock-skills-deck",
+    "@lemoncat7/dsh-knowledge",
+    "@wxg-prc-cpg/dsh-weknora",
+    "treg-dsh",
+    "@vectorize-io/hindsight-coding-agents",
+    "dsh-infinite-gen-5",
+    "dsh-purge",
+    "dsh-feature-profiles",
+    "dsh-memory-fusion",
+    "dsh-skill-fusion",
+    "dsh-ollama"
+  ],
+  "stateBundle": "dsh-migration-plugin-state",
+  "packages": [
+    {
+      "name": "@changfenhuang/dsh-genui",
+      "version": "0.11.4",
+      "install": true,
+      "kind": "registry"
+    },
+    {
+      "name": "@kenz1117/dsh-ui-usage-billing",
+      "version": "1.4.34",
+      "install": true,
+      "kind": "registry"
+    },
+    {
+      "name": "@lemoncat7/dsh-knowledge",
+      "version": "2.15.3",
+      "install": true,
+      "kind": "registry"
+    },
+    {
+      "name": "@linxin666/dsh-client-ui-git-graph",
+      "version": "0.4.5",
+      "install": true,
+      "kind": "registry"
+    },
+    {
+      "name": "@linxin666/dsh-web-all",
+      "version": "0.4.6",
+      "install": true,
+      "kind": "registry"
+    },
+    {
+      "name": "@liustack/modlens",
+      "version": "3.26.6",
+      "install": true,
+      "kind": "registry"
+    },
+    {
+      "name": "@local/dsh-client-ui-workbench",
+      "version": "0.1.0",
+      "install": true,
+      "kind": "local-link"
+    },
+    {
+      "name": "@tt-a1i/archify-dsh",
+      "version": "1.0.0",
+      "install": true,
+      "kind": "registry"
+    },
+    {
+      "name": "@vectorize-io/hindsight-coding-agents",
+      "version": "0.8.2",
+      "install": true,
+      "kind": "registry"
+    },
+    {
+      "name": "@wxg-prc-cpg/browser-skill-dsh-plugin",
+      "version": "0.3.3",
+      "install": true,
+      "kind": "registry"
+    },
+    {
+      "name": "@wxg-prc-cpg/dsh-weknora",
+      "version": "0.1.0",
+      "install": true,
+      "kind": "registry"
+    },
+    {
+      "name": "@xmanrui/dsh-im",
+      "version": "4.39.0",
+      "install": true,
+      "kind": "registry"
+    },
+    {
+      "name": "billion-context",
+      "version": "0.1.208",
+      "install": true,
+      "kind": "registry"
+    },
+    {
+      "name": "dsh-approval-gate",
+      "version": "0.5.0",
+      "install": true,
+      "kind": "registry"
+    },
+    {
+      "name": "dsh-context",
+      "version": "0.72.0",
+      "install": true,
+      "kind": "registry"
+    },
+    {
+      "name": "dsh-cost-meter",
+      "version": "1.8.35",
+      "install": true,
+      "kind": "registry"
+    },
+    {
+      "name": "dsh-drawai",
+      "version": "0.2.7",
+      "install": true,
+      "kind": "registry"
+    },
+    {
+      "name": "dsh-ego-browser",
+      "version": "0.8.6",
+      "install": true,
+      "kind": "registry"
+    },
+    {
+      "name": "dsh-feature-profiles",
+      "version": "0.1.0",
+      "install": true,
+      "kind": "local-link"
+    },
+    {
+      "name": "dsh-infinite-gen-5",
+      "version": "1.1.0",
+      "install": true,
+      "kind": "registry"
+    },
+    {
+      "name": "dsh-mattpocock-skills-deck",
+      "version": "1.9.0-beta.8",
+      "install": true,
+      "kind": "registry"
+    },
+    {
+      "name": "dsh-memory-fusion",
+      "version": "1.0.0",
+      "install": true,
+      "kind": "local-link"
+    },
+    {
+      "name": "dsh-plugin-wallpaper-engine",
+      "version": "1.3.1",
+      "install": true,
+      "kind": "registry"
+    },
+    {
+      "name": "dsh-purge",
+      "version": "3.0.0",
+      "install": true,
+      "kind": "local-link"
+    },
+    {
+      "name": "dsh-rewind-plugin",
+      "version": "0.15.3",
+      "install": true,
+      "kind": "registry"
+    },
+    {
+      "name": "dsh-skill-fusion",
+      "version": "1.0.2",
+      "install": true,
+      "kind": "local-link"
+    },
+    {
+      "name": "dsh-ollama",
+      "version": "0.1.0",
+      "install": true,
+      "kind": "local-link"
+    },
+    {
+      "name": "dsh-undo-savepoint",
+      "version": "0.4.9",
+      "install": true,
+      "kind": "registry"
+    },
+    {
+      "name": "dsh-whale-widget",
+      "version": "0.4.2",
+      "install": true,
+      "kind": "registry"
+    },
+    {
+      "name": "dsh-zotero",
+      "version": "0.12.1",
+      "install": true,
+      "kind": "registry"
+    },
+    {
+      "name": "dshmarket",
+      "version": "1.66.28",
+      "install": true,
+      "kind": "registry"
+    },
+    {
+      "name": "treg-dsh",
+      "version": "0.27.0",
+      "install": true,
+      "kind": "registry"
+    }
+  ],
+  "skills": [
+    {
+      "name": "cli-anything",
+      "tier": "dsh",
+      "target": "~/.dsh/skills"
+    },
+    {
+      "name": "cli-hub-meta-skill",
+      "tier": "dsh",
+      "target": "~/.dsh/skills"
+    },
+    {
+      "name": "solidworks-automation",
+      "tier": "dsh",
+      "target": "~/.dsh/skills"
+    },
+    {
+      "name": "writing-for-agents",
+      "tier": "dsh",
+      "target": "~/.dsh/skills"
+    },
+    {
+      "name": "hindsight-coding-agent",
+      "tier": "agents",
+      "target": "~/.agents/skills"
+    },
+    {
+      "name": "reverse-engineer-anything",
+      "tier": "agents",
+      "target": "~/.agents/skills"
+    }
+  ],
+  "featureProfiles": {
+    "source": "config/feature-profiles",
+    "count": 48,
+    "target": "profile/feature-profiles"
+  },
+  "services": {
+    "manifest": "payload/services/manifest.json",
+    "required": false,
+    "installer": "SETUP-SERVICES.cmd"
+  },
+  "modes": {
+    "new": "仅允许空壳 profile（没有第三方 bundle / 依赖）",
+    "merge": "只补缺失，不覆盖已存在的同名包（默认推荐）",
+    "backup": "全部备份后覆盖成本包版本"
+  },
+  "docs": {
+    "readme": "README.md",
+    "manual": "docs/使用说明书.md",
+    "features": "docs/新功能说明_v2.0.0.md",
+    "config": "docs/配置参考.md",
+    "faq": "docs/常见问题.md",
+    "services": "docs/服务部署指南.md",
+    "aiAgent": "docs/AI-agent-适配指南.md",
+    "macos": "macos/INSTALL-MAC.md"
+  }
+}

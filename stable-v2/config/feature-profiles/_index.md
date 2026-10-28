@@ -1,0 +1,77 @@
+# 功能 profile 索引
+默认只声明功能；先理解项目，再读取需要的独立手册。常开服务保留最小入口。
+选法：拿项目特征对一下「典型场景」，命中就直接读那一份，不要通读全部。
+常开清单由 catalog 默认值加 C:\Users\dengh\.dsh\profiles\desktop\feature-profiles\always.json 决定（格式：{"always":["web"],"off":["zotero"]}）；当前常开：context、core、goals、hindsight、knowledge、openviking、reme、skills。
+- [context · 上下文管理](./context.md)（常开最小入口）：长对话压缩、恢复、上下文用量与缓存核对。
+  - 典型场景：上下文吃紧、要压缩或回看被压内容
+  - 大件拆分：快速开始在本页，完整参数见 [附录](./context.appendix.md)
+- [core · 基础执行](./core.md)（常开最小入口）：项目文件读写、搜索、命令执行、任务进度、交付与后台作业。
+  - 典型场景：改代码、查文件、跑命令
+  - 大件拆分：快速开始在本页，完整参数见 [附录](./core.appendix.md)
+- [deck · ISSUE 与地图](./deck.md)：管理当前工作区选定后端中的 ISSUE、依赖与进度。
+  - 典型场景：维护 ISSUE、依赖关系与进度
+  - 大件拆分：快速开始在本页，完整参数见 [附录](./deck.appendix.md)
+- [delegation · 委派与 Agent Teams](./delegation.md)：并行子任务、队友协作与共享任务板。
+  - 典型场景：可并行拆分或需要多 agent 协作
+  - 大件拆分：快速开始在本页，完整参数见 [附录](./delegation.appendix.md)
+- [drawai · DrawAI 画布](./drawai.md)：读取和编辑当前 drawio 画布、布局及导出。
+  - 典型场景：改 .drawio 画布、流程图
+- [ego-browser · 独立浏览器](./ego-browser.md)：持久浏览器会话、网页交互、抓取与下载。
+  - 典型场景：独立开浏览器抓页面或下载文件
+  - 大件拆分：快速开始在本页，完整参数见 [附录](./ego-browser.appendix.md)
+- [extension-fact · extension-fact](./extension-fact.md)：当前运行时扩展提供的功能。
+  - 典型场景：当前运行时扩展提供的能力
+- [extension-memory · extension-memory](./extension-memory.md)：当前运行时扩展提供的功能。
+  - 典型场景：当前运行时扩展提供的能力
+- [extension-ralph · extension-ralph](./extension-ralph.md)：当前运行时扩展提供的功能。
+  - 典型场景：当前运行时扩展提供的能力
+- [extension-str · extension-str](./extension-str.md)：当前运行时扩展提供的功能。
+  - 典型场景：当前运行时扩展提供的能力
+- [extension-tool · extension-tool](./extension-tool.md)：当前运行时扩展提供的功能。
+  - 典型场景：当前运行时扩展提供的能力
+- [genui · 对话交互界面](./genui.md)：展示交互卡片、表格、图表、表单及可视化。
+  - 典型场景：回复要出表格、图表或交互卡片
+- [goals · 持久目标](./goals.md)（常开最小入口）：持续执行较长任务并记录完成条件。
+  - 典型场景：跨多轮的长任务要持续推进
+- [hindsight · Hindsight 项目记忆](./hindsight.md)（常开最小入口）：查询项目知识页、历史决定与实施经验。
+  - 典型场景：要查本仓库的历史决定或为何这样写
+  - 大件拆分：快速开始在本页，完整参数见 [附录](./hindsight.appendix.md)
+- [im · 即时消息文件交付](./im.md)：向当前已启用的即时消息交付通道登记文件。
+  - 典型场景：把文件投递到 IM 通道
+- [knowledge · 知识库与笔记](./knowledge.md)（常开最小入口）：检索已挂载知识库，读取笔记并按既有确认流程编辑。
+  - 典型场景：答案在已挂载知识库或笔记里
+  - 大件拆分：快速开始在本页，完整参数见 [附录](./knowledge.appendix.md)
+- [mcp · 其他 MCP 资源](./mcp.md)：按服务名发现和读取已连接的 MCP 资源。
+  - 典型场景：读取已连接 MCP 服务的资源
+- [openviking · OpenViking](./openviking.md)（常开最小入口）：持久资料、经验记忆、共享技能与资源检索。
+  - 典型场景：找长期资料、共享经验、跨会话资源
+  - 大件拆分：快速开始在本页，完整参数见 [附录](./openviking.appendix.md)
+- [reme · ReMe 记忆](./reme.md)（常开最小入口）：检索个人历史、偏好、决定与待办；后台自动整理记忆。
+  - 典型场景：涉及机主过去的事、偏好、待办
+- [reverse · IG5 逆向](./reverse.md)：二进制静态分析、反编译及证据驱动的样本研究。
+  - 典型场景：分析二进制、样本、脱壳或去混淆
+  - 大件拆分：快速开始在本页，完整参数见 [附录](./reverse.appendix.md)
+- [schedule · 提醒](./schedule.md)：设置、查询、修改和删除定时提醒。
+  - 典型场景：要定时提醒
+  - 大件拆分：快速开始在本页，完整参数见 [附录](./schedule.appendix.md)
+- [skills · 技能目录](./skills.md)（常开最小入口）：发现任务适用技能，按需读取技能正文。
+  - 典型场景：任务命中某个技能的适用场景
+- [ssh · SSH 远程执行](./ssh.md)：连接已配置主机，执行命令、传文件与建立隧道。
+  - 典型场景：目标在已配置的远程主机上
+- [system-maintenance · 本地维护](./system-maintenance.md)：当前安装提供的其他运行时维护工具。
+  - 典型场景：清理或维护本地运行时
+- [task-board · 任务看板](./task-board.md)：管理和执行 Host 任务、排程与 GitHub 问题协作。
+  - 典型场景：走 Host 任务板或 GitHub 问题协作
+  - 大件拆分：快速开始在本页，完整参数见 [附录](./task-board.appendix.md)
+- [undo · 快照与回退](./undo.md)：保存、检查和恢复 DSH 配置、插件与会话文件变更。
+  - 典型场景：改错配置、要撤销或回退改动
+  - 大件拆分：快速开始在本页，完整参数见 [附录](./undo.appendix.md)
+- [vision · 图像理解](./vision.md)：读取模型当前看不到的图片并提取文字与布局证据。
+  - 典型场景：要看图、读图中文字或布局
+- [web · 联网检索](./web.md)：搜索互联网并读取指定网页。
+  - 典型场景：要外部或最新信息
+- [weknora · WeKnora 检索](./weknora.md)：查询组织资料的原文片段及带引用综合回答。
+  - 典型场景：答案在组织资料里
+- [zotero · Zotero 文献](./zotero.md)：按用户要求检索本地文献、注释、附件并导出引用。
+  - 典型场景：机主明确要求文献、注释或引用
+  - 大件拆分：快速开始在本页，完整参数见 [附录](./zotero.appendix.md)

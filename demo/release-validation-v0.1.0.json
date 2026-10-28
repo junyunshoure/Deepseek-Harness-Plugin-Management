@@ -1,0 +1,14 @@
+{
+  "version": "0.1.0-demo.1",
+  "prerelease": true,
+  "archive": "DSH-Plugins-Demo-v0.1.0-demo.1-Windows-x64.zip",
+  "archiveBytes": 136297030,
+  "sha256": "97de54e354d0ae9e1f31aacc2c13ea0ea4331e0c2323c1e90f09af4ab7935786",
+  "verifiedFiles": 10339,
+  "archiveFiles": 10340,
+  "originalSnapshotSha256": "60278d4e193ae8b50b88cf8ad745a513d8346dbefbf0ba49a6acabc8e75a3253",
+  "installerCodeUnchanged": true,
+  "originalSnapshotInstallValidation": "passed in isolated DSH_HOME through official Desktop CLI; verified 20 installed packages and 233 composed rows",
+  "physicalSecondComputerGuiValidation": false,
+  "reportScope": "local package validation; published files are available in this repository's v0.1.0-demo.1 Release"
+}

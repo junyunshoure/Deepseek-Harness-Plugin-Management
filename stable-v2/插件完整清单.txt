@@ -1,0 +1,138 @@
+﻿DeepSeek Harness 插件整合包 v2.0.0 —— 插件完整清单
+生成时间：2026-10-28T12:28:14.272Z
+内核版本（构建基准）：0.2.1-rc.2
+bundle 数量：36    插件条目总数：256
+==============================================================================
+
+[01] @deepseek-ai/dsh-base  @unknown  (内核内置，条目 0，停用 0)
+
+[02] @deepseek-ai/dsh-web-app  @unknown  (内核内置，条目 2，停用 0)
+     √ web-startup  ←  @deepseek-ai/dsh-web-app/startup
+     √ web-runtime  ←  @deepseek-ai/dsh-web-app
+
+[03] dshmarket  @1.66.28  (社区插件，条目 1，停用 0)
+     √ dsh-market  ←  dshmarket
+
+[04] @linxin666/dsh-web-all  @0.4.6  (社区插件，条目 15，停用 1)
+     √ web-ui-compat  ←  @linxin666/dsh-web-all
+     √ web-ui-settings  ←  @linxin666/dsh-web-all/settings
+     √ web-ui-plugin-manager  ←  @linxin666/dsh-web-all/plugin-manager
+     √ web-ui-market  ←  @linxin666/dsh-web-all/market
+     √ web-ui-task-board  ←  @linxin666/dsh-web-all/task-board
+     √ web-ui-task-board-github  ←  @linxin666/dsh-web-all/task-board-github
+     √ web-ui-git-graph  ←  @linxin666/dsh-web-all/git-graph
+     √ web-ui-remote-web-ui  ←  @linxin666/dsh-web-all/remote-web-ui
+     √ web-ui-update  ←  @linxin666/dsh-web-all/update
+     √ web-ui-ssh  ←  @linxin666/dsh-web-all/ssh
+     √ web-ui-liangshen  ←  @linxin666/dsh-web-all/liangshen
+     × web-ui-skill-explorer  ←  @linxin666/dsh-web-all/skill-explorer
+     √ web-ui-usage  ←  @linxin666/dsh-web-all/usage
+     √ web-ui-session-archive  ←  @linxin666/dsh-web-all/session-archive
+     √ web-ui-model-capabilities  ←  @linxin666/dsh-web-all/model-capabilities
+
+[05] @deepseek-ai/dsh-experimental-agent-team-profile  @unknown  (内核内置，条目 0，停用 0)
+
+[06] @deepseek-ai/dsh-experimental-auto-review  @unknown  (内核内置，条目 1，停用 0)
+     √ auto-review  ←  @deepseek-ai/dsh-experimental-auto-review
+
+[07] dsh-undo-savepoint  @0.4.9  (社区插件，条目 1，停用 0)
+     √ dsh-undo  ←  dsh-undo-savepoint
+
+[08] @liustack/modlens  @3.26.6  (社区插件，条目 1，停用 0)
+     √ modlens  ←  @liustack/modlens
+
+[09] dsh-cost-meter  @1.8.35  (社区插件，条目 1，停用 0)
+     √ cost-meter  ←  dsh-cost-meter
+
+[10] @changfenhuang/dsh-genui  @0.11.4  (社区插件，条目 1，停用 0)
+     √ genui  ←  @changfenhuang/dsh-genui
+
+[11] @linxin666/dsh-client-ui-git-graph  @0.4.5  (社区插件，条目 1，停用 0)
+     √ ui-git-graph  ←  @linxin666/dsh-client-ui-git-graph
+
+[12] dsh-plugin-wallpaper-engine  @1.3.1  (社区插件，条目 1，停用 0)
+     √ wallpaper-engine  ←  dsh-plugin-wallpaper-engine
+
+[13] dsh-approval-gate  @0.5.0  (社区插件，条目 1，停用 0)
+     √ dsh-approval-gate  ←  dsh-approval-gate
+
+[14] @tt-a1i/archify-dsh  @1.0.0  (社区插件，条目 0，停用 0)
+
+[15] dsh-rewind-plugin  @0.15.3  (社区插件，条目 1，停用 0)
+     √ dsh-rewind-plugin  ←  dsh-rewind-plugin
+
+[16] dsh-context  @0.72.0  (社区插件，条目 1，停用 0)
+     √ dsh-context  ←  dsh-context
+
+[17] dsh-whale-widget  @0.4.2  (社区插件，条目 1，停用 0)
+     √ dsh-whale-widget  ←  dsh-whale-widget
+
+[18] dsh-drawai  @0.2.7  (社区插件，条目 1，停用 0)
+     √ drawai  ←  dsh-drawai
+
+[19] @kenz1117/dsh-ui-usage-billing  @1.4.34  (社区插件，条目 1，停用 0)
+     √ ui-usage-billing  ←  @kenz1117/dsh-ui-usage-billing
+
+[20] billion-context  @0.1.208  (社区插件，条目 2，停用 0)
+     √ bili-native  ←  billion-context
+     √ bili-compaction-gate  ←  billion-context/dsh-compaction-gate
+
+[21] dsh-ego-browser  @0.8.6  (社区插件，条目 1，停用 0)
+     √ ego-browser  ←  dsh-ego-browser
+
+[22] @xmanrui/dsh-im  @4.39.0  (社区插件，条目 1，停用 0)
+     √ xmanrui-dsh-im  ←  @xmanrui/dsh-im
+
+[23] dsh-zotero  @0.12.1  (社区插件，条目 1，停用 0)
+     √ zotero  ←  dsh-zotero
+
+[24] @local/dsh-client-ui-workbench  @0.1.0  (本地插件，条目 1，停用 0)
+     √ ui-workbench  ←  @local/dsh-client-ui-workbench
+
+[25] @wxg-prc-cpg/browser-skill-dsh-plugin  @0.3.3  (社区插件，条目 1，停用 0)
+     √ browserskill  ←  @wxg-prc-cpg/browser-skill-dsh-plugin
+
+[26] dsh-mattpocock-skills-deck  @1.9.0-beta.8  (社区插件，条目 2，停用 0)
+     √ dsh-mattpocock-skills-deck  ←  dsh-mattpocock-skills-deck
+     √ dsh-mattpocock-skills-deck-tools  ←  dsh-mattpocock-skills-deck/tools
+
+[27] @lemoncat7/dsh-knowledge  @2.15.3  (社区插件，条目 1，停用 0)
+     √ knowledge  ←  @lemoncat7/dsh-knowledge
+
+[28] @wxg-prc-cpg/dsh-weknora  @0.1.0  (社区插件，条目 1，停用 0)
+     √ weknora  ←  @wxg-prc-cpg/dsh-weknora
+
+[29] treg-dsh  @0.27.0  (社区插件，条目 1，停用 0)
+     √ treg-skill  ←  treg-dsh
+
+[30] @vectorize-io/hindsight-coding-agents  @0.8.2  (社区插件，条目 1，停用 0)
+     √ hindsight  ←  @vectorize-io/hindsight-coding-agents/dsh
+
+[31] dsh-infinite-gen-5  @1.1.0  (社区插件，条目 1，停用 0)
+     √ dsh-infinite-gen-5  ←  dsh-infinite-gen-5
+
+[32] dsh-purge  @3.0.0  (本地插件，条目 7，停用 0)
+     √ dsh-purge  ←  dsh-purge
+     √ dsh-purge-redteam  ←  dsh-purge/redteam
+     √ dsh-purge-redteam-store  ←  dsh-purge/redteam/store
+     √ dsh-purge-redteam-ui  ←  dsh-purge/redteam/ui
+     √ dsh-purge-reverse  ←  dsh-purge/reverse
+     √ dsh-purge-reverse-store  ←  dsh-purge/reverse/store
+     √ dsh-purge-reverse-ui  ←  dsh-purge/reverse/ui
+
+[33] dsh-feature-profiles  @0.1.0  (本地插件，条目 1，停用 0)
+     √ feature-profiles  ←  dsh-feature-profiles
+
+[34] dsh-memory-fusion  @1.0.0  (本地插件，条目 1，停用 0)
+     √ memory-fusion-runtime  ←  dsh-memory-fusion
+
+[35] dsh-skill-fusion  @1.0.2  (本地插件，条目 2，停用 0)
+     √ skill-fusion  ←  dsh-skill-fusion/host
+     √ skill-fusion-ui  ←  dsh-skill-fusion
+
+[36] dsh-ollama  @0.1.0  (本地插件，条目 2，停用 0)
+     √ dsh-ollama  ←  dsh-ollama/host
+     √ dsh-ollama-ui  ←  dsh-ollama
+
+==============================================================================
+说明：× 表示该条目在整合包快照中处于停用状态（配置保留，可随时在 GUI 中重新启用）。

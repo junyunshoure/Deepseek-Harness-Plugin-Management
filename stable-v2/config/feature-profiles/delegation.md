@@ -1,0 +1,33 @@
+# 委派与 Agent Teams (delegation)
+
+并行子任务、队友协作与共享任务板。
+
+加载方式：feature_profiles(action="load", id="delegation")；返回 nextOffset 时继续读取。读完后本会话显示该功能原始工具。
+
+按需处理：先判断项目需要此功能，再读取本手册。
+
+## 可用工具
+
+- interrupt_agent：Interrupt one teammate's current turn while preserving its…
+- list_agents：List the Lead and every durable teammate with an addressab…
+- send_message：Send one message to another Team member.
+- spawn_teammate：Create one named, durable teammate.
+- subagent：Delegate a self-contained task to a subagent (a separate a…
+- subagent_fork：Delegate a task to a subagent that inherits this conversat…
+- team_task_create：Create one unowned pending task on the shared Team task bo…
+- team_task_get：Read the complete latest value of one shared task before c…
+- team_task_list：List shared tasks, including readiness, owner, revision, b…
+- team_task_update：Compare-and-set a shared task action using the latest revi…
+- wait_agent：Wait for the next teammate status, message, or shared-task…
+- workflow：Run a JavaScript workflow script that orchestrates subagen…
+
+## 原始规范要点
+
+- team:policy（详见附录）
+- tool:subagent（详见附录）
+- tool:subagent_fork（详见附录）
+- tool:workflow（详见附录）
+
+## 完整参数与规范
+
+附录：feature_profiles(action="load", id="delegation.appendix")。参数逐项、JSON Schema 与完整原始规范都在附录，需要精确参数时读它。
