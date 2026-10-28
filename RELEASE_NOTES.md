@@ -8,7 +8,7 @@
 
 | 文件 | 内容 | SHA-256 |
 |---|---|---|
-| `DSH-Plugins-v2.0.0-Windows-x64.zip` | **插件包（必装）**：32 个插件 + 6 个技能 + 配置骨架 + 安装器 + 6 份文档 | `4fb1c3fc9b90c4cf9bf6d9bba208fa7496e92bded13caa5ceaa38a9bd9c69d6e` |
+| `DSH-Plugins-v2.0.0-Windows-x64.zip` | **插件包（必装）**：32 个插件 + 6 个技能 + 配置骨架 + 安装器 + 6 份文档 | `58af4c08ec27ca65540eef503bc970da45a63f11e26e71b6234b029a87a7937d` |
 | `DSH-Plugins-v2.0.0-Services.zip` | 服务本体包（可选）：ReMe / OpenViking / Hindsight / WeKnora 的可移植运行时 | `106fce67b33b3c9548132839e1c1ad1972cb76dcddf5379251616c307f2397a6` |
 
 两个包各自独立：只装插件包，DSH 一切正常，仅本地记忆/知识库入口显示「未连接」。
