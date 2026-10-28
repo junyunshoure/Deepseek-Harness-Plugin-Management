@@ -441,9 +441,9 @@ function writeResult(payload) {
   if (fs.existsSync(svcManifest)) {
     if (flag('--with-services')) {
       log('\n检测到服务本体，开始安装本地记忆服务…');
-      const r = spawnSync(process.execPath, [path.join(store, 'payload', 'services', 'install-services.cjs'), '--store', store, '--home', home], { stdio: 'inherit', cwd: store });
-      servicesInfo = { attempted: true, exitCode: r.status };
-      if (r.status !== 0) warn('⚠ 服务安装没全部成功（插件部分不受影响）。详见 docs/服务部署指南.md。');
+      const code = installServicesAt(store, home);
+      servicesInfo = { attempted: true, exitCode: code };
+      if (code !== 0) warn('⚠ 服务安装没全部成功（插件部分不受影响）。详见 docs/服务部署指南.md。');
     } else {
       log('\n· 检测到服务本体（ReMe / OpenViking / Hindsight / WeKnora），本次未安装。需要时运行 SETUP-SERVICES.cmd。');
       servicesInfo = { present: true, installed: false };
@@ -738,26 +738,53 @@ async function uninstallMode(spec) {
 }
 
 // ==================================================================== 只装服务
-async function servicesMode(spec) {
-  const store = path.resolve(opt('--store', defaultStore(spec)));
+// 服务安装只有一个实现，安装流程（--with-services）与 SETUP-SERVICES 共用。
+// 返回退出码：0 成功 / 非 0 失败 / 2 需要用户去服务包自己跑
+function installServicesAt(store, home) {
   const manifest = path.join(store, 'payload', 'services', 'manifest.json');
   const localManifest = path.join(ROOT, 'payload', 'services', 'manifest.json');
+  const base = fs.existsSync(manifest) ? store : ROOT;
   if (!fs.existsSync(manifest) && !fs.existsSync(localManifest)) {
     log('这个包里没有服务本体（payload/services 不存在），这是正常的：');
     log('  · 插件整合包（Windows）本身不含 ReMe / OpenViking / Hindsight / WeKnora 的运行文件。');
-    log('  · 需要本地记忆服务时，另外下载 "Services" 包，把里面的 payload/services 整个目录');
-    log('    复制到：' + path.join(store, 'payload', 'services'));
-    log('  · 然后重新运行 SETUP-SERVICES.cmd。详细步骤见 docs/服务部署指南.md。');
-    return;
+    log('  · 需要本地记忆服务时，另外下载 "Services" 包，直接双击它根目录的 SETUP-SERVICES.cmd。');
+    log('  · 详细步骤见 docs/服务部署指南.md。');
+    return 2;
   }
-  const base = fs.existsSync(manifest) ? store : ROOT;
-  const script = path.join(base, 'payload', 'services', 'install-services.cjs');
-  if (!fs.existsSync(script)) die('服务本体不完整：缺少 payload/services/install-services.cjs');
-  log('开始安装本地记忆服务（约 2–5 分钟，会创建独立 Python 环境）…');
-  const exe = locate(findDesktopDir(opt('--desktop-dir'))).exe;
-  const r = spawnSync(exe, ['--expose-internals', script, '--store', base, '--home', resolveProfile().home], {
-    stdio: 'inherit', cwd: base, env: { ...process.env, ELECTRON_RUN_AS_NODE: '1' }, windowsHide: true,
-  });
-  if (r.status !== 0) die('服务安装未全部成功（退出码 ' + r.status + '）。详见上面的输出与 docs/服务部署指南.md。');
+  log('开始安装本地记忆服务（约 3–8 分钟，会建独立 Python 环境并灌入 site-packages 快照）…');
+
+  // 三种入口，按「服务包里实际带的是哪个」自动选：
+  //   1. payload/services/install-services.cjs —— 纯 Node 实现，用 Desktop 的 node 跑
+  //   2. 服务包根目录 / payload/services 下的 SETUP-SERVICES.ps1 —— 服务包自带脚本
+  //   3. 都没有 → 告诉用户去服务包根目录跑
+  const cjs = path.join(base, 'payload', 'services', 'install-services.cjs');
+  const ps1 = [path.join(base, 'SETUP-SERVICES.ps1'), path.join(base, 'payload', 'services', 'SETUP-SERVICES.ps1')]
+    .find((p) => fs.existsSync(p));
+
+  if (fs.existsSync(cjs)) {
+    const exe = locate(findDesktopDir(opt('--desktop-dir'))).exe;
+    const r = spawnSync(exe, ['--expose-internals', cjs, '--store', base, '--home', home], {
+      stdio: 'inherit', cwd: base, env: { ...process.env, ELECTRON_RUN_AS_NODE: '1' }, windowsHide: true,
+    });
+    return r.status === null ? 1 : r.status;
+  }
+  if (ps1) {
+    log('使用服务包自带脚本：' + ps1);
+    const r = spawnSync('powershell.exe', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', ps1, '-Auto'], {
+      stdio: 'inherit', cwd: path.dirname(ps1), windowsHide: false,
+    });
+    return r.status === null ? 1 : r.status;
+  }
+  log('找到了服务本体（manifest.json），但没找到安装脚本（install-services.cjs / SETUP-SERVICES.ps1）。请这样做：');
+  log('  · 解压 DSH-Plugins-v2.0.0-Services.zip，直接双击它根目录的 SETUP-SERVICES.cmd（那里自带完整安装逻辑，不依赖本包）。');
+  log('  · 装完回到这里继续用 DSH 即可；详细步骤见 docs/服务部署指南.md。');
+  return 2;
+}
+
+async function servicesMode(spec) {
+  const store = path.resolve(opt('--store', defaultStore(spec)));
+  const code = installServicesAt(store, resolveProfile().home);
+  if (code === 2) return;
+  if (code !== 0) die('服务安装未全部成功（退出码 ' + code + '）。详见上面的输出与 docs/服务部署指南.md。');
   log('✓ 本地记忆服务安装完成。重启 DSH 后，记忆融合 / Hindsight / knowledge 等入口即可工作。');
 }

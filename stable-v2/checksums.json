@@ -1,11 +1,11 @@
 {
  "schema": 1,
  "algorithm": "sha256",
- "generatedAt": "2026-10-28T12:44:51.788Z",
+ "generatedAt": "2026-10-28T12:56:59.588Z",
  "root": "DSH-Plugins-v2.0.0",
  "counts": {
   "files": 23249,
-  "bytes": 528366880
+  "bytes": 528368139
  },
  "note": "VERIFY.cmd / install.ps1 -Action verify 按这份清单逐文件比对。跑过安装后包内新增文件（installation-result.json 等）不在清单内，属正常。",
  "files": [
@@ -351,8 +351,8 @@
   },
   {
    "path": "install-helper.cjs",
-   "size": 43151,
-   "sha256": "dd5b04b8454e00485734ec1c27a0c95a6e1f7744da4311faba490b81b3112fee"
+   "size": 44410,
+   "sha256": "c7338b3756bf7920a7def865ba8d995fa8ec4704cef9e2efac324ae5ca118b70"
   },
   {
    "path": "install.ps1",
