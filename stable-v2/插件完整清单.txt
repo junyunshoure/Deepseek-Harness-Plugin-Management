@@ -1,5 +1,5 @@
-DeepSeek Harness 插件整合包 v2.1.0 —— 插件完整清单
-生成时间：2026-10-29T05:40:17.138Z
+DeepSeek Harness 插件整合包 v2.1.1 —— 插件完整清单
+生成时间：2026-10-29T15:52:13.833Z
 内核基准：0.2.1-rc.2（支持 >=0.2.0 <0.4.0）
 
 == 一、依赖包（32 个） ==
@@ -39,7 +39,7 @@ DeepSeek Harness 插件整合包 v2.1.0 —— 插件完整清单
 == 二、本地插件（6 个，随包实体化，不需要你本地源码） ==
  1. dsh-feature-profiles  0.1.0  [本地插件]  无第三方运行依赖（peer 由内核提供）
  2. dsh-memory-fusion  1.0.0  [本地插件]  无第三方运行依赖（peer 由内核提供）
- 3. dsh-skill-fusion  1.0.2  [本地插件]  运行依赖：js-yaml
+ 3. dsh-skill-fusion  1.0.2  [本地插件]  无第三方运行依赖（peer 由内核提供）
  4. dsh-ollama  0.1.0  [本地插件]  无第三方运行依赖（peer 由内核提供）
  5. dsh-purge  3.0.0  [本地插件]  无第三方运行依赖（peer 由内核提供）
  6. @local/dsh-client-ui-workbench  0.1.0  [本地插件]  无第三方运行依赖（peer 由内核提供）
@@ -349,7 +349,10 @@ DeepSeek Harness 插件整合包 v2.1.0 —— 插件完整清单
 [启] dsh-ollama  ←  dsh-ollama/host
 [启] dsh-ollama-ui  ←  dsh-ollama
 
-== 六、体积与裁剪 ==
-payload：10670 个文件 / 318.45 MB
-已裁掉：1101 个文件 / 18.10 MB（sourcemap / tests / examples / .github / coverage / CHANGELOG 等纯开发件）
-裁剪规则：dev-only whitelist (*.map / tests / test / examples / .github / coverage / benchmark / tsconfig / vitest / eslint / prettier / CHANGELOG), runtime-deps-only node_modules for link plugins
+== 六、体积 ==
+payload：23172 个文件 / 503.24 MB
+裁剪：无。v2.1.1 起取消载荷瘦身，运行依赖、测试、示例、sourcemap、CHANGELOG 一概保留 ——
+      上一版按「看着像开发件」删目录，删掉了 entities / htmlparser2 这类被运行时动态 require 的嵌套依赖，
+      结果是装上显示 active、点开侧栏就报 cannot find module。体积换稳定，这个取舍是用户拍板的。
+唯一跳过：版本库与构建缓存（.git / .turbo / .vite / .cache / .pnpm）与 .DS_Store / Thumbs.db；
+          以及插件目录里指向构建机 profile 的 junction 型 node_modules（那是绝对路径链接，复制过去也是断的）。

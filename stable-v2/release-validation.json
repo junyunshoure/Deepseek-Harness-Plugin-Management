@@ -1,8 +1,8 @@
 {
  "schema": 1,
- "generatedAt": "2026-10-29T05:49:21.838Z",
- "pack": "DSH-Plugins-v2.1.0",
- "version": "2.1.0",
+ "generatedAt": "2026-10-29T15:52:36.982Z",
+ "pack": "DSH-Plugins-v2.1.1",
+ "version": "2.1.1",
  "kernel": {
   "required": ">=0.2.0 <0.4.0",
   "recorded": "0.2.1-rc.2",
@@ -10,8 +10,8 @@
  },
  "platform": "win32/x64",
  "summary": {
-  "total": 16,
-  "passed": 16,
+  "total": 18,
+  "passed": 18,
   "failed": 0
  },
  "checks": [
@@ -48,9 +48,19 @@
    "detail": []
   },
   {
-   "name": "占位符已就位（≥8 处）",
+   "name": "配置不覆盖用户模型/外观（v2.1.1）",
    "ok": true,
-   "detail": "8 处"
+   "detail": {
+    "混入的敏感条目": [],
+    "已剔除": 8
+   }
+  },
+  {
+   "name": "必需功能条目齐全",
+   "ok": true,
+   "detail": {
+    "缺失": []
+   }
   },
   {
    "name": "无密钥与本机绝对路径泄漏",
@@ -89,26 +99,23 @@
    "detail": "links=0"
   },
   {
-   "name": "payload 文件数 ≥ 快照（10670）",
+   "name": "payload 文件数 ≥ 快照（23172）",
    "ok": true,
-   "detail": "实际 10670 个 / 318.45 MB"
+   "detail": "实际 23172 个 / 503.24 MB"
   },
   {
-   "name": "checksums.json 覆盖 10761 个文件且无悬空条目",
+   "name": "checksums.json 覆盖 23263 个文件且无悬空条目",
    "ok": true,
-   "detail": "条目 10761 / 悬空 0"
+   "detail": "条目 23263 / 悬空 0"
   },
   {
-   "name": "payload 无开发件残留（.map / tests / .github）",
+   "name": "payload 未裁剪（只丢构建缓存，v2.1.1 口径）",
    "ok": true,
    "detail": {
-    "hits": {
-     "map": 0,
-     "tests": 0,
-     "github": 0
-    },
-    "samples": [],
-    "trimmedInInventory": 1101
+    "trimmedFiles": 325,
+    "trimmedMB": 5.29,
+    "mapFiles": 1397,
+    "testsDirs": 111
    }
   },
   {
@@ -121,6 +128,11 @@
     },
     "toolkitMissing": []
    }
+  },
+  {
+   "name": "无残留临时/备份文件",
+   "ok": true,
+   "detail": []
   }
  ]
 }

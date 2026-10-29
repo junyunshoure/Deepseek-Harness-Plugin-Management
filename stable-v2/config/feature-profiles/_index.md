@@ -2,6 +2,9 @@
 默认只声明功能；先理解项目，再读取需要的独立手册。常开服务保留最小入口。
 选法：拿项目特征对一下「典型场景」，命中就直接读那一份，不要通读全部。
 常开清单由 catalog 默认值加 %USERPROFILE%\.dsh\profiles\desktop\feature-profiles\always.json 决定（格式：{"always":["web"],"off":["zotero"]}）；当前常开：context、core、goals、hindsight、knowledge、openviking、reme、skills。
+- [browser · 已登录浏览器](./browser.md)：操作已连接 Chromium、检查网页、录屏与网络调试。
+  - 典型场景：要动需要登录态的网页或调试前端
+  - 大件拆分：快速开始在本页，完整参数见 [附录](./browser.appendix.md)
 - [context · 上下文管理](./context.md)（常开最小入口）：长对话压缩、恢复、上下文用量与缓存核对。
   - 典型场景：上下文吃紧、要压缩或回看被压内容
   - 大件拆分：快速开始在本页，完整参数见 [附录](./context.appendix.md)

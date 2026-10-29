@@ -1,6 +1,6 @@
 'use strict';
 /**
- * DeepSeek Harness 插件整合包 v2.1.0 —— 安装器核心（Windows）
+ * DeepSeek Harness 插件整合包 v2.1.1 —— 安装器核心（Windows）
  *
  * 设计原则
  *  1. 绝不联网：所有插件依赖已在 payload/node_modules 里，逐个用官方 `plugin add --offline` 挂载。
@@ -83,18 +83,33 @@ function splitPatchBlocks(text) {
   return blocks;
 }
 
+/**
+ * v2.1.1：这些 id 的 config 是「别人机器上的状态」，合并进用户 profile 会覆盖掉他自己的配置。
+ *  - llm-pi-ai / llm-deepseek / agent-default-model：模型通道与默认模型，占位骨架会把用户能用的模型顶掉
+ *  - ui-theme / web-ui-pet / ui-settings-account / ui-chat / ui-settings：外观、宠物坐标、界面进度状态
+ */
+const SENSITIVE_PATCH_IDS = new Set([
+  'llm-pi-ai', 'llm-deepseek', 'agent-default-model',
+  'ui-theme', 'web-ui-pet', 'ui-settings-account', 'ui-chat', 'ui-settings',
+]);
+
 /** 把 src 里 dst 还没有的条目追加到 dst 末尾；返回追加的 id 列表。 */
 function mergePatchFile(srcFile, dstFile) {
   const src = splitPatchBlocks(fs.readFileSync(srcFile, 'utf8'));
   const dstText = fs.existsSync(dstFile) ? fs.readFileSync(dstFile, 'utf8') : '';
   const dst = splitPatchBlocks(dstText);
   const have = new Set(dst.flatMap(b => b.key));
-  const missing = src.filter(b => b.key.length && b.key.every(id => !have.has(id)));
+  // v2.1.1：模型 / 外观 / 个人状态类条目一律不追加（见 SENSITIVE_PATCH_IDS 注释）。
+  const sensitive = src.filter(b => b.key.length && b.key.some(id => SENSITIVE_PATCH_IDS.has(id)));
+  const missing = src.filter(b => b.key.length && b.key.every(id => !have.has(id)) && b.key.every(id => !SENSITIVE_PATCH_IDS.has(id)));
   const added = missing.flatMap(b => b.key);
+  if (sensitive.length) {
+    warn('· 跳过 ' + sensitive.length + ' 条模型/外观类条目（合并会覆盖你自己的配置）：' + sensitive.map(b => b.key.join('+')).join('、'));
+  }
   if (!missing.length) return added;
   const header = [
     '',
-    '# === 以下条目由插件整合包 v2.1.0 追加（你的原有条目一条没动） ===',
+    '# === 以下条目由插件整合包 v2.1.1 追加（你的原有条目一条没动） ===',
     '# 想撤销：删掉这一整段，或跑 ROLLBACK.cmd 回到安装前。',
     '',
   ].join('\n');
@@ -117,6 +132,50 @@ function verifyFiles(base, quiet) {
   }
   if (!quiet) log('✓ SHA-256 完整性校验通过：' + n + ' 个文件');
   return n;
+}
+
+function assertPayloadDeps(store) {
+  const nmRoot = path.join(store, 'payload', 'node_modules');
+  if (!fs.existsSync(nmRoot)) return 0;
+  const pkgs = [];
+  for (const ent of fs.readdirSync(nmRoot, { withFileTypes: true })) {
+    const p = path.join(nmRoot, ent.name);
+    if (ent.name.startsWith('@')) {
+      let subs = [];
+      try { subs = fs.readdirSync(p, { withFileTypes: true }); } catch { subs = []; }
+      for (const s2 of subs) pkgs.push({ name: ent.name + '/' + s2.name, dir: path.join(p, s2.name) });
+    } else if (ent.isDirectory()) {
+      pkgs.push({ name: ent.name, dir: p });
+    }
+  }
+  const resolvable = (fromDir, dep) => {
+    let cur = fromDir;
+    for (let i = 0; i < 8; i++) {
+      if (fs.existsSync(path.join(cur, 'node_modules', ...dep.split('/')))) return true;
+      const up = path.dirname(cur);
+      if (up === cur) break;
+      cur = up;
+    }
+    return fs.existsSync(path.join(nmRoot, ...dep.split('/')));
+  };
+  const missing = [];
+  for (const it of pkgs) {
+    const pj = path.join(it.dir, 'package.json');
+    if (!fs.existsSync(pj)) continue;
+    let meta;
+    try { meta = JSON.parse(fs.readFileSync(pj, 'utf8').replace(/^\uFEFF/, '')); } catch { continue; }
+    for (const dep of Object.keys(meta.dependencies || {})) {
+      if (!resolvable(it.dir, dep)) missing.push(it.name + ' → ' + dep);
+    }
+  }
+  if (missing.length) {
+    die('载荷依赖不完整（' + missing.length + ' 处缺失，装上也会在运行时报 MODULE_NOT_FOUND）：\n  '
+      + missing.slice(0, 12).join('\n  ')
+      + (missing.length > 12 ? '\n  …另有 ' + (missing.length - 12) + ' 处' : '')
+      + '\n这通常是解压时丢了长路径文件：请用 7-Zip 重新解压整个包后再装。');
+  }
+  log('✓ 载荷依赖闭包完整（' + pkgs.length + ' 个包全部可解析）');
+  return pkgs.length;
 }
 
 function semverOk(version, range) {
@@ -405,8 +464,8 @@ function writeAppendixMode() {
     }
     const inv = readJson(path.join(ROOT, 'inventory.json'));
     log('✓ 本包版本：' + spec.version + '，插件包数：' + spec.packages.length + '，技能：' + (spec.skills || []).length);
-    log('✓ 载荷：' + inv.counts.payloadFiles + ' 个文件 / ' + (inv.counts.payloadBytes / 1048576).toFixed(2) + ' MB（已裁掉 ' +
-      inv.counts.trimmedFiles + ' 个开发件 / ' + (inv.counts.trimmedBytes / 1048576).toFixed(2) + ' MB）');
+    log('✓ 载荷：' + inv.counts.payloadFiles + ' 个文件 / ' + (inv.counts.payloadBytes / 1048576).toFixed(2) + ' MB（完整载荷：只跳过 ' +
+      inv.counts.trimmedFiles + ' 个构建缓存文件 / ' + (inv.counts.trimmedBytes / 1048576).toFixed(2) + ' MB，依赖一个都没裁）');
     log('✓ 内核门禁：' + spec.kernel.required + '（0.2.x / 0.3.x 均放行，与本包基准不同只提示不阻断）');
     log('✓ 只做校验，未改动任何文件。');
     return;
@@ -523,9 +582,11 @@ function writeAppendixMode() {
     }
     copyTree(path.join(ROOT, 'payload'), path.join(store, 'payload'));
     verifyFiles(store, true);
+    assertPayloadDeps(store);
     log('✓ 复制完成并通过校验');
   } else {
     log('已在持久目录内运行：' + store);
+    assertPayloadDeps(store);
   }
   result.store = store;
   result.steps.push('copy-payload');

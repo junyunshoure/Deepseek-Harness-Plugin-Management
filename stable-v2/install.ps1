@@ -139,10 +139,35 @@ function Invoke-Helper([string[]]$extra) {
   # DeepSeek Harness.exe 是 GUI 子系统程序：PowerShell 用 & 调用它不会等待进程结束，
   # 会出现「窗口已经往下走、结果还没打印」甚至一闪而过。这里用管道逐行转发，
   # 既保证等到进程真正退出（管道读到 EOF），也保证输出能实时显示。
-  & $exe @ArgList 2>&1 | ForEach-Object {
-    if ($_ -is [System.Management.Automation.ErrorRecord]) { Write-Host $_.Exception.Message } else { Write-Host $_ }
+  #
+  # 但在外部真机上踩过一次死坑（v2.1.0 报告）：本脚本全局 $ErrorActionPreference='Stop'，
+  # 而 helper 正常进度的提示是走 stderr 的（例如「已存在同名包指向其他目录，将重指向载荷」）。
+  # `2>&1 |` 会把每条 stderr 包装成 NativeCommandError，Stop 策略当场终止整条脚本 ——
+  # 用户看到的是「退出码 1、一行都没写盘」，其实什么都没坏。这里局部放宽策略、把 stderr
+  # 当普通文本转发，绝不因为一句提示而中断安装。
+  $prevEap = $ErrorActionPreference
+  $ErrorActionPreference = 'Continue'
+  $script:helperExit = 0
+  try {
+    & $exe @ArgList 2>&1 | ForEach-Object {
+      $line = $_
+      if ($line -is [System.Management.Automation.ErrorRecord]) {
+        $msg = ''
+        if ($null -ne $line.Exception) { $msg = [string]$line.Exception.Message }
+        if ([string]::IsNullOrEmpty($msg)) { $msg = [string]$line }
+        Write-Host $msg
+      } else {
+        Write-Host ([string]$line)
+      }
+    }
+    if ($null -eq $LASTEXITCODE) { $script:helperExit = 0 } else { $script:helperExit = $LASTEXITCODE }
+  } catch {
+    # 管道本身出异常（极少见）：记下来但不改写 helper 的退出码语义
+    Write-Host ("[warn] 转发 helper 输出时出错：" + $_.Exception.Message)
+  } finally {
+    $ErrorActionPreference = $prevEap
   }
-  return $LASTEXITCODE
+  return $script:helperExit
 }
 
 function Get-Sha256([string]$Path) {

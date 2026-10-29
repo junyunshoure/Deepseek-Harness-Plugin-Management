@@ -15,7 +15,7 @@
 #    在 macOS 上不能加载。所以 mac 走「用 DSH 自带 Electron 当 node 运行时，
 #    调官方 dsh plugin 命令从 npm 源逐个安装」，装出来的依赖与本机平台匹配。
 #
-#  只写 ~/.dsh 与 ~/.agents 下的内容，不改 App 本体，不动系统设置。
+#  只写 ~/.dsh 与 ~/.agents 下的内容（含 ~/.dsh/AGENTS.md 的对齐协议标记块），不改 App 本体，不动系统设置。
 # ============================================================================
 set -euo pipefail
 
@@ -38,11 +38,12 @@ PAYLOAD_OVERRIDE=""
 OFFLINE=0
 DRY_RUN=0
 SKIP_KERNEL=0
+SKIP_APPENDIX=0
 STARTED="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 TS="$(date +%Y%m%d-%H%M%S)"
 BACKUP_DIR=""
 STEP_NO=0
-STEP_TOTAL=8
+STEP_TOTAL=9
 STEP_NAME="初始化"
 
 if [ -t 1 ]; then
@@ -79,6 +80,145 @@ cleanup_on_exit() {
 }
 trap cleanup_on_exit EXIT
 
+# ---------------------------------------------------------------------------
+# 写对齐协议：把 appendix/AGENTS.appendix.md 写进 ~/.dsh/AGENTS.md 的标记块
+#   · 与 Windows 侧 install-helper.cjs 的 writeAgentsAppendix() 行为一致
+#   · 幂等：内容没变不写、不产备份；块内 DEPTH_MODE 沿用旧值
+#   · 纯 awk（macOS 自带 bash 3.2 / BSD awk 可用），不依赖 node
+# ---------------------------------------------------------------------------
+APPENDIX_STATE=""
+AWK_APPENDIX='function repl(str, from, to,   p, out) {
+  out = ""
+  while ((p = index(str, from)) > 0) {
+    out = out substr(str, 1, p - 1) to
+    str = substr(str, p + length(from))
+  }
+  return out str
+}
+BEGIN {
+  CR = sprintf("%c", 13)
+  n = 0
+  while ((getline l < tplfile) > 0) {
+    if (length(l) > 0 && substr(l, length(l), 1) == CR) l = substr(l, 1, length(l) - 1)
+    tpl[++n] = l
+  }
+  close(tplfile)
+  m = 0
+  if (ofile != "") {
+    while ((getline l < ofile) > 0) {
+      if (length(l) > 0 && substr(l, length(l), 1) == CR) { crlf = 1; l = substr(l, 1, length(l) - 1) }
+      old[++m] = l
+    }
+    close(ofile)
+  }
+  eol = crlf ? CR "\n" : "\n"
+  s = -1; e = -1; sc = 0; ec = 0
+  for (i = 1; i <= m; i++) {
+    if (old[i] ~ /^[ \t]*<!--[ \t]*ALIGNMENT_PROTOCOL[ \t]+v1\.0[ \t]+START/) { sc++; if (s < 0) s = i }
+    if (old[i] ~ /^[ \t]*<!--[ \t]*ALIGNMENT_PROTOCOL[ \t]+v1\.0[ \t]+END[ \t]*-->[ \t]*$/) { ec++; if (e < 0) e = i }
+  }
+  if (sc != ec || sc > 1) {
+    printf "MULTI|%d|%d|\n", sc, ec > statefile
+    exit 3
+  }
+  dm = ""
+  for (i = 1; i <= m; i++) {
+    if (match(old[i], /^[ \t]*##[ \t]*DEPTH_MODE:[ \t]*[A-Za-z]+[ \t]*$/)) {
+      v = old[i]
+      sub(/^[ \t]*##[ \t]*DEPTH_MODE:[ \t]*/, "", v)
+      sub(/[ \t]+$/, "", v)
+      v = tolower(v)
+      if (v == "ask" || v == "auto" || v == "deep" || v == "fast") { dm = v; break }
+    }
+  }
+  if (dm == "") dm = default_depth
+  for (i = 1; i <= n; i++) tpl[i] = repl(tpl[i], "{{DEPTH_MODE}}", dm)
+  o = 0
+  if (s >= 0 && e > s) {
+    for (i = 1; i < s; i++) out[++o] = old[i]
+    for (i = 1; i <= n; i++) out[++o] = tpl[i]
+    for (i = e + 1; i <= m; i++) out[++o] = old[i]
+    act = "replaced"
+  } else if (s >= 0) {
+    printf "BADORDER|%d|%d|\n", s, e > statefile
+    exit 4
+  } else {
+    for (i = 1; i <= m; i++) out[++o] = old[i]
+    while (o > 0 && out[o] ~ /^[ \t]*$/) o--
+    if (o > 0) out[++o] = ""
+    for (i = 1; i <= n; i++) out[++o] = tpl[i]
+    act = "appended"
+  }
+  while (o > 0 && out[o] ~ /^[ \t]*$/) o--
+  for (i = 1; i <= o; i++) printf "%s%s", out[i], eol
+  printf "%s|%s|%d|\n", act, dm, o > statefile
+  exit 0
+}'
+
+write_appendix() {
+  if [ "${SKIP_APPENDIX:-0}" = "1" ]; then
+    info "按 --skip-appendix 跳过对齐协议写入"
+    APPENDIX_STATE="skipped||"
+    return 0
+  fi
+  if [ "${DRY_RUN:-0}" = "1" ]; then
+    info "dry-run：不写 ~/.dsh/AGENTS.md"
+    APPENDIX_STATE="dryrun||"
+    return 0
+  fi
+  local tpl="$PACK_ROOT/appendix/AGENTS.appendix.md"
+  local agents="$HOME/.dsh/AGENTS.md"
+  if [ ! -f "$tpl" ]; then
+    warn "包里没有 appendix/AGENTS.appendix.md，跳过对齐协议（可在包内补上后重跑）"
+    APPENDIX_STATE="missing-template||"
+    return 0
+  fi
+  mkdir -p "$HOME/.dsh"
+  local tmp state rc act dm lines rest ns ne
+  tmp="$(mktemp "${TMPDIR:-/tmp}/dsh-agents.XXXXXX")"
+  state="$(mktemp "${TMPDIR:-/tmp}/dsh-agents-state.XXXXXX")"
+  rc=0
+  awk -v tplfile="$tpl" -v ofile="$agents" -v default_depth="ask" -v statefile="$state" \
+    "$AWK_APPENDIX" > "$tmp" || rc=$?
+  if [ "$rc" -ne 0 ]; then
+    case "$rc" in
+      3) warn "AGENTS.md 里 ALIGNMENT_PROTOCOL 标记不成对（$(cat "$state" 2>/dev/null)），跳过写入；请手工清理到 START/END 各 1 个" ;;
+      4) warn "AGENTS.md 里 ALIGNMENT_PROTOCOL END 出现在 START 之前，跳过写入；请手工检查" ;;
+      *) warn "生成对齐协议失败（awk 退出码 $rc），跳过写入" ;;
+    esac
+    rm -f "$tmp" "$state"
+    APPENDIX_STATE="failed|$rc|"
+    return 0
+  fi
+  IFS='|' read -r act dm lines rest < "$state"
+  if [ -f "$agents" ] && cmp -s "$tmp" "$agents"; then
+    ok "对齐协议：已是最新内容（$agents，DEPTH_MODE: $dm，$lines 行，未改动）"
+    APPENDIX_STATE="unchanged|$dm|$lines"
+  else
+    if [ -f "$agents" ] && [ -s "$agents" ]; then
+      cp -p "$agents" "$agents.bak-$TS" 2>/dev/null || warn "备份 AGENTS.md 失败，仍继续写入"
+      info "原 AGENTS.md 已备份：$agents.bak-$TS"
+    fi
+    cat "$tmp" > "$agents"
+    ns="$(grep -c 'ALIGNMENT_PROTOCOL v1.0 START' "$agents" 2>/dev/null || true)"
+    ne="$(grep -c 'ALIGNMENT_PROTOCOL v1.0 END' "$agents" 2>/dev/null || true)"
+    if [ "${ns:-0}" != "1" ] || [ "${ne:-0}" != "1" ]; then
+      warn "写入后标记块不唯一（START=${ns:-0}，END=${ne:-0}），请检查 $agents"
+      APPENDIX_STATE="written-unverified|$dm|$lines"
+    else
+      ok "对齐协议已写入：$agents（DEPTH_MODE: $dm，$lines 行，新开会话生效）"
+      APPENDIX_STATE="written|$dm|$lines"
+    fi
+  fi
+  rm -f "$tmp" "$state"
+  if [ "$act" = "replaced" ]; then
+    info "已替换原有的 ALIGNMENT_PROTOCOL 标记块"
+  else
+    info "首次写入：追加在 AGENTS.md 末尾（块外原有内容保持不动）"
+  fi
+  return 0
+}
+
 usage() {
   cat <<'USAGE'
 DeepSeek Harness 插件整合包 v2.1.0 —— macOS 安装器
@@ -88,6 +228,7 @@ DeepSeek Harness 插件整合包 v2.1.0 —— macOS 安装器
   --payload <dir>        指定离线 payload 目录（默认包内 payload/；配合 --offline 用）
   --dry-run              只做检查并列出将要安装的包，不写任何文件
   --skip-kernel-check    跳过 0.2.x 内核版本校验
+  --skip-appendix        不写 ~/.dsh/AGENTS.md 的对齐协议标记块
   --registry <url>       安装时指定 npm 源（也可用环境变量 DSH_NPM_REGISTRY；默认跟随本机/官方配置）
   -h, --help             显示本帮助
 USAGE
@@ -103,6 +244,7 @@ while [ $# -gt 0 ]; do
     --payload=*) PAYLOAD_OVERRIDE="${1#*=}"; shift ;;
     --dry-run) DRY_RUN=1; shift ;;
     --skip-kernel-check) SKIP_KERNEL=1; shift ;;
+    --skip-appendix) SKIP_APPENDIX=1; shift ;;
     --registry) REGISTRY="${2:-}"; shift 2 ;;
     --registry=*) REGISTRY="${1#*=}"; shift ;;
     -h|--help) usage; exit 0 ;;
@@ -408,6 +550,11 @@ else
 fi
 
 # ============================================================================
+step "写入对齐协议（~/.dsh/AGENTS.md）"
+# ============================================================================
+write_appendix
+
+# ============================================================================
 step "汇总并写入 installation-result-mac.json"
 # ============================================================================
 RESULT_JSON="$PROFILE_DIR/installation-result-mac.json"
@@ -437,6 +584,7 @@ const doc = {
   config: { copied: list('cfg-copied.txt'), keptOriginal: list('cfg-kept.txt') },
   skills: { dsh: list('skills-dsh.txt'), agents: list('skills-agents.txt'), backupDir: path.join(backup, 'skills') },
   featureProfiles: { copied: list('fp-copied.txt') },
+  appendix: (process.env.DSH_APPENDIX ? process.env.DSH_APPENDIX : ''),
   services: {
     installed: false,
     installer: 'macos/setup-services.command',
@@ -454,7 +602,7 @@ fs.writeFileSync(out, JSON.stringify(doc, null, 2) + '\n');
 process.stdout.write(out);
 NODEJS
 )"
-ELECTRON_RUN_AS_NODE=1 "$ELECTRON_NODE" -e "$JSON_GEN" \
+DSH_APPENDIX="$APPENDIX_STATE" ELECTRON_RUN_AS_NODE=1 "$ELECTRON_NODE" -e "$JSON_GEN" \
   "$TMP_DIR" "$RESULT_JSON" "$APP" "${KERNEL_VERSION:-unknown}" "$BACKUP_DIR" "$STARTED" \
   "$(count_lines "$TMP_DIR/ok.txt")" "$(count_lines "$TMP_DIR/fail.txt")" \
   >/dev/null 2>&1 || warn "写入 $RESULT_JSON 失败（可手动补一份，内容见本脚本第 8 步）"
@@ -474,7 +622,8 @@ printf '\n  %s下一步%s\n' "$C_BLD" "$C_OFF"
 printf '    1) 打开 DeepSeek Harness.app（第一次启动稍慢，插件在加载）\n'
 printf '    2) 设置里填中转站地址与密钥，然后重启一次 App\n'
 printf '    3) 要本地记忆服务：./setup-services.command（ReMe 2333 / OpenViking 1933 / Hindsight 8888）\n'
-printf '    4) 插件没出现 / 想回滚：看 macos/INSTALL-MAC.md\n'
+printf '    4) 对齐协议（强制提问）已写入 ~/.dsh/AGENTS.md，新开会话生效；不想要就删掉标记块或重跑加 --skip-appendix\n'
+printf '    5) 插件没出现 / 想回滚：看 macos/INSTALL-MAC.md\n'
 
 if [ "$FAIL_FINAL" -gt 0 ]; then
   printf '\n  %s有 %s 个插件没装上%s：把 %s 连同上面失败清单交给 DSH 里的 AI agent，按 docs/AI-agent-适配指南.md 逐个补齐。\n' \

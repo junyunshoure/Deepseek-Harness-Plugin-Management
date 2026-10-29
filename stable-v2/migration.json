@@ -2,7 +2,7 @@
   "schema": 3,
   "id": "dsh-plugins-pack-v2",
   "channel": "stable-v2",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "kernel": {
     "required": ">=0.2.0 <0.4.0",
     "recorded": "0.2.1-rc.2",
@@ -307,7 +307,7 @@
     "aiAgent": "docs/AI-agent-适配指南.md",
     "macos": "macos/INSTALL-MAC.md"
   },
-  "packVersion": "2.1.0",
+  "packVersion": "2.1.1",
   "mode": 2,
   "supportedModes": [
     "new",

@@ -53,6 +53,54 @@ v2.1.0 的真正增量**不是新插件，而是把「补丁要人记命令」�
 
 ---
 
+# 整合包 v2.1.1 — 撤回载荷瘦身，回到 v2.0.0 完整载荷
+
+**版本类型**：修复版（Latest）· **发布日**：2026-10-29 · **基线**：v2.0.0 的完整载荷 + v2.1.0 的全部能力 · **适用内核** `0.2.x` / `0.3.x`（按 `0.2.1-rc.2` 构建，门禁 `>=0.2.0 <0.4.0`）
+
+## 附件
+
+| 文件 | 体积 | SHA-256 |
+|---|---|---|
+| `DSH-Plugins-v2.1.1-Windows-x64.zip` | 191,397,610 B（约 182.53 MB） | `76b9f19abae1268a057f5a99841fc8b159d34871a23c274cf136495c2cac4a71` |
+| `DSH-Plugins-v2.1.1-Windows-x64.zip.sha256` | 100 B | 校验文件（`<hash>  <文件名>`） |
+| `release-validation.json` | 3,317 B | 发布前自检结果，**18/18 全过** |
+
+服务包不重出：继续用 `v2.0.0` 的 `DSH-Plugins-v2.0.0-Services.zip`（680.1 MB）。仓库内 `stable-v2/` 为可读源码与文档（93 文件，不含 `payload/`）。
+
+## 为什么发这一版
+
+v2.1.0 为了把安装包从 182.5 MB 压到 120.65 MB，把插件里的 `node_modules` 全删了、只留顶层反向链接。外部实测结果是**部分插件装完就废**：侧栏「技能 / Ollama / 逆向」入口消失、点开报错，`install.ps1 -Action upgrade` 还因为 stderr 直接崩。这一版把这三件事全部回退/修掉。
+
+## 改了什么
+
+| # | 变更 | v2.1.0 | **v2.1.1** |
+|---|---|---|---|
+| 1 | 载荷口径 | 裁剪 36.6%（10,667 文件 / 318.79 MB） | **完整复制 23,172 文件 / 503.24 MB**，与 v2.0.0 逐文件比对**缺 0**（只多 1 个源目录新增文件） |
+| 2 | 插件内嵌 `node_modules` | 全删，只留顶层反链 | **249 个全部保留**；只跳 `.git` / `.vite` / `.cache`（325 文件 / 5.29 MB） |
+| 3 | `install.ps1 -Action upgrade` | `$ErrorActionPreference='Stop'` 下 stderr 直接抛异常退出 | **捕获 stderr 转告警**，退出码按真实结果判定 |
+| 4 | `cordis.patch.yml` 合并 | 无条件覆盖，用户 `llm-*` / 默认模型 / 主题被打回 | **敏感条目默认不合并**（模型、外观、宠物坐标、进度状态），只补功能开关 |
+| 5 | macOS | `install.command` 不写 `AGENTS.md`，对齐协议在 mac 上等于没有 | **新增 `write_appendix`**，与 Windows 同口径（幂等、保留用户 `DEPTH_MODE`、写前备份） |
+| 6 | 安装器新断言 | — | 复制完先做**载荷依赖闭包校验**（300 个包全部可解析），缺依赖当场失败，不留到运行时 `MODULE_NOT_FOUND` |
+
+## 验收（全部实测，可复算）
+
+- `validate-release.mjs`：**18/18** PASS（含「payload 文件数 ≥ v2.0.0 快照」「无残留临时/备份文件」「配置不覆盖用户模型/外观」「payload 内无符号链接」）。
+- 与 v2.0.0 产物逐文件比对：**缺 0**，多 1（`node_modules/dsh-ollama/lifecycle.mjs`，源目录新增）。
+- 隔离环境（`DSH_HOME` + `LOCALAPPDATA` 都指到临时目录）从**解压后的 zip** 装一遍：**33 个插件全挂载 / 0 跳过 / 256 条目 / 37 bundle**、载荷依赖闭包 **300 个包全可解析**、`AGENTS.md` **127 行**标记块各 1 个。
+- 升级路径（`--mode upgrade`）带用户自加的 `llm-pi-ai` / `ui-theme` / `agent-default-model` 跑一遍：**用户条目逐字保留**，包内功能条目仍在，`AGENTS.md` 幂等不重写。
+- macOS：`install.command` 与 `setup-services.command` `bash -n` 通过；`test-mac-appendix.sh` **19/19** PASS（追加 / 替换 / 幂等 / 标记不成对 / dry-run / `--skip-appendix` / 模板缺失 / CRLF）。**真 Mac 未跑**。
+
+## 从 v2.1.0 升上来
+
+解压新包 → 双击 `UPGRADE.cmd`（= `INSTALL.cmd` 选 D）→ 自动把 6 个自研插件重指向新载荷并按 realpath 逐条核对。旧载荷（v2.1.0-windows）不会自动删，要腾空间用 `PRUNE.cmd`（默认只预演，7 天内 / 仍被引用的永不删）。
+
+## 回滚
+
+- 机器侧：`ROLLBACK.cmd` 按 `%LOCALAPPDATA%\DSHPluginsPack\v2.1.1-windows\backups\<时间戳>` 还原；装前自动备份。
+- 仓库侧：`git revert <v2.1.1 提交>` + `gh release delete v2.1.1`，`v2.1.0` 可 `--latest` 抢回（但 v2.1.0 本身有问题，建议回 v2.0.0）。
+
+---
+
 # 补丁 v2.0.2-patch.1 — 环境自愈（CL-001 … CL-007）
 
 **版本类型**：补丁（已被 v2.1.0 吸收，仅旧机器单独装）· **发布日**：2026-10-29 · **基线**：v2.0.0（可与 v2.0.1-patch.1 并存）· **体积**：20.1 KB

@@ -1,22 +1,23 @@
 {
   "schema": "dsh-plugin-pack-inventory/v3",
-  "packVersion": "2.1.0",
-  "version": "2.1.0",
-  "generatedAt": "2026-10-29T04:24:20.093Z",
+  "packVersion": "2.1.1",
+  "version": "2.1.1",
+  "generatedAt": "2026-10-29T15:15:02.633Z",
   "packEdition": "windows",
   "maintainedAt": null,
   "counts": {
     "dependencyPackages": 32,
     "linkPlugins": 6,
     "skills": 6,
-    "featureProfileDocs": 48,
-    "payloadFiles": 10670,
-    "payloadBytes": 333916281,
-    "trimmedFiles": 1101,
-    "trimmedBytes": 18977417,
+    "featureProfileDocs": 49,
+    "payloadFiles": 23172,
+    "payloadBytes": 527684537,
+    "trimmedFiles": 325,
+    "trimmedBytes": 5544942,
+    "nestedNodeModules": 249,
     "bundles": 36,
     "pluginRows": 256,
-    "featureProfileFiles": 48
+    "featureProfileFiles": 49
   },
   "dependencies": [
     {
@@ -215,35 +216,27 @@
   "linkPlugins": [
     {
       "name": "dsh-feature-profiles",
-      "sourceDir": "plugins\\feature-profiles",
-      "runtimeDeps": []
+      "sourceDir": "plugins\\feature-profiles"
     },
     {
       "name": "dsh-memory-fusion",
-      "sourceDir": "plugins\\dsh-memory-fusion",
-      "runtimeDeps": []
+      "sourceDir": "plugins\\dsh-memory-fusion"
     },
     {
       "name": "dsh-skill-fusion",
-      "sourceDir": "plugins\\dsh-skill-fusion",
-      "runtimeDeps": [
-        "js-yaml"
-      ]
+      "sourceDir": "plugins\\dsh-skill-fusion"
     },
     {
       "name": "dsh-ollama",
-      "sourceDir": "plugins\\dsh-ollama",
-      "runtimeDeps": []
+      "sourceDir": "plugins\\dsh-ollama"
     },
     {
       "name": "dsh-purge",
-      "sourceDir": "Xsdsh-purge",
-      "runtimeDeps": []
+      "sourceDir": "Xsdsh-purge"
     },
     {
       "name": "@local/dsh-client-ui-workbench",
-      "sourceDir": "workbench-panel",
-      "runtimeDeps": []
+      "sourceDir": "workbench-panel"
     }
   ],
   "skills": [
@@ -279,51 +272,1219 @@
     }
   ],
   "trimmed": {
-    "rules": "dev-only whitelist (*.map / tests / test / examples / .github / coverage / benchmark / tsconfig / vitest / eslint / prettier / CHANGELOG), runtime-deps-only node_modules for link plugins",
-    "droppedFiles": 1101,
-    "droppedBytes": 18977417,
+    "rules": "none — v2.1.1 取消载荷瘦身；仅跳过 .git/.turbo/.vite/.cache/.pnpm 与 .DS_Store/Thumbs.db",
+    "droppedFiles": 325,
+    "droppedBytes": 5544942,
     "perPlugin": {
+      ".bin": {
+        "files": 201,
+        "bytes": 243359
+      },
+      ".pnpm": {
+        "files": 1,
+        "bytes": 118724
+      },
+      "@borewit/text-codec": {
+        "files": 5,
+        "bytes": 17838
+      },
+      "@changfenhuang/dsh-genui": {
+        "files": 210,
+        "bytes": 8912448
+      },
+      "@deepseek-ai/cosmokit": {
+        "files": 25,
+        "bytes": 65942
+      },
+      "@deepseek-ai/schemastery": {
+        "files": 8,
+        "bytes": 118476
+      },
+      "@img/colour": {
+        "files": 6,
+        "bytes": 73264
+      },
+      "@img/sharp-win32-x64": {
+        "files": 8,
+        "bytes": 19812379
+      },
+      "@jimp/core": {
+        "files": 65,
+        "bytes": 376436
+      },
+      "@jimp/diff": {
+        "files": 21,
+        "bytes": 20089
+      },
+      "@jimp/file-ops": {
+        "files": 26,
+        "bytes": 8585
+      },
+      "@jimp/js-bmp": {
+        "files": 25,
+        "bytes": 263970
+      },
+      "@jimp/js-gif": {
+        "files": 22,
+        "bytes": 11875
+      },
+      "@jimp/js-jpeg": {
+        "files": 22,
+        "bytes": 11655
+      },
+      "@jimp/js-png": {
+        "files": 61,
+        "bytes": 678399
+      },
+      "@jimp/js-tiff": {
+        "files": 22,
+        "bytes": 14358
+      },
+      "@jimp/plugin-blit": {
+        "files": 35,
+        "bytes": 895020
+      },
+      "@jimp/plugin-blur": {
+        "files": 32,
+        "bytes": 291030
+      },
+      "@jimp/plugin-circle": {
+        "files": 23,
+        "bytes": 30266
+      },
+      "@jimp/plugin-color": {
+        "files": 34,
+        "bytes": 475766
+      },
+      "@jimp/plugin-contain": {
+        "files": 23,
+        "bytes": 37393
+      },
+      "@jimp/plugin-cover": {
+        "files": 23,
+        "bytes": 29115
+      },
+      "@jimp/plugin-crop": {
+        "files": 25,
+        "bytes": 84842
+      },
+      "@jimp/plugin-displace": {
+        "files": 20,
+        "bytes": 16645
+      },
+      "@jimp/plugin-dither": {
+        "files": 20,
+        "bytes": 11864
+      },
+      "@jimp/plugin-fisheye": {
+        "files": 23,
+        "bytes": 20179
+      },
+      "@jimp/plugin-flip": {
+        "files": 23,
+        "bytes": 19274
+      },
+      "@jimp/plugin-hash": {
+        "files": 30,
+        "bytes": 57042
+      },
+      "@jimp/plugin-mask": {
+        "files": 23,
+        "bytes": 28478
+      },
+      "@jimp/plugin-print": {
+        "files": 157,
+        "bytes": 2142201
+      },
+      "@jimp/plugin-quantize": {
+        "files": 23,
+        "bytes": 158487
+      },
+      "@jimp/plugin-resize": {
+        "files": 50,
+        "bytes": 210715
+      },
+      "@jimp/plugin-rotate": {
+        "files": 23,
+        "bytes": 107058
+      },
+      "@jimp/plugin-threshold": {
+        "files": 23,
+        "bytes": 458803
+      },
+      "@jimp/types": {
+        "files": 19,
+        "bytes": 18049
+      },
+      "@jimp/utils": {
+        "files": 20,
+        "bytes": 46824
+      },
+      "@kenz1117/dsh-ui-usage-billing": {
+        "files": 80,
+        "bytes": 1003531
+      },
+      "@lemoncat7/dsh-knowledge": {
+        "files": 479,
+        "bytes": 4553900
+      },
+      "@linxin666/dsh-client-ui-community-plugins": {
+        "files": 9,
+        "bytes": 137864
+      },
+      "@linxin666/dsh-client-ui-git-graph": {
+        "files": 141,
+        "bytes": 892875
+      },
+      "@linxin666/dsh-client-ui-market": {
+        "files": 10,
+        "bytes": 407262
+      },
+      "@linxin666/dsh-client-ui-model-capabilities": {
+        "files": 21,
+        "bytes": 256126
+      },
+      "@linxin666/dsh-client-ui-plugin-manager": {
+        "files": 38,
+        "bytes": 452391
+      },
+      "@linxin666/dsh-client-ui-preset-center": {
+        "files": 10,
+        "bytes": 160313
+      },
+      "@linxin666/dsh-client-ui-skill-explorer": {
+        "files": 31,
+        "bytes": 272097
+      },
+      "@linxin666/dsh-client-ui-skin-center": {
+        "files": 25,
+        "bytes": 1587673
+      },
+      "@linxin666/dsh-client-ui-task-board": {
+        "files": 167,
+        "bytes": 3703930
+      },
+      "@linxin666/dsh-client-ui-task-board-github": {
+        "files": 86,
+        "bytes": 925248
+      },
+      "@linxin666/dsh-client-ui-web-ui-settings": {
+        "files": 10,
+        "bytes": 151334
+      },
+      "@linxin666/dsh-i18n": {
+        "files": 30,
+        "bytes": 395792
+      },
+      "@linxin666/dsh-liangshen": {
+        "files": 68,
+        "bytes": 955425
+      },
+      "@linxin666/dsh-pet": {
+        "files": 318,
+        "bytes": 16225473
+      },
+      "@linxin666/dsh-remote-web-ui": {
+        "files": 1050,
+        "bytes": 8395931
+      },
+      "@linxin666/dsh-session-archive": {
+        "files": 70,
+        "bytes": 690477
+      },
+      "@linxin666/dsh-ssh": {
+        "files": 82,
+        "bytes": 2604350
+      },
+      "@linxin666/dsh-update": {
+        "files": 68,
+        "bytes": 430725
+      },
+      "@linxin666/dsh-usage": {
+        "files": 62,
+        "bytes": 1930490
+      },
+      "@linxin666/dsh-web-all": {
+        "files": 165,
+        "bytes": 8632349
+      },
+      "@liustack/modlens": {
+        "files": 262,
+        "bytes": 2840839
+      },
+      "@matrix-org/olm": {
+        "files": 8,
+        "bytes": 651084
+      },
+      "@pinojs/redact": {
+        "files": 19,
+        "bytes": 97351
+      },
+      "@selderee/plugin-htmlparser2": {
+        "files": 7,
+        "bytes": 13787
+      },
+      "@standard-schema/spec": {
+        "files": 7,
+        "bytes": 22634
+      },
+      "@tencent-connect/qqbot-connector": {
+        "files": 14,
+        "bytes": 24333
+      },
+      "@tencent-connect/qqbot-nodejs": {
+        "files": 293,
+        "bytes": 1163483
+      },
+      "@tencent-qqmail/agently-cli": {
+        "files": 4,
+        "bytes": 14001
+      },
+      "@tencent-qqmail/agently-cli-win32-x64": {
+        "files": 3,
+        "bytes": 9653401
+      },
+      "@tokenizer/inflate": {
+        "files": 11,
+        "bytes": 28506
+      },
+      "@tokenizer/token": {
+        "files": 3,
+        "bytes": 3037
+      },
+      "@tt-a1i/archify-dsh": {
+        "files": 113,
+        "bytes": 7319877
+      },
+      "@types/debug": {
+        "files": 4,
+        "bytes": 6478
+      },
+      "@types/mdast": {
+        "files": 4,
+        "bytes": 29432
+      },
+      "@types/ms": {
+        "files": 4,
+        "bytes": 5101
+      },
+      "@types/node": {
+        "files": 54,
+        "bytes": 1633241
+      },
+      "@types/unist": {
+        "files": 4,
+        "bytes": 6262
+      },
+      "@vectorize-io/hindsight-coding-agents": {
+        "files": 67,
+        "bytes": 16790065
+      },
+      "@wecom/aibot-node-sdk": {
+        "files": 21,
+        "bytes": 516499
+      },
+      "@wxg-prc-cpg/browser-skill-dsh-plugin": {
+        "files": 47,
+        "bytes": 660570
+      },
+      "@wxg-prc-cpg/dsh-weknora": {
+        "files": 22,
+        "bytes": 116477
+      },
+      "@xmanrui/dsh-im": {
+        "files": 700,
+        "bytes": 44011017
+      },
+      "@xterm/addon-fit": {
+        "files": 9,
+        "bytes": 20727
+      },
+      "@xterm/xterm": {
+        "files": 161,
+        "bytes": 5921599
+      },
+      "@zone-eu/mailsplit": {
+        "files": 23,
+        "bytes": 133829
+      },
+      "acorn": {
+        "files": 10,
+        "bytes": 554942
+      },
+      "agent-base": {
+        "files": 8,
+        "bytes": 24416
+      },
+      "ansi-regex": {
+        "files": 5,
+        "bytes": 5692
+      },
+      "ansi-styles": {
+        "files": 4,
+        "bytes": 9741
+      },
+      "any-base": {
+        "files": 7,
+        "bytes": 14049
+      },
+      "argparse": {
+        "files": 7,
+        "bytes": 171548
+      },
+      "asn1": {
+        "files": 10,
+        "bytes": 19757
+      },
+      "asynckit": {
+        "files": 20,
+        "bytes": 27362
+      },
+      "atomic-sleep": {
+        "files": 6,
+        "bytes": 6571
+      },
+      "await-to-js": {
+        "files": 19,
+        "bytes": 1158633
+      },
+      "aws-ssl-profiles": {
+        "files": 11,
+        "bytes": 228109
+      },
+      "axios": {
+        "files": 89,
+        "bytes": 1983343
+      },
+      "bcrypt-pbkdf": {
+        "files": 5,
+        "bytes": 28994
+      },
+      "billion-context": {
+        "files": 691,
+        "bytes": 43748993
+      },
+      "bmp-ts": {
+        "files": 41,
+        "bytes": 139275
+      },
+      "buildcheck": {
+        "files": 11,
+        "bytes": 46220
+      },
+      "call-bind-apply-helpers": {
+        "files": 21,
+        "bytes": 15952
+      },
+      "camelcase": {
+        "files": 4,
+        "bytes": 5089
+      },
+      "character-entities": {
+        "files": 5,
+        "bytes": 44634
+      },
+      "cliui": {
+        "files": 5,
+        "bytes": 14873
+      },
+      "cloudflared": {
+        "files": 19,
+        "bytes": 55560
+      },
+      "clsx": {
+        "files": 10,
+        "bytes": 8555
+      },
+      "color-convert": {
+        "files": 7,
+        "bytes": 27189
+      },
+      "color-name": {
+        "files": 4,
+        "bytes": 6693
+      },
+      "combined-stream": {
+        "files": 5,
+        "bytes": 11514
+      },
+      "commander": {
+        "files": 13,
+        "bytes": 151267
+      },
+      "cosmokit": {
+        "files": 14,
+        "bytes": 69801
+      },
+      "cpu-features": {
+        "files": 115,
+        "bytes": 576021
+      },
+      "debug": {
+        "files": 7,
+        "bytes": 42793
+      },
+      "decamelize": {
+        "files": 4,
+        "bytes": 2940
+      },
+      "decode-named-character-reference": {
+        "files": 9,
+        "bytes": 9277
+      },
+      "deepmerge-ts": {
+        "files": 8,
+        "bytes": 264762
+      },
+      "delayed-stream": {
+        "files": 6,
+        "bytes": 8021
+      },
+      "dequal": {
+        "files": 11,
+        "bytes": 14229
+      },
+      "detect-libc": {
+        "files": 8,
+        "bytes": 26437
+      },
+      "devlop": {
+        "files": 6,
+        "bytes": 22010
+      },
+      "dijkstrajs": {
+        "files": 7,
+        "bytes": 10798
+      },
+      "dingtalk-stream": {
+        "files": 13,
+        "bytes": 29416
+      },
+      "dom-serializer": {
+        "files": 32,
+        "bytes": 103770
+      },
+      "domelementtype": {
+        "files": 10,
+        "bytes": 11359
+      },
+      "domhandler": {
+        "files": 16,
+        "bytes": 75339
+      },
+      "domutils": {
+        "files": 68,
+        "bytes": 166738
+      },
+      "dsh-approval-gate": {
+        "files": 7,
+        "bytes": 138564
+      },
+      "dsh-context": {
+        "files": 883,
+        "bytes": 6913243
+      },
+      "dsh-cost-meter": {
+        "files": 959,
+        "bytes": 8756288
+      },
+      "dsh-drawai": {
+        "files": 10,
+        "bytes": 1054353
+      },
+      "dsh-ego-browser": {
+        "files": 47,
+        "bytes": 1248367
+      },
+      "dsh-infinite-gen-5": {
+        "files": 699,
+        "bytes": 78222697
+      },
+      "dsh-log": {
+        "files": 109,
+        "bytes": 502533
+      },
+      "dsh-mattpocock-skills-deck": {
+        "files": 438,
+        "bytes": 4593020
+      },
+      "dsh-plugin-update": {
+        "files": 183,
+        "bytes": 1752476
+      },
+      "dsh-plugin-wallpaper-engine": {
+        "files": 53,
+        "bytes": 4581565
+      },
+      "dsh-rewind-plugin": {
+        "files": 62,
+        "bytes": 567869
+      },
+      "dsh-undo-savepoint": {
+        "files": 57,
+        "bytes": 999731
+      },
+      "dsh-whale-widget": {
+        "files": 24,
+        "bytes": 7220176
+      },
+      "dsh-zotero": {
+        "files": 1138,
+        "bytes": 8940037
+      },
+      "dshmarket": {
+        "files": 424,
+        "bytes": 6555618
+      },
+      "dunder-proto": {
+        "files": 15,
+        "bytes": 13003
+      },
+      "emoji-regex": {
+        "files": 8,
+        "bytes": 48255
+      },
+      "encoding-japanese": {
+        "files": 20,
+        "bytes": 875313
+      },
+      "entities": {
+        "files": 68,
+        "bytes": 726088
+      },
+      "es-define-property": {
+        "files": 11,
+        "bytes": 10217
+      },
+      "es-errors": {
+        "files": 22,
+        "bytes": 12324
+      },
+      "es-object-atoms": {
+        "files": 16,
+        "bytes": 11967
+      },
+      "es-set-tostringtag": {
+        "files": 10,
+        "bytes": 14544
+      },
+      "eventemitter3": {
+        "files": 12,
+        "bytes": 74386
+      },
+      "exif-parser": {
+        "files": 25,
+        "bytes": 388763
+      },
+      "file-type": {
+        "files": 9,
+        "bytes": 139263
+      },
+      "find-up": {
+        "files": 5,
+        "bytes": 11611
+      },
+      "follow-redirects": {
+        "files": 7,
+        "bytes": 30959
+      },
+      "form-data": {
+        "files": 8,
+        "bytes": 83901
+      },
+      "function-bind": {
+        "files": 12,
+        "bytes": 31427
+      },
+      "generate-function": {
+        "files": 7,
+        "bytes": 9036
+      },
+      "get-caller-file": {
+        "files": 6,
+        "bytes": 4719
+      },
+      "get-intrinsic": {
+        "files": 9,
+        "bytes": 46542
+      },
+      "get-proto": {
+        "files": 15,
+        "bytes": 10840
+      },
+      "gifwrap": {
+        "files": 64,
+        "bytes": 6342409
+      },
+      "gopd": {
+        "files": 12,
+        "bytes": 9869
+      },
+      "has-symbols": {
+        "files": 16,
+        "bytes": 23409
+      },
+      "has-tostringtag": {
+        "files": 16,
+        "bytes": 17603
+      },
+      "hasown": {
+        "files": 10,
+        "bytes": 10332
+      },
+      "he": {
+        "files": 6,
+        "bytes": 124138
+      },
+      "html-to-text": {
+        "files": 6,
+        "bytes": 180659
+      },
+      "htmlparser2": {
+        "files": 151,
+        "bytes": 697977
+      },
+      "https-proxy-agent": {
+        "files": 11,
+        "bytes": 26008
+      },
+      "iconv-lite": {
+        "files": 27,
+        "bytes": 344185
+      },
+      "ieee754": {
+        "files": 5,
+        "bytes": 6796
+      },
+      "image-q": {
+        "files": 140,
+        "bytes": 845450
+      },
+      "imapflow": {
+        "files": 232,
+        "bytes": 1758049
+      },
+      "ip-address": {
+        "files": 30,
+        "bytes": 368767
+      },
+      "is-fullwidth-code-point": {
+        "files": 5,
+        "bytes": 4994
+      },
+      "is-property": {
+        "files": 5,
+        "bytes": 13580
+      },
+      "jimp": {
+        "files": 31,
+        "bytes": 3311403
+      },
+      "jpeg-js": {
+        "files": 9,
+        "bytes": 76029
+      },
+      "js-tokens": {
+        "files": 5,
+        "bytes": 15069
+      },
+      "js-yaml": {
+        "files": 36,
+        "bytes": 960180
+      },
+      "katex": {
+        "files": 225,
+        "bytes": 4188307
+      },
+      "leac": {
+        "files": 7,
+        "bytes": 32860
+      },
+      "libbase64": {
+        "files": 13,
+        "bytes": 28701
+      },
+      "libmime": {
+        "files": 9,
+        "bytes": 160639
+      },
+      "libqp": {
+        "files": 11,
+        "bytes": 26021
+      },
+      "lightningcss": {
+        "files": 14,
+        "bytes": 513814
+      },
+      "lightningcss-win32-x64-msvc": {
+        "files": 3,
+        "bytes": 9485640
+      },
+      "linkify-it": {
+        "files": 6,
+        "bytes": 55800
+      },
+      "locate-path": {
+        "files": 5,
+        "bytes": 6584
+      },
+      "long": {
+        "files": 10,
+        "bytes": 139458
+      },
+      "loose-envify": {
+        "files": 8,
+        "bytes": 5814
+      },
+      "lru.min": {
+        "files": 7,
+        "bytes": 33548
+      },
+      "mailparser": {
+        "files": 16,
+        "bytes": 92810
+      },
+      "marked": {
+        "files": 12,
+        "bytes": 510368
+      },
+      "math-intrinsics": {
+        "files": 38,
+        "bytes": 17323
+      },
+      "mdast-util-from-markdown": {
+        "files": 17,
+        "bytes": 97286
+      },
+      "mdast-util-to-string": {
+        "files": 7,
+        "bytes": 12692
+      },
+      "micromark": {
+        "files": 75,
+        "bytes": 209945
+      },
+      "micromark-core-commonmark": {
+        "files": 147,
+        "bytes": 266731
+      },
+      "micromark-factory-destination": {
+        "files": 9,
+        "bytes": 20549
+      },
+      "micromark-factory-label": {
+        "files": 9,
+        "bytes": 17588
+      },
+      "micromark-factory-space": {
+        "files": 9,
+        "bytes": 17845
+      },
+      "micromark-factory-title": {
+        "files": 9,
+        "bytes": 16527
+      },
+      "micromark-factory-whitespace": {
+        "files": 9,
+        "bytes": 12143
+      },
+      "micromark-util-character": {
+        "files": 9,
+        "bytes": 42421
+      },
+      "micromark-util-chunked": {
+        "files": 9,
+        "bytes": 16255
+      },
+      "micromark-util-classify-character": {
+        "files": 9,
+        "bytes": 11428
+      },
+      "micromark-util-combine-extensions": {
+        "files": 6,
+        "bytes": 12387
+      },
+      "micromark-util-decode-numeric-character-reference": {
+        "files": 9,
+        "bytes": 11414
+      },
+      "micromark-util-decode-string": {
+        "files": 9,
+        "bytes": 11088
+      },
+      "micromark-util-edit-map": {
+        "files": 9,
+        "bytes": 25903
+      },
+      "micromark-util-encode": {
+        "files": 6,
+        "bytes": 7971
+      },
+      "micromark-util-html-tag-name": {
+        "files": 6,
+        "bytes": 10426
+      },
+      "micromark-util-normalize-identifier": {
+        "files": 9,
+        "bytes": 12256
+      },
+      "micromark-util-resolve-all": {
+        "files": 6,
+        "bytes": 10316
+      },
+      "micromark-util-sanitize-uri": {
+        "files": 9,
+        "bytes": 17917
+      },
+      "micromark-util-subtokenize": {
+        "files": 15,
+        "bytes": 51162
+      },
+      "micromark-util-symbol": {
+        "files": 18,
+        "bytes": 40530
+      },
+      "micromark-util-types": {
+        "files": 5,
+        "bytes": 38308
+      },
+      "mime": {
+        "files": 10,
+        "bytes": 60080
+      },
+      "mime-db": {
+        "files": 6,
+        "bytes": 205539
+      },
+      "mime-types": {
+        "files": 5,
+        "bytes": 18272
+      },
+      "ms": {
+        "files": 4,
+        "bytes": 6721
+      },
+      "mysql2": {
+        "files": 135,
+        "bytes": 630064
+      },
+      "named-placeholders": {
+        "files": 4,
+        "bytes": 7156
+      },
+      "nan": {
+        "files": 50,
+        "bytes": 458856
+      },
+      "nodemailer": {
+        "files": 161,
+        "bytes": 1664440
+      },
+      "omggif": {
+        "files": 5,
+        "bytes": 38509
+      },
+      "on-exit-leak-free": {
+        "files": 12,
+        "bytes": 9246
+      },
+      "p-limit": {
+        "files": 5,
+        "bytes": 6214
+      },
+      "p-locate": {
+        "files": 5,
+        "bytes": 7285
+      },
+      "p-try": {
+        "files": 5,
+        "bytes": 4371
+      },
+      "pako": {
+        "files": 27,
+        "bytes": 788283
+      },
+      "parse-bmfont-ascii": {
+        "files": 3,
+        "bytes": 5208
+      },
+      "parse-bmfont-binary": {
+        "files": 4,
+        "bytes": 7059
+      },
+      "parse-bmfont-xml": {
+        "files": 6,
+        "bytes": 8923
+      },
+      "parseley": {
+        "files": 9,
+        "bytes": 63345
+      },
+      "path-exists": {
+        "files": 5,
+        "bytes": 3919
+      },
+      "peberminta": {
+        "files": 13,
+        "bytes": 180871
+      },
+      "pino": {
+        "files": 195,
+        "bytes": 663527
+      },
+      "pino-abstract-transport": {
+        "files": 16,
+        "bytes": 39716
+      },
+      "pino-std-serializers": {
+        "files": 21,
+        "bytes": 54009
+      },
+      "pixelmatch": {
+        "files": 31,
+        "bytes": 655623
+      },
+      "pngjs": {
+        "files": 60,
+        "bytes": 1021215
+      },
+      "process-warning": {
+        "files": 25,
+        "bytes": 36172
+      },
+      "proxy-from-env": {
+        "files": 5,
+        "bytes": 15643
+      },
+      "punycode.js": {
+        "files": 5,
+        "bytes": 33517
+      },
+      "qrcode": {
+        "files": 41,
+        "bytes": 135364
+      },
+      "qrcode-terminal": {
+        "files": 21,
+        "bytes": 96504
+      },
+      "qrcode.react": {
+        "files": 9,
+        "bytes": 114980
+      },
+      "quick-format-unescaped": {
+        "files": 7,
+        "bytes": 12829
+      },
+      "react": {
+        "files": 20,
+        "bytes": 318101
+      },
+      "real-require": {
+        "files": 4,
+        "bytes": 4827
+      },
+      "require-directory": {
+        "files": 7,
+        "bytes": 12071
+      },
+      "require-main-filename": {
+        "files": 5,
+        "bytes": 3928
+      },
+      "safe-stable-stringify": {
+        "files": 9,
+        "bytes": 33288
+      },
+      "safer-buffer": {
+        "files": 7,
+        "bytes": 42299
+      },
+      "sax": {
+        "files": 4,
+        "bytes": 61678
+      },
+      "schemastery": {
+        "files": 8,
+        "bytes": 133615
+      },
+      "selderee": {
+        "files": 7,
+        "bytes": 55869
+      },
+      "semver": {
+        "files": 53,
+        "bytes": 101065
+      },
+      "set-blocking": {
+        "files": 5,
+        "bytes": 4224
+      },
+      "sharp": {
+        "files": 47,
+        "bytes": 962168
+      },
+      "simple-xml-to-json": {
+        "files": 8,
+        "bytes": 52706
+      },
+      "smart-buffer": {
+        "files": 14,
+        "bytes": 138027
+      },
+      "socks": {
+        "files": 31,
+        "bytes": 156009
+      },
+      "sonic-boom": {
+        "files": 25,
+        "bytes": 86740
+      },
+      "split2": {
+        "files": 6,
+        "bytes": 17419
+      },
+      "sql-escaper": {
+        "files": 8,
+        "bytes": 58995
+      },
+      "ssh2": {
+        "files": 150,
+        "bytes": 1119022
+      },
+      "string-width": {
+        "files": 5,
+        "bytes": 5251
+      },
+      "strip-ansi": {
+        "files": 5,
+        "bytes": 4029
+      },
+      "strtok3": {
+        "files": 49,
+        "bytes": 111402
+      },
+      "thread-stream": {
+        "files": 69,
+        "bytes": 87242
+      },
+      "tinycolor2": {
+        "files": 14,
+        "bytes": 284855
+      },
+      "tlds": {
+        "files": 6,
+        "bytes": 18554
+      },
+      "token-types": {
+        "files": 5,
+        "bytes": 22231
+      },
+      "treg-dsh": {
+        "files": 6,
+        "bytes": 78147
+      },
+      "tweetnacl": {
+        "files": 12,
+        "bytes": 174046
+      },
+      "uc.micro": {
+        "files": 10,
+        "bytes": 8071
+      },
+      "uint8array-extras": {
+        "files": 5,
+        "bytes": 30549
+      },
+      "undici": {
+        "files": 214,
+        "bytes": 1927456
+      },
+      "unist-util-stringify-position": {
+        "files": 7,
+        "bytes": 13180
+      },
+      "utif2": {
+        "files": 5,
+        "bytes": 104760
+      },
+      "which-module": {
+        "files": 4,
+        "bytes": 4036
+      },
+      "wrap-ansi": {
+        "files": 4,
+        "bytes": 9500
+      },
+      "ws": {
+        "files": 19,
+        "bytes": 151410
+      },
+      "xml-parse-from-string": {
+        "files": 4,
+        "bytes": 3981
+      },
+      "xml2js": {
+        "files": 9,
+        "bytes": 44373
+      },
+      "xmlbuilder": {
+        "files": 45,
+        "bytes": 168433
+      },
+      "y18n": {
+        "files": 5,
+        "bytes": 10991
+      },
+      "yaml": {
+        "files": 233,
+        "bytes": 686297
+      },
+      "yargs": {
+        "files": 43,
+        "bytes": 182153
+      },
+      "yargs-parser": {
+        "files": 6,
+        "bytes": 71482
+      },
+      "zod": {
+        "files": 596,
+        "bytes": 3594196
+      },
       "dsh-feature-profiles": {
         "name": "dsh-feature-profiles",
-        "runtimeDeps": [],
         "files": 9,
         "bytes": 75449
       },
       "dsh-memory-fusion": {
         "name": "dsh-memory-fusion",
-        "runtimeDeps": [],
-        "files": 104,
-        "bytes": 6762261
+        "files": 145,
+        "bytes": 6924371
       },
       "dsh-skill-fusion": {
         "name": "dsh-skill-fusion",
-        "runtimeDeps": [
-          "js-yaml"
-        ],
-        "files": 276,
-        "bytes": 2667342
+        "files": 5394,
+        "bytes": 96253571
       },
       "dsh-ollama": {
         "name": "dsh-ollama",
-        "runtimeDeps": [],
-        "files": 11,
-        "bytes": 81208
+        "files": 15,
+        "bytes": 149053
       },
       "dsh-purge": {
         "name": "dsh-purge",
-        "runtimeDeps": [],
-        "files": 152,
-        "bytes": 6871267
+        "files": 154,
+        "bytes": 6876073
       },
       "@local/dsh-client-ui-workbench": {
         "name": "@local/dsh-client-ui-workbench",
-        "runtimeDeps": [],
         "files": 9,
         "bytes": 27406
       }
     }
   },
-  "skippedSymlinks": 5,
+  "skippedSymlinks": 0,
   "assertions": [
     {
       "check": "exists:payload/node_modules/dsh-skill-fusion/lib/index.js",
@@ -336,8 +1497,8 @@
       "ok": true
     },
     {
-      "check": "exists:payload/node_modules/dsh-skill-fusion/node_modules/js-yaml/index.js",
-      "why": "skill-fusion 运行依赖",
+      "check": "exists:payload/node_modules/js-yaml/index.js",
+      "why": "skill-fusion 运行依赖（顶层解析）",
       "ok": true
     },
     {
@@ -371,8 +1532,65 @@
       "ok": true
     },
     {
-      "check": "no:.pnpm",
-      "pnpmDirs": 0,
+      "check": "exists:payload/node_modules/entities/package.json",
+      "why": "entities 顶层（v2.1.0 事故点）",
+      "ok": true
+    },
+    {
+      "check": "exists:payload/node_modules/htmlparser2/node_modules/entities/package.json",
+      "why": "entities 嵌套（v2.1.0 事故点）",
+      "ok": true
+    },
+    {
+      "check": "integrity:top-level-identical",
+      "packages": 294,
+      "mismatched": 0,
+      "detail": [],
+      "ok": true
+    },
+    {
+      "check": "integrity:link-src-identical",
+      "packages": 6,
+      "mismatched": 0,
+      "detail": [],
+      "ok": true
+    },
+    {
+      "check": "deps:tree-advisory",
+      "packagesScanned": 335,
+      "missing": 0,
+      "optionalMissing": 63,
+      "detail": [],
+      "ok": true
+    },
+    {
+      "check": "deps:plugin-closure",
+      "roots": 6,
+      "packagesScanned": 8,
+      "packages": [
+        "dsh-feature-profiles",
+        "dsh-memory-fusion",
+        "dsh-skill-fusion",
+        "js-yaml",
+        "argparse",
+        "dsh-ollama",
+        "dsh-purge",
+        "@local/dsh-client-ui-workbench"
+      ],
+      "missing": 0,
+      "detail": [],
+      "ok": true
+    },
+    {
+      "check": "integrity:nested-node_modules",
+      "src": 250,
+      "dst": 249,
+      "skippedByDesign": 251,
+      "ok": true
+    },
+    {
+      "check": "info:pnpm-dirs-kept",
+      "pnpmDirs": 2,
       "ok": true
     },
     {
@@ -381,13 +1599,13 @@
       "ok": true
     },
     {
-      "check": "no:sourcemaps",
-      "maps": 0,
+      "check": "info:sourcemaps-kept",
+      "maps": 1576,
       "ok": true
     },
     {
-      "check": "no:test-dirs",
-      "testDirs": 0,
+      "check": "info:test-dirs-kept",
+      "testDirs": 79,
       "ok": true
     },
     {
@@ -396,9 +1614,10 @@
       "sha256": "6e996b1d95fb65ee0d0b9625cc09419e5762a3a77dd937cad983abee5dac6d9d"
     }
   ],
+  "integrity": [],
   "kernel": {
     "expected": "0.2.x / 0.3.x 二选（不硬拒）",
-    "builtAgainst": "2.1.0"
+    "builtAgainst": "2.1.1"
   },
   "kernelVersionBuilt": "0.2.1-rc.2",
   "profileBundles": [
