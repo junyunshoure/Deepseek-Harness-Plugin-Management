@@ -1,0 +1,130 @@
+{
+  "patchVersion": "2.0.1-patch.1",
+  "basePack": "v2.0.0",
+  "kind": "instruction-patch",
+  "releasedAt": "2026-10-29",
+  "protocol": "ALIGNMENT_PROTOCOL v1.0",
+  "artifact": {
+    "name": "DSH-Plugins-v2.0.1-patch.1.zip",
+    "size": 16753,
+    "sha256": "2dedef50058d0964b9b5187bf5dd3ea28150bacf013ab8edec85c12b5283c6d2"
+  },
+  "packageFiles": [
+    {
+      "path": "ALIGNMENT-PROTOCOL.md",
+      "size": 5816,
+      "sha256": "053c284fed1b33abda3fdbdd6893f6a52692bc8be7d37be5f03d98ee3e7909fb"
+    },
+    {
+      "path": "APPLY.cmd",
+      "size": 570,
+      "sha256": "287a7136f142dd238215823b23a97e30e54dc879c4655c349d4fde09fceebdb0"
+    },
+    {
+      "path": "apply.command",
+      "size": 2794,
+      "sha256": "53786831af972a555efca7b4861ac89cbb432a044e45b743112cb428381e8cb8"
+    },
+    {
+      "path": "apply.ps1",
+      "size": 6907,
+      "sha256": "4c52ebf2daa92798ea4749e277ba8f52008fc961b8120cfe383f1f5004dcbfc8"
+    },
+    {
+      "path": "CHECK.cmd",
+      "size": 223,
+      "sha256": "b3ed434fcbbd0c4a72907dd3f28f476d7a9f21ffa4181edc8e11281de09e8479"
+    },
+    {
+      "path": "checksums.json",
+      "size": 1490,
+      "sha256": "328fb25e280cf9c969ed11df34fd3cdf1dd0c56c4b945311fa2020c1a3ba4b45"
+    },
+    {
+      "path": "docs/对齐提问协议.md",
+      "size": 5280,
+      "sha256": "e9da9695ca51c20fca611b87ca9d8067e30e6eb44f310a8099531a81d0d49c31"
+    },
+    {
+      "path": "patch.json",
+      "size": 1923,
+      "sha256": "2cd45732a282874b8afe3dfa65127105c582036df38302f90f75c266603a2866"
+    },
+    {
+      "path": "README.md",
+      "size": 4525,
+      "sha256": "b01b6d0dbd7f275a7cdeb30b374fb0f0ad44157fb68a5f787b6b77c04b4675d6"
+    },
+    {
+      "path": "UNINSTALL.cmd",
+      "size": 270,
+      "sha256": "5409fc08a88f37a9a7099b5a8a77af921bd470e25b3318ebe2216a986d6b1201"
+    }
+  ],
+  "installer": "self-verifying: apply.ps1 compares every file against checksums.json before writing",
+  "tests": [
+    {
+      "id": "T1",
+      "name": "checksum self-check",
+      "command": "apply.ps1 -CheckOnly",
+      "result": "pass",
+      "detail": "9/9 files SHA-256 match"
+    },
+    {
+      "id": "T2",
+      "name": "dry run writes nothing",
+      "command": "apply.ps1 -CheckOnly -Target <tmp>",
+      "result": "pass",
+      "detail": "target unchanged, 13 chars before/after"
+    },
+    {
+      "id": "T3",
+      "name": "append to file with user content",
+      "command": "apply.ps1 -Target <tmp>",
+      "result": "pass",
+      "detail": "13 -> 2613 chars, user line preserved"
+    },
+    {
+      "id": "T4",
+      "name": "idempotent re-run",
+      "command": "apply.ps1 -Target <tmp> x2",
+      "result": "pass",
+      "detail": "byte-identical after second run, marker count=1"
+    },
+    {
+      "id": "T5",
+      "name": "uninstall removes only the block",
+      "command": "apply.ps1 -Uninstall -Target <tmp>",
+      "result": "pass",
+      "detail": "no marker left, user content intact, backup written"
+    },
+    {
+      "id": "T6",
+      "name": "shipped zip end-to-end",
+      "command": "Expand-Archive + apply.ps1 -Target <tmp>",
+      "result": "pass",
+      "detail": "extracted package applies cleanly, marker count=1"
+    },
+    {
+      "id": "T7",
+      "name": "macOS/Linux script syntax",
+      "command": "bash -n apply.command",
+      "result": "pass",
+      "detail": "exit 0"
+    },
+    {
+      "id": "T8",
+      "name": "installed on this machine",
+      "command": "apply.ps1 (real target)",
+      "result": "pass",
+      "detail": "%USERPROFILE%\\\\.dsh\\\\AGENTS.md 668 -> 3269 chars, DEPTH_MODE section kept"
+    }
+  ],
+  "rollback": {
+    "steps": [
+      "run UNINSTALL.cmd (removes the marker block only)",
+      "or copy the backup AGENTS.md back"
+    ],
+    "backup": "%LOCALAPPDATA%\\\\DSHPluginMigration\\\\align-protocol-20261029\\\\backup-<ts>\\\\AGENTS.md"
+  }
+}

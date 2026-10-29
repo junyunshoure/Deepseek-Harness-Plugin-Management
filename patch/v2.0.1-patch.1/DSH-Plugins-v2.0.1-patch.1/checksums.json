@@ -1,0 +1,52 @@
+{
+  "generatedAt": "2026-10-29T08:11:56.9445139+08:00",
+  "algorithm": "sha256",
+  "fileCount": 9,
+  "files": [
+    {
+      "path": "ALIGNMENT-PROTOCOL.md",
+      "size": 5816,
+      "sha256": "053c284fed1b33abda3fdbdd6893f6a52692bc8be7d37be5f03d98ee3e7909fb"
+    },
+    {
+      "path": "APPLY.cmd",
+      "size": 570,
+      "sha256": "287a7136f142dd238215823b23a97e30e54dc879c4655c349d4fde09fceebdb0"
+    },
+    {
+      "path": "apply.command",
+      "size": 2794,
+      "sha256": "53786831af972a555efca7b4861ac89cbb432a044e45b743112cb428381e8cb8"
+    },
+    {
+      "path": "apply.ps1",
+      "size": 6907,
+      "sha256": "4c52ebf2daa92798ea4749e277ba8f52008fc961b8120cfe383f1f5004dcbfc8"
+    },
+    {
+      "path": "CHECK.cmd",
+      "size": 223,
+      "sha256": "b3ed434fcbbd0c4a72907dd3f28f476d7a9f21ffa4181edc8e11281de09e8479"
+    },
+    {
+      "path": "docs/对齐提问协议.md",
+      "size": 5280,
+      "sha256": "e9da9695ca51c20fca611b87ca9d8067e30e6eb44f310a8099531a81d0d49c31"
+    },
+    {
+      "path": "patch.json",
+      "size": 1923,
+      "sha256": "2cd45732a282874b8afe3dfa65127105c582036df38302f90f75c266603a2866"
+    },
+    {
+      "path": "README.md",
+      "size": 4525,
+      "sha256": "b01b6d0dbd7f275a7cdeb30b374fb0f0ad44157fb68a5f787b6b77c04b4675d6"
+    },
+    {
+      "path": "UNINSTALL.cmd",
+      "size": 270,
+      "sha256": "5409fc08a88f37a9a7099b5a8a77af921bd470e25b3318ebe2216a986d6b1201"
+    }
+  ]
+}

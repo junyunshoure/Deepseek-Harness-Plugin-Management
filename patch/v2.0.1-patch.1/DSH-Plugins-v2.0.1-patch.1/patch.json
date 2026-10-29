@@ -1,0 +1,41 @@
+{
+  "id": "align-protocol-20261029",
+  "patchVersion": "2.0.1-patch.1",
+  "kind": "instruction-patch",
+  "title": "对齐提问协议 v1.0（ALIGNMENT_PROTOCOL）",
+  "protocol": "ALIGNMENT_PROTOCOL v1.0",
+  "basePack": "v2.0.0",
+  "releasedAt": "2026-10-29",
+  "platforms": ["windows", "macos", "linux"],
+  "what": "在每个任务动手前，按难度/广度生成若干个对齐问题（0 到 50 个），把方案对齐后再执行；执行参数（深度档位）单独用交互卡片提问。",
+  "targets": {
+    "windows": "%USERPROFILE%\\.dsh\\AGENTS.md",
+    "macos": "~/.dsh/AGENTS.md",
+    "linux": "~/.dsh/AGENTS.md"
+  },
+  "entries": {
+    "windows": ["APPLY.cmd", "CHECK.cmd", "UNINSTALL.cmd", "apply.ps1"],
+    "macos": ["apply.command"]
+  },
+  "blockMarkers": {
+    "start": "<!-- ALIGNMENT_PROTOCOL v1.0 START",
+    "end": "ALIGNMENT_PROTOCOL v1.0 END -->"
+  },
+  "idempotent": true,
+  "neverOverwritesUserContent": true,
+  "backupDir": {
+    "windows": "%LOCALAPPDATA%\\DSHPluginMigration\\align-protocol-20261029\\backup-<timestamp>\\AGENTS.md",
+    "macos": "~/.dsh/migration/align-protocol-20261029/backup-<timestamp>/AGENTS.md"
+  },
+  "rollback": "UNINSTALL.cmd（只删标记块）；或把备份的 AGENTS.md 覆盖回去",
+  "requiresRestart": true,
+  "diffSummary": [
+    "新增：难度 4 档（D0 0-2 问 / D1 3-6 问 / D2 8-15 问 / D3 15-30 问，最多 50）",
+    "新增：每问必须带推荐默认值 + 一句取舍",
+    "新增：执行参数（深度档位）单独提问，且必须使用交互卡片",
+    "新增：不触发白名单（事实查询/只读命令/已锁定方案/紧急排障/子任务已对齐）",
+    "新增：与 DEPTH_MODE 合并的固定两步（先卡片定档，再按档出清单）",
+    "新增：完成时的对齐回执结构（按推荐/改单/实测证据/未验证项/回滚路径）",
+    "新增：子代理与队友必须继承该协议"
+  ]
+}
