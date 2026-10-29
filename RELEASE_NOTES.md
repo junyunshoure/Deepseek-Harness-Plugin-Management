@@ -1,6 +1,60 @@
+# 整合包 v2.1.0 — 升级/修复/维护收进主包，瘦身 36.6%
+
+**版本类型**：大版本（Latest）· **发布日**：2026-10-29 · **基线**：v2.0.0 + 补丁 v2.0.2-patch.1 / v2.0.1-patch.1（两份补丁已被本包吸收）· **适用内核** `0.2.x` / `0.3.x`（按 `0.2.1-rc.2` 构建，门禁 `>=0.2.0 <0.4.0`，版本不同只提示不阻断）
+
+## 附件
+
+| 文件 | 体积 | SHA-256 |
+|---|---|---|
+| `DSH-Plugins-v2.1.0-Windows-x64.zip` | 126,503,120 B（约 120.6 MB） | `34595dd5fcba873f7f6bea9c237d562011a89d2c266fdab803c24ee17c35dc55` |
+| `DSH-Plugins-v2.1.0-Windows-x64.zip.sha256` | 100 B | 校验文件（`<hash>  <文件名>`） |
+| `release-validation.json` | 2,521 B | 发布前自检结果，16 项全过 |
+
+服务包不重出：继续用 `v2.0.0` 的 `DSH-Plugins-v2.0.0-Services.zip`（680.1 MB，`106fce67b33b3c9548132839e1c1ad1972cb76dcddf5379251616c307f2397a6`），插件包与它互不依赖。仓库内 `stable-v2/` 为可读源码与文档（27 项 / 93 文件 / 2.82 MB，不含 `payload/`）。
+
+## 这个版本到底改了什么
+
+v2.1.0 的真正增量**不是新插件，而是把「补丁要人记命令」变成默认行为**。
+
+| # | 类别 | 内容 |
+|---|---|---|
+| 1 | 新增 **D 升级** | `UPGRADE.cmd`（等价 `INSTALL.cmd` 选 D）：读现有 profile 的 `link:` → 备份 → 逐个重指向新载荷 → 按 realpath 核对 → 报告差异。整包换版本不必卸载重装 |
+| 2 | 新增 **E 修复** | 同 D，但不新增任何未声明的依赖；专治「升级后插件静默消失」 |
+| 3 | 新增 **维护引擎** | `MAINTAIN.cmd`（`maintain.ps1`，8 步幂等）：包自检 / 定位 DSH / AGENTS 标记块 / CL-001 日志轮转 / CL-002-004 废包残留 / CL-005 临时文件 / CL-006 巨日志 / CL-007 `LLM_*` 核验；支持 `-Rollback` 按备份清单还原 |
+| 4 | 新增 **PRUNE 清理** | `PRUNE.cmd` 默认只预演；保留 7 天内、仍被 `link:` 引用的载荷目录永不删 |
+| 5 | 变更 **对齐协议写入方式** | `appendix/AGENTS.appendix.md` 以 START/END 标记块**替换**写入 `AGENTS.md`，写后断言标记各 1 个，重复运行不叠加 |
+| 6 | 新增 **场景记忆模板** | `templates/workbench-toolkit/`（7 文件 + README）随包分发，**只放模板不自动写** |
+| 7 | 变更 **瘦身 36.6%** | 载荷 502.41 MB → **318.79 MB**、23,071 → **10,670** 文件；安装包 182.5 MB → **120.6 MB** |
+| 8 | 变更 **载荷按运行依赖面裁剪** | `dsh-skill-fusion` 91.8 MB → 3.0 MB（只带 `js-yaml`，`@deepseek-ai/*` 由内核提供）；裁剪版与原始版 `--dump-config` 输出字节数完全相同、`skipping profile bundle` 命中 0 |
+| 9 | 变更 **内核门禁放宽** | `>=0.2.1-rc.2 <0.3.0` → **`>=0.2.0 <0.4.0`**：0.2.x / 0.3.x 都放行，与本包基准不同只提示不阻断，0.4+ 才拒 |
+| 10 | 变更 **离线优先** | 挂载插件三级回退（`--offline` → `--offline --config.lockfile=false` → 只告警继续），默认不联网；要联网须显式 `--allow-network` |
+| 11 | 新增 **`--skills-root`** | 技能可装到隔离目录，演练与多环境不互相踩 |
+| 12 | 变更 **校验更快更准** | 纯 PowerShell 校验 10,761 个文件 **3 秒**（v2.0.0 为 12.7 秒 / 23,249 文件） |
+| 13 | 修复 **长路径误报** | Windows PowerShell 5.1 的 `Test-Path` 走 MAX_PATH 260，260 字符以上的文件被误判缺失 → 改用 `\\?\` 前缀 + `System.IO.FileInfo` |
+| 14 | 修复 **`Get-FileHash` 找不到** | 从 pwsh 7 调用 `powershell.exe` 时 `PSModulePath` 被占，`Microsoft.PowerShell.Utility` 加载不到 → 两处哈希改用 .NET `SHA256` 实现 |
+| 15 | 修复 **`verify` 只打印一半** | `install.ps1` 调 GUI 子系统 exe 时 PowerShell 不等待 → 改管道逐行转发，读到 EOF 才继续 |
+| 16 | 修复 **`defaultStore` TDZ** | 旧载荷探测段引用了下面才声明的常量 → 段位移到 store 解析之后 |
+| 17 | 修复 **`ENOTEMPTY`** | 删旧载荷偶发目录非空 → `maxRetries: 5`，仍失败则改名让路并告警 |
+| 18 | 变更 **入口 6 → 9** | 新增 `UPGRADE.cmd` / `MAINTAIN.cmd` / `PRUNE.cmd` |
+| 19 | 变更 **凭据 schema** | `inventory.json` v2 → **v3**（新增 `packVersion`/`maintainedAt`/`trimmed`/`assertions`）；`migration.json` schema 2 → **3**（`supportedModes` 加 `upgrade`/`repair`） |
+| 20 | 变更 **文档补齐** | 8 篇：使用说明书加「升级/修复/维护/清理」四节、新功能说明重写 11 节、常见问题加 v2.1.0 专属 5 条、配置参考加门禁对照表 |
+
+## 发布前自检（16/16）
+
+32 包版本对齐 · state bundle · 技能 6 · 能力手册 47 篇 + `always.json` + `_index.md` · 配置骨架 · 占位符 · 无本机凭据 · 无 `.credentials` · 9 个入口齐全 · 11 份文档 · macOS 4 件 · payload 无符号链接 · payload 10,670 ≥ 快照 · checksums 10,761 条无悬空 · **payload 无开发件残留**（`.map` / `tests` / `.github` 命中 0）· appendix 标记各 1 个 + workbench-toolkit 7 文件齐全。
+
+## 装
+
+- **全新机器**：解压 → `INSTALL.cmd` 选 **A**（空壳全新）→ 填自己的模型地址与密钥 → 完成。
+- **已有插件**：选 **B** 智能合并（默认）或 **C** 备份后覆盖。
+- **从 v2.0.0 升上来**：解压新包 → 双击 **`UPGRADE.cmd`**。
+- **升级后插件消失**：双击 `UPGRADE.cmd` 或 `INSTALL.cmd` 选 **E**。
+
+---
+
 # 补丁 v2.0.2-patch.1 — 环境自愈（CL-001 … CL-007）
 
-**版本类型**：补丁（Latest）· **发布日**：2026-10-29 · **基线**：v2.0.0（可与 v2.0.1-patch.1 并存）· **体积**：20.1 KB
+**版本类型**：补丁（已被 v2.1.0 吸收，仅旧机器单独装）· **发布日**：2026-10-29 · **基线**：v2.0.0（可与 v2.0.1-patch.1 并存）· **体积**：20.1 KB
 
 把 `docs/改动日志.md` 里七条手工改动（CL-001…CL-007）固化成**幂等、可回滚、可重复运行**的小工具。不重打整包，不碰插件载荷与配置骨架。
 
