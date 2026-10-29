@@ -1,0 +1,165 @@
+{
+  "patchVersion": "2.0.2-patch.1",
+  "basePack": "v2.0.0 (+ optional v2.0.1-patch.1)",
+  "kind": "maintenance-patch",
+  "releasedAt": "2026-10-29",
+  "scope": "CL-001 .. CL-007 (environment self-healing)",
+  "artifact": {
+    "name": "DSH-Plugins-v2.0.2-patch.1.zip",
+    "size": 20542,
+    "sha256": "bdd3ec636c4ab0b60ce52c15b584fa0ef9cd399025a7e59b19082507bd22398a"
+  },
+  "packageFiles": [
+    {
+      "path": "APPLY.cmd",
+      "size": 462,
+      "sha256": "f1874d32b393fcedac7b4c67cfa6e2256105c1ecb944fc325d640641534a37ca"
+    },
+    {
+      "path": "apply.command",
+      "size": 9234,
+      "sha256": "6e3b11a8fd37145d1442bbdc650045f28e7b7afd5d68a90518b362b5fac4f742"
+    },
+    {
+      "path": "apply.ps1",
+      "size": 21530,
+      "sha256": "a9ca9e452ad9f59cf700bf7a1860325444d71eec461f38aaf8b6827a51dc1a82"
+    },
+    {
+      "path": "CHECK.cmd",
+      "size": 318,
+      "sha256": "ab80fad4895c7edff214584c538c46cace722986742a21141061f97c87727d46"
+    },
+    {
+      "path": "checksums.json",
+      "size": 1992,
+      "sha256": "dc0c2ccc12d77a22df486333da19f250608f68b29dc383592304c6850b18b8e4"
+    },
+    {
+      "path": "docs/环境维护与自检.md",
+      "size": 7010,
+      "sha256": "78dcdbe6ebdfed5f44787b572fd2f26c0d7b673bd2e12b6637d92a80794cd38b"
+    },
+    {
+      "path": "patch.json",
+      "size": 2626,
+      "sha256": "bb3578e8110d5b904649b7e97463b66f05d096b273bbf00fd989cdf1131b4fcb"
+    },
+    {
+      "path": "README.md",
+      "size": 4753,
+      "sha256": "e629c3d6384db0365f486b8fb1025c874e401c02c566af5156289df971434e96"
+    },
+    {
+      "path": "ROLLBACK.cmd",
+      "size": 332,
+      "sha256": "fc01cdcee4e861684c47e911a55f0ef0883f7129a820dabd5ad3c13af32ce1e1"
+    }
+  ],
+  "installer": "self-verifying: apply.ps1 compares all 8 payload files against checksums.json before touching the machine",
+  "safety": [
+    "CL-002/003 removes only directories with 0 files; any directory with content is kept and reported",
+    "CL-006 reports giant logs by default; deletion needs -PurgeLogs and a dead PID",
+    "CL-007 writes user environment variables only when all three values are supplied; the API key never enters the package, the report or the logs",
+    "every write is backed up into a single rollback set (-Rollback restores it)",
+    "-CheckOnly creates no file at all"
+  ],
+  "tests": [
+    {
+      "id": "T1",
+      "name": "checksum self-check",
+      "command": "apply.ps1 -CheckOnly",
+      "result": "pass",
+      "detail": "8/8 payload files SHA-256 match; a tampered copy aborts with \"checksum mismatch\""
+    },
+    {
+      "id": "T2",
+      "name": "dry run writes nothing",
+      "command": "apply.ps1 -CheckOnly -DshHome <fixture>",
+      "result": "pass",
+      "detail": "fixture tree hash identical before/after, backup store never created"
+    },
+    {
+      "id": "T3",
+      "name": "CL-001 rotation patch",
+      "command": "apply.ps1 -DshHome <fixture>",
+      "result": "pass",
+      "detail": "rotation=\"00:00\" -> rotation=\"100 MB\", retention/compression untouched, original kept in backup"
+    },
+    {
+      "id": "T4",
+      "name": "CL-002/003 residue",
+      "command": "apply.ps1 -DshHome <fixture>",
+      "result": "pass",
+      "detail": "0-file residue removed, real packages kept, package.json reference stripped and still valid JSON"
+    },
+    {
+      "id": "T5",
+      "name": "CL-004 empty bundle dir",
+      "command": "apply.ps1 -DshHome <fixture>",
+      "result": "pass",
+      "detail": "empty declared dependency detected and reported"
+    },
+    {
+      "id": "T6",
+      "name": "idempotent re-run",
+      "command": "apply.ps1 -DshHome <fixture> (twice)",
+      "result": "pass",
+      "detail": "tree hash unchanged, rotation appears exactly once, second run reports skip"
+    },
+    {
+      "id": "T7",
+      "name": "CL-006 gating",
+      "command": "apply.ps1 -LogSizeMB 1 / -PurgeLogs",
+      "result": "pass",
+      "detail": "dead-PID log reported then deleted with -PurgeLogs; live-PID log kept in both runs; savedBytes recorded"
+    },
+    {
+      "id": "T8",
+      "name": "rollback",
+      "command": "apply.ps1 -Rollback",
+      "result": "pass",
+      "detail": "logger_utils.py and package.json restored byte-for-byte, removed empty residue dir recreated"
+    },
+    {
+      "id": "T9",
+      "name": "macOS/Linux script syntax",
+      "command": "bash -n apply.command",
+      "result": "pass",
+      "detail": "exit 0"
+    },
+    {
+      "id": "T10",
+      "name": "real machine",
+      "command": "apply.ps1 (this box)",
+      "result": "pass",
+      "detail": "CL-001 already 100 MB -> skip, dsh-shared 32 files -> kept, no *.tmp, no giant log, all four LLM_* vars present; nothing written, backup dir intentionally not created"
+    },
+    {
+      "id": "T11",
+      "name": "shipped zip end-to-end",
+      "command": "Expand-Archive + apply.ps1 -CheckOnly / apply.ps1",
+      "result": "pass",
+      "detail": "extracted 9 files, 8/8 checksums verified, change plan 4 findings, apply ok; one-byte tamper on APPLY.cmd aborts with \"checksum mismatch\""
+    }
+  ],
+  "rollback": {
+    "store": "%LOCALAPPDATA%/DSHPluginMigration/maintenance-20261029",
+    "command": "ROLLBACK.cmd  (or apply.ps1 -Rollback)",
+    "restores": [
+      "logger_utils.py",
+      "profile package.json files",
+      "recreates removed 0-file residue dirs empty"
+    ],
+    "notRestored": [
+      "deleted *.tmp files (intermediate)",
+      "purged dead-PID logs (runtime产物, not backed up)",
+      "user environment variables (previous set/unset state recorded in user-env-before.json)"
+    ]
+  },
+  "parityGaps": [
+    "apply.command (macOS/Linux) does not strip deprecated references from package.json - it warns and names the line to remove",
+    "CL-007 on macOS/Linux reports status and prints export lines; it does not edit shell profiles"
+  ],
+  "integration": "v2.1.0 full pack will fold this engine into install.ps1 (install / upgrade / repair paths); until then this patch is the executable list."
+}

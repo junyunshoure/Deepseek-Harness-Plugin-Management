@@ -1,0 +1,69 @@
+{
+  "patch": "v2.0.2-patch.1",
+  "id": "maintenance-20261029",
+  "title": "Environment maintenance engine (CL-001 .. CL-007)",
+  "base": "v2.0.0 (+ optional v2.0.1-patch.1)",
+  "releaseDate": "2026-10-29",
+  "requires": {
+    "powershell": "5.1 or PowerShell 7+ (Windows)",
+    "bash": "3.2 or newer (macOS / Linux)",
+    "admin": false
+  },
+  "operations": [
+    {
+      "id": "CL-001",
+      "name": "ReMe log rotation by size",
+      "kind": "fix",
+      "target": "<DshHome>/services/*/... /reme/utils/logger_utils.py",
+      "rule": "rotation=\"00:00\" -> rotation=\"100 MB\" (idempotent, backed up)"
+    },
+    {
+      "id": "CL-002/003",
+      "name": "Deprecated package residue",
+      "kind": "cleanup",
+      "target": "<profile>/node_modules/<deprecated>",
+      "rule": "remove only when the directory has 0 files; strip references from package.json"
+    },
+    {
+      "id": "CL-004",
+      "name": "Empty bundle directory self-check",
+      "kind": "fix",
+      "target": "<profile>/node_modules/* (declared dependencies)",
+      "rule": "directory exists but file count is 0 => treated as not installed; -RepairEmpty attempts reinstall"
+    },
+    {
+      "id": "CL-005",
+      "name": "feature-profiles temp files",
+      "kind": "cleanup",
+      "target": "<profile>/feature-profiles/*.tmp",
+      "rule": "delete leftover .tmp files"
+    },
+    {
+      "id": "CL-006",
+      "name": "Giant log purge",
+      "kind": "cleanup",
+      "target": "<DshHome>/services/*/logs/*.log",
+      "rule": "report files larger than -LogSizeMB whose PID is dead; delete only with -PurgeLogs"
+    },
+    {
+      "id": "CL-007",
+      "name": "ReMe memory LLM user environment",
+      "kind": "config",
+      "target": "user environment variables LLM_BACKEND / LLM_MODEL_NAME / LLM_BASE_URL / LLM_API_KEY",
+      "rule": "report presence without values; write only when explicit values are passed; never store the key in the package or the report"
+    }
+  ],
+  "flags": {
+    "-CheckOnly": "report only, nothing is written",
+    "-RepairEmpty": "attempt to reinstall empty declared dependencies (pnpm / dsh plugin add)",
+    "-PurgeDeprecated": "also delete deprecated directories that still contain files (use with care)",
+    "-PurgeLogs": "actually delete giant logs of dead processes",
+    "-LogSizeMB <n>": "threshold for CL-006 (default 100)",
+    "-Rollback": "restore the newest backup set",
+    "-LlmBaseUrl / -LlmModel / -LlmApiKey": "values for CL-007 (omitted => status only)"
+  },
+  "rollback": {
+    "store": "%LOCALAPPDATA%/DSHPluginMigration/maintenance-20261029",
+    "command": "apply.ps1 -Rollback"
+  }
+}

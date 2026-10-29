@@ -1,0 +1,47 @@
+{
+    "generatedFor":  "DSH-Plugins-v2.0.2-patch.1",
+    "algorithm":  "SHA-256",
+    "fileCount":  8,
+    "files":  [
+                  {
+                      "path":  "APPLY.cmd",
+                      "sha256":  "f1874d32b393fcedac7b4c67cfa6e2256105c1ecb944fc325d640641534a37ca",
+                      "bytes":  462
+                  },
+                  {
+                      "path":  "apply.command",
+                      "sha256":  "6e3b11a8fd37145d1442bbdc650045f28e7b7afd5d68a90518b362b5fac4f742",
+                      "bytes":  9234
+                  },
+                  {
+                      "path":  "apply.ps1",
+                      "sha256":  "a9ca9e452ad9f59cf700bf7a1860325444d71eec461f38aaf8b6827a51dc1a82",
+                      "bytes":  21530
+                  },
+                  {
+                      "path":  "CHECK.cmd",
+                      "sha256":  "ab80fad4895c7edff214584c538c46cace722986742a21141061f97c87727d46",
+                      "bytes":  318
+                  },
+                  {
+                      "path":  "docs/环境维护与自检.md",
+                      "sha256":  "78dcdbe6ebdfed5f44787b572fd2f26c0d7b673bd2e12b6637d92a80794cd38b",
+                      "bytes":  7010
+                  },
+                  {
+                      "path":  "patch.json",
+                      "sha256":  "bb3578e8110d5b904649b7e97463b66f05d096b273bbf00fd989cdf1131b4fcb",
+                      "bytes":  2626
+                  },
+                  {
+                      "path":  "README.md",
+                      "sha256":  "e629c3d6384db0365f486b8fb1025c874e401c02c566af5156289df971434e96",
+                      "bytes":  4753
+                  },
+                  {
+                      "path":  "ROLLBACK.cmd",
+                      "sha256":  "fc01cdcee4e861684c47e911a55f0ef0883f7129a820dabd5ad3c13af32ce1e1",
+                      "bytes":  332
+                  }
+              ]
+}

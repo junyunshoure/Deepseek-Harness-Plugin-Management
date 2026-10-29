@@ -1,3 +1,85 @@
+# 补丁 v2.0.2-patch.1 — 环境自愈（CL-001 … CL-007）
+
+**版本类型**：补丁（Latest）· **发布日**：2026-10-29 · **基线**：v2.0.0（可与 v2.0.1-patch.1 并存）· **体积**：20.1 KB
+
+把 `docs/改动日志.md` 里七条手工改动（CL-001…CL-007）固化成**幂等、可回滚、可重复运行**的小工具。不重打整包，不碰插件载荷与配置骨架。
+
+## 附件
+
+| 文件 | 内容 | SHA-256 |
+|---|---|---|
+| `DSH-Plugins-v2.0.2-patch.1.zip` | 补丁包：安装器 + 七条修复 + 中文文档 | `bdd3ec636c4ab0b60ce52c15b584fa0ef9cd399025a7e59b19082507bd22398a` |
+
+仓库内另存解压后的源码树与 `release-validation.json`：`patch/v2.0.2-patch.1/`。
+
+## 修什么
+
+| 编号 | 问题 | 补丁行为 |
+|---|---|---|
+| CL-001 | ReMe `logger_utils.py` 用 `rotation="00:00"`，每天一个文件且永不删除，日志无限膨胀 | 改为 `rotation="100 MB"`；`retention="7 days"`、`compression="zip"` 原样保留；已改过则跳过 |
+| CL-002 | `node_modules` 里残留旧插件包目录（dsh-skill-hub / dsh-my-skill-manager / web-ui-skill-explorer） | 只删**0 文件**的空壳目录；有内容的目录保留并报告 |
+| CL-003 | 上述残留若仍被 `dependencies` 引用，会变成断链 | 从 profile 的 `package.json` 里剥掉对应引用（先备份，改写后仍是合法 JSON） |
+| CL-004 | profile 里声明了但空的插件目录 | 检出并报告；`-RepairEmpty` 补建空目录 |
+| CL-005 | `feature-profiles/` 下的 `*.tmp` 临时文件 | 直接清理 |
+| CL-006 | 巨型日志（默认 >100 MB，且写入进程 PID 已死） | 默认只报告；`-PurgeLogs` 才删；PID 仍活着的日志一律不动 |
+| CL-007 | ReMe 记忆大模型需要的四个 `LLM_*` 用户环境变量 | 只核验存在性；补写要求 `-LlmBackend/-LlmModel/-LlmBaseUrl/-LlmApiKey` 四值齐全，**密钥永不入包、不入报告、不入日志** |
+
+## 装（3 步）
+
+1. 解压到固定目录（例如 `D:\dsh-patch\`）。
+2. `CHECK.cmd` —— 只校验 + 预演，**一个字节都不写**（连备份目录都不建）。
+3. `APPLY.cmd` —— SHA-256 校验 8 个文件 → 建回滚集（备份）→ 逐条执行 → 写 `maintenance-report.json`。
+
+装完按提示重启 DSH（CL-001 / CL-007 需重启 DSH 与 ReMe 生效）。macOS/Linux：`bash apply.command`（`--check` / `--rollback`）。
+
+## 开关
+
+| 开关 | 作用 |
+|---|---|
+| `-CheckOnly` | 只预演，出「会改什么」清单 |
+| `-PurgeDeprecated` | 强删有内容的旧插件残留目录（默认保留） |
+| `-PurgeLogs` | 删除 PID 已死且超阈值的日志（默认只报告） |
+| `-LogSizeMB <n>` | 巨日志阈值，默认 100 |
+| `-RepairEmpty` | 补建 CL-004 检测到的空插件目录 |
+| `-Rollback` | 按最近一次回滚集还原 |
+| `-LlmBackend/-LlmModel/-LlmBaseUrl/-LlmApiKey` | 补写 CL-007 环境变量（四值齐全才写，只写用户级） |
+
+## 安全边界（写死在实现里）
+
+1. **只删 0 文件目录**——任何有内容的目录都不删，只报告。
+2. **活进程的日志不删**——PID 存活即跳过。
+3. **密钥不落盘**——CL-007 只从参数或交互提示取值，报告里只记录「已设置 / 缺失」。
+4. **每次写盘前先备份**，`-Rollback` 一次还原；`-CheckOnly` 全程零写入。
+
+## 验证（11 项，全部实测）
+
+| # | 项 | 结果 |
+|---|---|---|
+| T1 | 包内 8 个文件 SHA-256 自校验 | 通过；篡改任一文件即 `checksum mismatch` 中止 |
+| T2 | `-CheckOnly` 不写盘 | 通过（fixture 树哈希前后一致，备份目录未创建） |
+| T3 | CL-001 轮转改写 | 通过（`00:00` → `100 MB`，retention/compression 未动，原文件在备份里） |
+| T4 | CL-002/003 残留清理 | 通过（0 文件目录删、有内容目录留、`package.json` 引用剥离后仍合法） |
+| T5 | CL-004 空插件目录 | 通过（检出并报告） |
+| T6 | 重复运行幂等 | 通过（树哈希不变、轮转只出现一次、第二次报 skip） |
+| T7 | CL-006 门控 | 通过（死 PID 大日志报告 → `-PurgeLogs` 才删；活 PID 日志两次都保留） |
+| T8 | 回滚 | 通过（`logger_utils.py`、`package.json` 逐字节还原，被删空目录按需补建） |
+| T9 | `bash -n apply.command` | 通过（exit 0） |
+| T10 | 本机实跑 | 通过（CL-001 已是 100 MB → skip；`dsh-shared` 32 文件 → 保留；无 tmp、无巨日志、四个 `LLM_*` 全在；零写入，故不建备份） |
+| T11 | Release zip 解压后端到端 | 通过（8/8 校验、预演、执行走通，单字节篡改被拒） |
+
+## 回滚
+
+`ROLLBACK.cmd`（= `apply.ps1 -Rollback`）按 `%LOCALAPPDATA%\DSHPluginMigration\maintenance-20261029\` 下的回滚集还原 `logger_utils.py`、各 profile 的 `package.json`，并补建被删的空目录。可反复装卸。
+
+## 已知边界
+
+- CL-001 改的是 `site-packages` 里的文件，**ReMe 升级会覆盖**，升级后重跑 `APPLY.cmd` 即可。
+- CL-007 只处理用户级环境变量；`Machine` 级与 macOS/Linux 的 shell profile 只报告并打印 `export` 行。
+- `apply.command`（macOS/Linux）不自动剥离 `package.json` 里的废弃引用，只警告并指明要删的行。
+- 本补丁是「把改动日志变成可执行清单」的第一步；v2.1.0 整包会把同一引擎折进 `install.ps1`（安装/升级/修复三条路径），届时补丁自动被整包吸收。
+
+---
+
 # 补丁 v2.0.1-patch.1 — 对齐提问协议（ALIGNMENT_PROTOCOL v1.0）
 
 **版本类型**：补丁（Latest）· **发布日**：2026-10-29 · **基线**：v2.0.0 · **体积**：16.4 KB
