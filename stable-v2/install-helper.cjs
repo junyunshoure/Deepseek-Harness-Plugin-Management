@@ -12,6 +12,11 @@
  *   node install-helper.cjs --desktop-dir <目录> [--mode new|merge|backup|upgrade|repair] [--with-services]
  *        [--no-launch] [--force-config] [--check-only] [--rollback <备份目录>] [--yes]
  *        [--doctor] [--uninstall] [--services-only] [--prune-old [--keep-days N]]
+ *        [--write-appendix] [--skip-appendix] [--skip-cleanup]
+ *
+ * v2.1.0 一键行为：install / upgrade / repair 装完会**自动**把「深度档位 + 对齐协议」
+ * 写进 <DSH_HOME>/AGENTS.md（幂等、保留用户已设的 DEPTH_MODE、写前备份），
+ * 并做与数据无关的安全清理。不需要用户再手动跑 MAINTAIN.cmd。
  *
  * v2.1.0 新增两种模式（依据 _probe-v2.1.0 的实测结论，见 docs/升级与维护.md）：
  *   upgrade  —— 已装过旧版整合包时用：把 6 个本地插件从旧载荷目录重指向新载荷目录。
@@ -155,6 +160,221 @@ function writeResult(payload) {
   } catch { /* 写不了就算了，不影响安装 */ }
 }
 
+// ======================================================================
+// v2.1.0 一键：AGENTS.md 对齐协议自动写入 + 安全清理
+//   目标：INSTALL / UPGRADE / REPAIR 装完自动把「深度档位 + 对齐协议」写进
+//   <DSH_HOME>/AGENTS.md，不需要用户再手动跑 MAINTAIN.cmd。
+//   也可用 --write-appendix 单独执行（macOS 侧复用同一实现）。
+//   设计约束（见 docs/新功能说明.md）：
+//     1. 幂等：同一输入跑两遍，文件字节不变，不产生第二个块。
+//     2. 尊重用户：块内 DEPTH_MODE 的值从旧文件里读出来沿用，不被重置成默认值。
+//     3. 迁移：老版本把档位段写在块外时，收进块内，避免出现两份 DEPTH_MODE。
+//     4. 可回滚：内容有变化才写；写前留 .bak-<时间戳>；写后自检标记各 1 个，不合格自动回退。
+// ======================================================================
+const DEPTH_MODES = ['ask', 'auto', 'deep', 'fast'];
+const APPX_START_RE = /^\s*<!--\s*ALIGNMENT_PROTOCOL\s+v1\.0\s+START/;
+const APPX_END_RE = /^\s*<!--\s*ALIGNMENT_PROTOCOL\s+v1\.0\s+END\s*-->\s*$/;
+const DEPTH_H1 = '# 全局指令：深度档位';
+const PROTECTED_DIR_RE = /[\\/](node_modules|\.git|skills|sessions|services|cache|storage|data|extensions|bin)([\\/]|$)/i;
+
+function appendixTemplate() {
+  const f = path.join(ROOT, 'appendix', 'AGENTS.appendix.md');
+  if (!fs.existsSync(f)) die('包里缺少 appendix/AGENTS.appendix.md，无法写入对齐协议（可加 --skip-appendix 跳过）。');
+  return fs.readFileSync(f, 'utf8').replace(/^\uFEFF/, '');
+}
+
+function findAppxBlock(lines) {
+  let start = -1, end = -1, startCount = 0, endCount = 0;
+  for (let i = 0; i < lines.length; i++) {
+    if (APPX_START_RE.test(lines[i])) { startCount++; if (start < 0) start = i; }
+    if (APPX_END_RE.test(lines[i])) { endCount++; if (end < 0) end = i; }
+  }
+  return { start, end, startCount, endCount };
+}
+
+function pickDepthMode(text) {
+  const m = text.match(/^[ \t]*##[ \t]*DEPTH_MODE:[ \t]*([A-Za-z]+)[ \t]*$/m);
+  if (m) {
+    const v = m[1].toLowerCase();
+    if (DEPTH_MODES.includes(v)) return v;
+  }
+  return 'ask';
+}
+
+// 老版本把「深度档位」整段写在标记块外（段内没有第二个一级标题），
+// 这里把它从块外剪掉，值随后并入块内。剪的范围绝不跨进标记块。
+function stripOutsideDepthSection(lines, block) {
+  const inBlock = i => (block.start >= 0 && block.end >= block.start && i >= block.start && i <= block.end);
+  let h1 = -1;
+  for (let i = 0; i < lines.length; i++) {
+    if (inBlock(i)) continue;
+    if (lines[i].trimStart().startsWith(DEPTH_H1)) { h1 = i; break; }
+  }
+  if (h1 < 0) return { lines, removed: 0 };
+  const limit = (block.start >= 0 && block.start > h1) ? block.start : lines.length;
+  let stop = limit;
+  for (let i = h1 + 1; i < limit; i++) {
+    if (inBlock(i)) continue;
+    if (lines[i].startsWith('# ')) { stop = i; break; }
+  }
+  return { lines: lines.slice(0, h1).concat(lines.slice(stop)), removed: stop - h1 };
+}
+
+function writeAgentsAppendix(opts) {
+  const o = opts || {};
+  if (!o.home) die('内部错误：writeAgentsAppendix 缺少 home。');
+  const home = path.resolve(o.home);
+  const file = path.join(home, 'AGENTS.md');
+  const tpl = appendixTemplate();
+  const res = {
+    ok: true, file, mode: 'none', depthMode: 'ask', linesBefore: 0, linesAfter: 0,
+    changed: false, backup: null, migratedOutsideLines: 0, hint: '',
+  };
+
+  let raw = '', hadBom = false;
+  if (fs.existsSync(file)) {
+    raw = fs.readFileSync(file, 'utf8');
+    if (raw.charCodeAt(0) === 0xFEFF) { hadBom = true; raw = raw.slice(1); }
+  }
+  const eol = raw === '' ? '\r\n' : (raw.includes('\r\n') ? '\r\n' : '\n');
+  res.linesBefore = raw === '' ? 0 : raw.split(/\r?\n/).length;
+  res.depthMode = pickDepthMode(raw);
+
+  let lines = raw === '' ? [] : raw.split(/\r?\n/);
+  let block = findAppxBlock(lines);
+  if (block.startCount !== block.endCount || block.startCount > 1) {
+    res.ok = false;
+    res.mode = 'skipped-multi-block';
+    res.hint = 'AGENTS.md 里有 ' + block.startCount + ' 个 START 标记、' + block.endCount + ' 个 END 标记（应当各 1 个）：'
+      + '请手工清理到各 1 个后重跑，或加 --skip-appendix 跳过这一步。';
+    return res;
+  }
+
+  const stripped = stripOutsideDepthSection(lines, block);
+  if (stripped.removed > 0) {
+    lines = stripped.lines;
+    res.migratedOutsideLines = stripped.removed;
+    block = findAppxBlock(lines);
+  }
+
+  const blockLines = tpl.replace(/\{\{DEPTH_MODE\}\}/g, res.depthMode).split(/\r?\n/);
+  while (blockLines.length && blockLines[blockLines.length - 1].trim() === '') blockLines.pop();
+  if (!blockLines.length) die('appendix 模板是空的，无法写入。');
+
+  let mode;
+  if (block.start >= 0 && block.end > block.start) {
+    lines = lines.slice(0, block.start).concat(blockLines, lines.slice(block.end + 1));
+    mode = 'replaced';
+  } else {
+    while (lines.length && lines[lines.length - 1].trim() === '') lines.pop();
+    lines = (lines.length ? lines.concat(['']) : []).concat(blockLines);
+    mode = 'appended';
+  }
+  while (lines.length && lines[lines.length - 1].trim() === '') lines.pop();
+
+  const out = lines.join(eol) + eol;
+  res.linesAfter = lines.length;
+  if (out === raw) {
+    res.mode = 'unchanged';
+    return res;
+  }
+  res.changed = true;
+  res.mode = mode;
+
+  if (fs.existsSync(file)) {
+    const bk = file + '.bak-' + stamp();
+    fs.copyFileSync(file, bk);
+    res.backup = bk;
+  }
+  fs.mkdirSync(home, { recursive: true });
+  fs.writeFileSync(file, (hadBom ? '\uFEFF' : '') + out, 'utf8');
+
+  const back = fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, '').split(/\r?\n/);
+  const vb = findAppxBlock(back);
+  if (vb.startCount !== 1 || vb.endCount !== 1) {
+    if (res.backup) fs.copyFileSync(res.backup, file);
+    else fs.rmSync(file, { force: true });
+    res.ok = false;
+    res.mode = 'verify-failed';
+    res.changed = false;
+    res.hint = '写完自检发现标记不是各 1 个，已回退到原文件（备份：' + (res.backup || '无') + '）。';
+    return res;
+  }
+  return res;
+}
+
+// 只做与数据无关的安全清理：临时文件、轮转日志残留、第一层空目录。
+// 废弃包 / 用户环境变量一律只报告不删（删包会误伤仍在用的依赖）。
+function safeCleanup(opts) {
+  const o = opts || {};
+  const home = path.resolve(o.home);
+  const out = { tmpRemoved: [], rotatedLogs: [], emptyDirs: [], bigLogs: [], failed: [], bytesReclaimed: 0 };
+  const DAY = 86400000, now = Date.now();
+
+  const scanFiles = (dir, depth) => {
+    if (depth > 3) return;
+    let ents;
+    try { ents = fs.readdirSync(dir, { withFileTypes: true }); } catch { return; }
+    for (const e of ents) {
+      const p = path.join(dir, e.name);
+      if (e.isSymbolicLink()) continue;
+      if (e.isDirectory()) { if (!PROTECTED_DIR_RE.test(p)) scanFiles(p, depth + 1); continue; }
+      if (!e.isFile()) continue;
+      let st;
+      try { st = fs.statSync(p); } catch { continue; }
+      const isTmp = /\.tmp$/i.test(e.name) && now - st.mtimeMs > DAY;
+      const isRot = /\.log\.\d+$/i.test(e.name) && st.size > 10 * 1048576 && now - st.mtimeMs > DAY;
+      if (isTmp || isRot) {
+        try {
+          fs.rmSync(p, { force: true });
+          out.bytesReclaimed += st.size;
+          (isTmp ? out.tmpRemoved : out.rotatedLogs).push(p);
+        } catch { out.failed.push(p); }
+      } else if (/\.log$/i.test(e.name) && st.size > 100 * 1048576) {
+        out.bigLogs.push(p + '（' + (st.size / 1048576).toFixed(1) + ' MB）');
+      }
+    }
+  };
+  scanFiles(home, 0);
+
+  const bases = [home];
+  const profilesDir = path.join(home, 'profiles');
+  if (fs.existsSync(profilesDir)) {
+    for (const e of fs.readdirSync(profilesDir, { withFileTypes: true })) {
+      if (e.isDirectory()) bases.push(path.join(profilesDir, e.name));
+    }
+  }
+  for (const base of bases) {
+    if (out.emptyDirs.length >= 20) break;
+    let ents;
+    try { ents = fs.readdirSync(base, { withFileTypes: true }); } catch { continue; }
+    for (const e of ents) {
+      if (!e.isDirectory() || e.isSymbolicLink()) continue;
+      const p = path.join(base, e.name);
+      if (PROTECTED_DIR_RE.test(p)) continue;
+      try {
+        if (fs.readdirSync(p).length === 0) { fs.rmdirSync(p); out.emptyDirs.push(p); }
+      } catch { /* 占用或权限不足，跳过 */ }
+    }
+  }
+  return out;
+}
+
+function writeAppendixMode() {
+  const home = path.resolve(process.env.DSH_HOME || path.join(os.homedir(), '.dsh'));
+  if (!fs.existsSync(home)) {
+    die('没有找到 DSH 数据目录：' + home + '\n请先打开一次 DeepSeek Harness 让它初始化，再重试。');
+  }
+  const r = writeAgentsAppendix({ home });
+  log('AGENTS 文件：' + r.file);
+  if (!r.ok) { warn('! ' + (r.hint || '写入失败')); process.exitCode = 1; return; }
+  log('✓ 对齐协议：' + (r.mode === 'unchanged' ? '已是最新内容（未改动）' : r.mode === 'replaced' ? '已更新标记块' : '已追加标记块'));
+  log('· DEPTH_MODE：' + r.depthMode + '（可选 ask / auto / deep / fast，直接改那一行即可）');
+  log('· 当前 ' + r.linesAfter + ' 行' + (r.migratedOutsideLines ? '，块外 ' + r.migratedOutsideLines + ' 行旧档位段已并入块内' : ''));
+  if (r.backup) log('· 原文件已备份：' + r.backup);
+  log('· 新开一个 DSH 会话即生效（当前会话不会重读 AGENTS.md）。');
+}
+
 // ------------------------------------------------------------------ 主流程
 (async () => {
   const spec = readJson(path.join(ROOT, 'migration.json'));
@@ -166,6 +386,7 @@ function writeResult(payload) {
   if (flag('--uninstall')) return uninstallMode(spec);
   if (flag('--services-only')) return servicesMode(spec);
   if (flag('--prune-old')) return pruneOldStores(spec);
+  if (flag('--write-appendix')) return writeAppendixMode();
 
   // ---------- 平台 ----------
   if (process.platform !== 'win32' || process.arch !== 'x64') {
@@ -588,6 +809,36 @@ function writeResult(payload) {
     }
   }
 
+  // ---------- 一键：对齐协议自动写入 + 安全清理（v2.1.0 起默认执行） ----------
+  let appendixRes = null;
+  if (!flag('--skip-appendix')) {
+    try { appendixRes = writeAgentsAppendix({ home }); }
+    catch (e) { appendixRes = { ok: false, hint: e.message }; warn('! 对齐协议没有写成功（不阻断安装）：' + e.message); }
+  } else {
+    log('');
+    log('· 按 --skip-appendix 跳过 AGENTS.md 写入。');
+  }
+  let cleanupRes = null;
+  if (!flag('--skip-cleanup')) {
+    try { cleanupRes = safeCleanup({ home }); }
+    catch (e) { warn('! 安全清理出错（不阻断安装）：' + e.message); }
+  }
+  if (appendixRes && appendixRes.ok) {
+    log('');
+    log((appendixRes.mode === 'unchanged' ? '✓ 对齐协议：已是最新内容（未改动，' : '✓ 对齐协议已写入：') + (appendixRes.mode === 'unchanged' ? appendixRes.linesAfter + ' 行，DEPTH_MODE: ' + appendixRes.depthMode + '）' : appendixRes.file + '（DEPTH_MODE: ' + appendixRes.depthMode + '，' + appendixRes.linesAfter + ' 行）'));
+    if (appendixRes.migratedOutsideLines) log('· 块外 ' + appendixRes.migratedOutsideLines + ' 行旧档位段已并入块内（之后只会有这一份 DEPTH_MODE）');
+    if (appendixRes.backup) log('· 原 AGENTS.md 已备份：' + appendixRes.backup);
+    log('· 新开一个 DSH 会话即生效 —— 不需要再运行 MAINTAIN.cmd。');
+  } else if (appendixRes) {
+    warn('! 对齐协议没写成功：' + (appendixRes.hint || '未知原因') + '（稍后可运行 MAINTAIN.cmd 重试）');
+  }
+  if (cleanupRes) {
+    const cleaned = cleanupRes.tmpRemoved.length + cleanupRes.rotatedLogs.length;
+    if (cleaned || cleanupRes.emptyDirs.length) log('✓ 安全清理：临时/轮转日志 ' + cleaned + ' 个、空目录 ' + cleanupRes.emptyDirs.length + ' 个，释放 ' + (cleanupRes.bytesReclaimed / 1048576).toFixed(2) + ' MB');
+    else log('· 安全清理：没有需要清理的东西');
+    if (cleanupRes.bigLogs.length) warn('! 有 ' + cleanupRes.bigLogs.length + ' 个超过 100 MB 的日志没有自动删（留作排障证据）：' + cleanupRes.bigLogs.join('；'));
+  }
+
   // ---------- 结果 ----------
   result.ok = true;
   result.packVersion = spec.version;
@@ -607,9 +858,13 @@ function writeResult(payload) {
   result.rowCount = rows.length;
   result.bundleCount = finalBundles.length;
   result.rowStateWarnings = stateDiff.length;
+  result.appendix = appendixRes;
+  result.cleanup = cleanupRes;
   result.nextSteps = [
     '打开 DeepSeek Harness：左侧栏应出现「技能融合 / 记忆融合 / 功能说明 / Ollama / 清理 / 工作台」等入口。',
-    '想让补丁效果常驻（AGENTS.md 对齐协议 / 环境自检）：运行 MAINTAIN.cmd（等价 install-helper --maintain 的 PowerShell 版 maintain.ps1）。',
+    '对齐协议：' + (appendixRes && appendixRes.ok
+      ? (appendixRes.mode === 'unchanged' ? '已是最新内容 ' : '已写入 ') + appendixRes.file + '（DEPTH_MODE: ' + appendixRes.depthMode + '，' + appendixRes.linesAfter + ' 行），新开一个会话即生效，不需要再跑 MAINTAIN.cmd。'
+      : '这次没写成功，可稍后运行 MAINTAIN.cmd 重试。'),
     '旧版本载荷目录不再需要时：VERIFY.cmd 里会提示，或用 --prune-old 清理（默认只删 7 天前的，且会跳过仍被引用的目录）。',
     '设置 → 模型：把 config/cordis.patch.yml 里的 https://YOUR-ENDPOINT.example.com 换成你自己的中转站或官方接口地址，填入密钥。',
     '需要本地记忆服务时运行 SETUP-SERVICES.cmd；需要撤回时运行 ROLLBACK.cmd。',
@@ -624,6 +879,8 @@ function writeResult(payload) {
   log('持久目录：' + store);
   log('安装前备份：' + backup + '（ROLLBACK.cmd 可回退）');
   log('详细报告：' + path.join(store, 'installation-result.json'));
+  if (appendixRes && appendixRes.ok) log('对齐协议：' + (appendixRes.mode === 'unchanged' ? '已是最新 ' : '已写入 ') + appendixRes.file + '（' + appendixRes.linesAfter + ' 行，新会话生效）');
+  else if (appendixRes) log('对齐协议：未写入（详见上面的提示）');
   if (fpHint.length) log('功能说明：' + fpHint.join('；'));
   log('下一步：打开 DeepSeek Harness，并把中转站地址/密钥填进设置 → 模型。');
   if (redirects.length) log('本次重指向了 ' + redirects.length + ' 个本地插件（旧载荷目录可以留几天再清）。');

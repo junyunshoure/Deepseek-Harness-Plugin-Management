@@ -6,7 +6,7 @@
 #>
 [CmdletBinding()]
 param(
-  [ValidateSet('install', 'upgrade', 'repair', 'verify', 'doctor', 'rollback', 'uninstall', 'services', 'maintain', 'prune')]
+  [ValidateSet('install', 'upgrade', 'repair', 'verify', 'doctor', 'rollback', 'uninstall', 'services', 'maintain', 'prune', 'appendix')]
   [string]$Action = 'install',
   [string]$DesktopDir = '',
   [ValidateSet('', 'new', 'merge', 'backup', 'upgrade', 'repair')]
@@ -17,6 +17,8 @@ param(
   [switch]$ForceKernel,
   [string]$SkillsRoot = '',
   [switch]$AllowNetwork,
+  [switch]$SkipAppendix,
+  [switch]$SkipCleanup,
   [int]$KeepDays = 7,
   [switch]$CheckOnly
 )
@@ -62,7 +64,7 @@ Write-Title "DeepSeek Harness 插件整合包 v$PackVersion —— 动作：$Act
 
 # ---------- 定位 Desktop ----------
 $desktop = Find-Desktop $DesktopDir
-if (-not $desktop -and $Action -notin @('verify', 'maintain', 'prune')) {
+if (-not $desktop -and $Action -notin @('verify', 'maintain', 'prune', 'appendix')) {
   Write-Host '没有自动找到 DeepSeek Harness 的安装目录。' -ForegroundColor Yellow
   Write-Host '请把「包含 DeepSeek Harness.exe 的那个文件夹」完整路径粘贴进来（例如 C:\Users\你\AppData\Local\Programs\DeepSeek Harness）：'
   $input = Read-Host '安装目录'
@@ -124,6 +126,8 @@ if ($ForceConfig) { $modeArg += '--force-config' }
 if ($ForceKernel) { $modeArg += '--force-kernel' }
 if ($SkillsRoot) { $modeArg += @('--skills-root', $SkillsRoot) }
 if ($AllowNetwork) { $modeArg += '--allow-network' }
+if ($SkipAppendix) { $modeArg += '--skip-appendix' }
+if ($SkipCleanup) { $modeArg += '--skip-cleanup' }
 if ($CheckOnly) { $modeArg += '--check-only' }
 
 # ---------- 用 Desktop 自带的 Electron 跑 Node 脚本（用户机器不需要装 Node.js） ----------
@@ -257,5 +261,10 @@ switch ($Action) {
     $mArgList = @($mArgs)
     & powershell @mArgList
     exit $LASTEXITCODE
+  }
+  'appendix' {
+    # 只重写 AGENTS.md 里的「深度档位 + 对齐协议」（安装/升级/修复时已自动做过，这里是单独补跑）
+    $code = Invoke-Helper @('--write-appendix')
+    exit $code
   }
 }

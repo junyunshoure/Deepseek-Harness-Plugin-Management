@@ -5,7 +5,7 @@
 
 - **适用内核**：DeepSeek Harness `0.2.x` / `0.3.x`（本包按 `0.2.1-rc.2` 构建；门禁 `>=0.2.0 <0.4.0`，版本不同**只提示不阻断**）
 - **适用平台**：Windows 10/11 x64；macOS 见 [`macos/INSTALL-MAC.md`](macos/INSTALL-MAC.md)
-- **包内规模**：32 个插件包（26 个来自 npm + 6 个本机自研）· 36 个 bundle · 256 个插件条目 · 6 个技能 · 48 份能力手册 · **10,780 个文件 · payload 318.79 MB**
+- **包内规模**：32 个插件包（26 个来自 npm + 6 个本机自研）· 36 个 bundle · 256 个插件条目 · 6 个技能 · 48 份能力手册 · **10,763 个文件 · payload 318.45 MB**
 - **服务包**：沿用 v2.0.0 的 `DSH-Plugins-v2.0.0-Services.zip`（本地记忆/知识库服务本体，可选），v2.1.0 **不重出服务包**
 
 > 一个版本一个目录：`stable-v2/` 是当前版本，`stable/` 是 v1.0.0 存档（内容不再变动，仅供回退与对照）。
@@ -26,8 +26,10 @@
    | **D 升级** | **装过旧版整合包（v2.0.x / 更早）** | 读出 profile 里现有的 `link:` 指向，把 32 个插件逐条**重指向本包载荷**，旧载荷保持可回滚 |
    | **E 修复** | 插件"装过但不见了" | 只重挂本包已声明的插件，不动其它任何东西 |
 
-4. 等它跑完。中途会：校验 10,780 个文件 → 把载荷复制到持久目录 `%LOCALAPPDATA%\DSHPluginsPack\v2.1.0-windows` → 备份 → 挂载 32 个插件 → **逐条核对 realpath** → 校验 256 个条目组合 → 合并配置 → 装 6 个技能 → 出安装结果 → 启动 DSH。
+4. 等它跑完。中途会：校验 10,761 个文件 → 把载荷复制到持久目录 `%LOCALAPPDATA%\DSHPluginsPack\v2.1.0-windows` → 备份 → 挂载 32 个插件 → **逐条核对 realpath** → 校验 256 个条目组合 → 合并配置 → 装 6 个技能 → 出安装结果 → 启动 DSH。
 5. 打开 DSH → **设置 → 模型**：把 provider 的 `baseURL` 从 `https://YOUR-ENDPOINT.example.com` 换成你自己的中转站或官方地址，填上密钥。这是唯一需要你手填的东西（详见 [`docs/配置参考.md`](docs/配置参考.md)）。
+
+6. **不用再做别的了**：装完它会打印「对齐协议：已写入 `~/.dsh/AGENTS.md`（128 行，新会话生效）」。深度档位与对齐协议已经写好——**v2.1.0 起不需要再跑 `MAINTAIN.cmd`**（那是 v2.0.x 时代的步骤）。想换档位就编辑 `~/.dsh/AGENTS.md` 里的 `## DEPTH_MODE:` 一行（`ask` / `auto` / `deep` / `fast`），下次安装会保留你改的值。
 
 装完想确认没毛病：`VERIFY.cmd`（逐文件哈希）+ `DOCTOR.cmd`（环境体检）。
 
@@ -47,7 +49,7 @@ v2.1.0 的主要增量**不是新插件，而是把「补丁要人记命令」�
 | 4 | **`appendix/AGENTS.appendix.md` + 标记块替换** | 对齐提问协议（ALIGNMENT_PROTOCOL v1.0）写进 `~/.dsh/AGENTS.md`；**替换式**写入，写完断言 START/END 标记各 1 个，绝不叠加 |
 | 5 | **`templates/workbench-toolkit/`** | 场景记忆工具箱 7 个文件（`场景记忆.mjs` / `发消息.mjs` / 例外清单 / 4 份规格文档）。**只放进 templates，不自动写**——它落到「工作台目录」才有意义 |
 | 6 | **`PRUNE.cmd`（`--prune-old`）** | 清理旧载荷：默认只保留 7 天内、**仍被任何 profile 引用的永不删**；不带参数只预演 |
-| 7 | **瘦身 −36.6%** | payload 502.41 MB → **318.79 MB**（23,071 → 10,670 个文件），`dsh-skill-fusion` 从 91.8 MB 裁到 3.0 MB（只留 runtime 的 `js-yaml`，其余 86 MB 全是 devDependencies） |
+| 7 | **瘦身 −36.6%** | payload 502.41 MB → **318.45 MB**（23,071 → 10,670 个文件），`dsh-skill-fusion` 从 91.8 MB 裁到 3.0 MB（只留 runtime 的 `js-yaml`，其余 86 MB 全是 devDependencies） |
 | 8 | **内核门禁改为"只提示不阻断"** | 门禁 `>=0.2.0 <0.4.0`；0.2.x / 0.3.x 都放行，与本包基准不同只打印提示 |
 | 9 | **离线优先，不再偷偷联网** | 挂载失败先 `--offline`，再 `--offline --config.lockfile=false`；仍失败**默认不联网**只告警并给出补挂办法。要联网必须显式 `--allow-network` |
 | 10 | **`--skills-root` 隔离** | 让技能灌装写到指定目录，方便演练/测试时不碰真身 |

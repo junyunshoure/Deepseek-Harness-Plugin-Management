@@ -1,5 +1,5 @@
 DeepSeek Harness 插件整合包 v2.1.0 —— 插件完整清单
-生成时间：2026-10-29T05:11:40.485Z
+生成时间：2026-10-29T05:40:17.138Z
 内核基准：0.2.1-rc.2（支持 >=0.2.0 <0.4.0）
 
 == 一、依赖包（32 个） ==
@@ -350,6 +350,6 @@ DeepSeek Harness 插件整合包 v2.1.0 —— 插件完整清单
 [启] dsh-ollama-ui  ←  dsh-ollama
 
 == 六、体积与裁剪 ==
-payload：10667 个文件 / 318.79 MB
+payload：10670 个文件 / 318.45 MB
 已裁掉：1101 个文件 / 18.10 MB（sourcemap / tests / examples / .github / coverage / CHANGELOG 等纯开发件）
 裁剪规则：dev-only whitelist (*.map / tests / test / examples / .github / coverage / benchmark / tsconfig / vitest / eslint / prettier / CHANGELOG), runtime-deps-only node_modules for link plugins

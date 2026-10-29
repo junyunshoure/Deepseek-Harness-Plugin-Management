@@ -48,6 +48,14 @@
 | 4 | 预演提示与实际矛盾 | `upgrade` 预演说「本模式下跳过」，随后又实际重指向 | 文案没按模式区分 | `upgrade/repair` 打「将重指向载荷」，`merge` 打「本模式下跳过」 |
 | 5 | `VERIFY.cmd` 在纯净机卡死 | 找不到 DSH 时卡在「请粘贴安装目录」 | v2.0.0 已修（`Invoke-PureVerify`），本版继承并保持 `counts.files` / `counts.bytes` 字段对齐 | 无改动，回归验证通过 |
 
+### 行为变更（装完即生效，不需要手动跑任何命令）
+
+- **对齐协议与深度档位改为安装器自动写入**：`INSTALL.cmd` / `UPGRADE.cmd` / `-Action repair` 装完自动写 `~/.dsh/AGENTS.md` 的标记块，并打印路径 / 行数 / `DEPTH_MODE` 值。v2.0.x 需要用户自己跑 `MAINTAIN.cmd`，实测大多数人不会跑，等于没有。
+- **`DEPTH_MODE` 段并入标记块内**，替换时**保留用户改过的值**（读到旧值就用旧值），默认 `ask`；老机器块外那段旧档位段会并入块内，全文只保留一份。
+- **写入实现收敛为一处**：`install-helper.cjs` 的 `writeAgentsAppendix()`；`maintain.ps1` 第 3 步改为转发；macOS `install.command` 复用同一函数。新增 `-Action appendix` / `--write-appendix` 单独入口。
+- **新增安全清理**（默认开）：`*.tmp`（>1 天）、轮转日志（>10 MB 且 >1 天）、空目录（跳过 `node_modules` / `skills` / `sessions` 等）→ 删；`.log` 超 100 MB **只报告不删**（留作排障证据）。逃生开关 `-SkipCleanup` / `-SkipAppendix`。
+- **文档校正 35 处**：持久目录 `v2.0.0-windows` → `v2.1.0-windows`（讲旧载荷的 5 行有意保留）、`migration.json` 的 `features` 指向修正、作者本机路径换成占位符、规模数字改成实测值（10,763 文件 / payload 318.45 MB）。
+
 ### 验证证据（可复跑）
 
 | 项 | 结果 |

@@ -6,11 +6,11 @@
 
 | 文件 | 体积 | SHA-256 |
 |---|---|---|
-| `DSH-Plugins-v2.1.0-Windows-x64.zip` | 126,503,120 B（约 120.6 MB） | `34595dd5fcba873f7f6bea9c237d562011a89d2c266fdab803c24ee17c35dc55` |
+| `DSH-Plugins-v2.1.0-Windows-x64.zip` | 126,511,091 B（约 120.65 MB） | `baaa68b1e48cfb7663e7e7c2b01111d2af6ca963c9e17ef7d74b22f6ead7da7c` |
 | `DSH-Plugins-v2.1.0-Windows-x64.zip.sha256` | 100 B | 校验文件（`<hash>  <文件名>`） |
 | `release-validation.json` | 2,521 B | 发布前自检结果，16 项全过 |
 
-服务包不重出：继续用 `v2.0.0` 的 `DSH-Plugins-v2.0.0-Services.zip`（680.1 MB，`106fce67b33b3c9548132839e1c1ad1972cb76dcddf5379251616c307f2397a6`），插件包与它互不依赖。仓库内 `stable-v2/` 为可读源码与文档（27 项 / 93 文件 / 2.82 MB，不含 `payload/`）。
+服务包不重出：继续用 `v2.0.0` 的 `DSH-Plugins-v2.0.0-Services.zip`（680.1 MB，`106fce67b33b3c9548132839e1c1ad1972cb76dcddf5379251616c307f2397a6`），插件包与它互不依赖。仓库内 `stable-v2/` 为可读源码与文档（27 项 / 93 文件 / 2.84 MB，不含 `payload/`）。
 
 ## 这个版本到底改了什么
 
@@ -22,9 +22,9 @@ v2.1.0 的真正增量**不是新插件，而是把「补丁要人记命令」�
 | 2 | 新增 **E 修复** | 同 D，但不新增任何未声明的依赖；专治「升级后插件静默消失」 |
 | 3 | 新增 **维护引擎** | `MAINTAIN.cmd`（`maintain.ps1`，8 步幂等）：包自检 / 定位 DSH / AGENTS 标记块 / CL-001 日志轮转 / CL-002-004 废包残留 / CL-005 临时文件 / CL-006 巨日志 / CL-007 `LLM_*` 核验；支持 `-Rollback` 按备份清单还原 |
 | 4 | 新增 **PRUNE 清理** | `PRUNE.cmd` 默认只预演；保留 7 天内、仍被 `link:` 引用的载荷目录永不删 |
-| 5 | 变更 **对齐协议写入方式** | `appendix/AGENTS.appendix.md` 以 START/END 标记块**替换**写入 `AGENTS.md`，写后断言标记各 1 个，重复运行不叠加 |
+| 5 | 变更 **对齐协议写入方式 + 装完自动写入** | `appendix/AGENTS.appendix.md` 以 START/END 标记块**替换**写入 `AGENTS.md`，写后断言标记各 1 个，重复运行不叠加。**v2.1.0 起安装/升级/修复装完自动写一次（含 `DEPTH_MODE` 段，保留用户已改的值），不需要再手动跑 `MAINTAIN.cmd`**；`maintain.ps1` 第 3 步改为转发同一实现，macOS `install.command` 亦自动写，另留 `install.ps1 -Action appendix` 单独重写入口 |
 | 6 | 新增 **场景记忆模板** | `templates/workbench-toolkit/`（7 文件 + README）随包分发，**只放模板不自动写** |
-| 7 | 变更 **瘦身 36.6%** | 载荷 502.41 MB → **318.79 MB**、23,071 → **10,670** 文件；安装包 182.5 MB → **120.6 MB** |
+| 7 | 变更 **瘦身 36.6%** | 载荷 502.41 MB → **318.45 MB**、23,071 → **10,670** 文件；安装包 182.5 MB → **120.65 MB** |
 | 8 | 变更 **载荷按运行依赖面裁剪** | `dsh-skill-fusion` 91.8 MB → 3.0 MB（只带 `js-yaml`，`@deepseek-ai/*` 由内核提供）；裁剪版与原始版 `--dump-config` 输出字节数完全相同、`skipping profile bundle` 命中 0 |
 | 9 | 变更 **内核门禁放宽** | `>=0.2.1-rc.2 <0.3.0` → **`>=0.2.0 <0.4.0`**：0.2.x / 0.3.x 都放行，与本包基准不同只提示不阻断，0.4+ 才拒 |
 | 10 | 变更 **离线优先** | 挂载插件三级回退（`--offline` → `--offline --config.lockfile=false` → 只告警继续），默认不联网；要联网须显式 `--allow-network` |
@@ -37,7 +37,8 @@ v2.1.0 的真正增量**不是新插件，而是把「补丁要人记命令」�
 | 17 | 修复 **`ENOTEMPTY`** | 删旧载荷偶发目录非空 → `maxRetries: 5`，仍失败则改名让路并告警 |
 | 18 | 变更 **入口 6 → 9** | 新增 `UPGRADE.cmd` / `MAINTAIN.cmd` / `PRUNE.cmd` |
 | 19 | 变更 **凭据 schema** | `inventory.json` v2 → **v3**（新增 `packVersion`/`maintainedAt`/`trimmed`/`assertions`）；`migration.json` schema 2 → **3**（`supportedModes` 加 `upgrade`/`repair`） |
-| 20 | 变更 **文档补齐** | 8 篇：使用说明书加「升级/修复/维护/清理」四节、新功能说明重写 11 节、常见问题加 v2.1.0 专属 5 条、配置参考加门禁对照表 |
+| 20 | 新增 **一键安全清理** | 装完自动清 `*.tmp`（1 天以上）、轮转日志 `.log.N`（10 MB 以上且 1 天以上）、第一层空目录；**超过 100 MB 的日志只报告不删**（留作排障证据）；`-SkipCleanup` 可关。废弃包只报告不删除（实测仍有 profile 在引用） |
+| 21 | 变更 **文档补齐** | 8 篇：使用说明书加「升级/修复/维护/清理」四节、新功能说明重写 11 节、常见问题加 v2.1.0 专属 5 条、配置参考加门禁对照表 |
 
 ## 发布前自检（16/16）
 

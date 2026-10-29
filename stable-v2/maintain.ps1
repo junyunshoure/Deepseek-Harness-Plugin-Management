@@ -56,6 +56,22 @@ function Write-Utf8([string]$path, [string]$text) {
   [System.IO.File]::WriteAllText($path, $text, $utf8NoBom)
 }
 function Read-Utf8([string]$path) { [System.IO.File]::ReadAllText($path, [System.Text.Encoding]::UTF8) }
+function Find-DshExe {
+  # maintain.ps1 本身没有 Desktop 路径参数；这里按安装器的候选顺序找一次，
+  # 用它自带的 Electron 跑 install-helper（普通用户机器不需要装 Node.js）。
+  $cands = @(
+    (Join-Path $env:LOCALAPPDATA 'Programs\DeepSeek Harness'),
+    (Join-Path $env:LOCALAPPDATA 'DeepSeek Harness'),
+    (Join-Path $env:ProgramFiles 'DeepSeek Harness'),
+    (Join-Path ${env:ProgramFiles(x86)} 'DeepSeek Harness')
+  )
+  foreach ($c in $cands) {
+    if (-not $c) { continue }
+    $e = Join-Path $c 'DeepSeek Harness.exe'
+    if (Test-Path -LiteralPath $e) { return $e }
+  }
+  return ''
+}
 function Get-Sha([string]$path) {
   # 不用 Get-FileHash：从 PowerShell 7 窗口里启动 powershell.exe 时 PSModulePath 会被占住，
   # Windows PowerShell 5.1 可能找不到 Microsoft.PowerShell.Utility → Get-FileHash 报 not recognized。
@@ -172,67 +188,59 @@ if (Test-Path -LiteralPath $profileRoot) {
 Ok ('profile：' + $(if ($profiles.Count) { ($profiles | ForEach-Object { $_.Name }) -join ', ' } else { '(无)' }))
 
 # ---------------------------------------------------------------- 3. AGENTS 附录
-Step '[3/8] AGENTS.md 对齐协议附录块（替换式，绝不叠加）'
+# v2.1.0：写入逻辑只保留一份实现（install-helper.cjs 里的 writeAgentsAppendix），
+# 这里转发过去。理由：PowerShell / Node 两套实现迟早漂移（v2.1.0 首版就出现过
+# 「清单里写 105 行、实际写 91 行」的能力回退）。转发后 DEPTH_MODE 保留、块外旧段
+# 迁移、幂等、写后自检全部由同一段代码保证。
+Step '[3/8] AGENTS.md 对齐协议附录块（转发给 install-helper 统一实现）'
 if ($NoAppendix) {
   Info '按参数跳过（-NoAppendix）'
 } else {
-  $appPath = if ($Appendix) { $Appendix } else { Join-Path $here 'appendix\AGENTS.appendix.md' }
   $agentsPath = Join-Path $DshHome 'AGENTS.md'
-  if (-not (Test-Path -LiteralPath $appPath)) {
-    Warn ('附录模板不存在，跳过：' + $appPath)
-    Add-Action 'AGENTS' $agentsPath 'skip' 'appendix template missing'
+  $helperPath = Join-Path $here 'install-helper.cjs'
+  if (-not (Test-Path -LiteralPath $helperPath)) {
+    Warn ('找不到 install-helper.cjs，跳过：' + $helperPath)
+    Add-Action 'AGENTS' $agentsPath 'skip' 'install-helper.cjs missing'
+  } elseif ($CheckOnly) {
+    Warn '将写入 / 更新 AGENTS.md 的「深度档位 + 对齐协议」标记块（由 install-helper 执行）'
+    Add-Action 'AGENTS' $agentsPath 'would-write' 'via install-helper --write-appendix'
   } else {
-    $block = (Read-Utf8 $appPath).Trim()
-    if (-not $block.Contains($markerStart) -or -not $block.Contains($markerEnd)) {
-      Warn '附录模板缺少 START/END 标记，跳过（避免写坏 AGENTS.md）'
-      Add-Action 'AGENTS' $appPath 'skip' 'template missing markers'
-    } else {
-      $cur = if (Test-Path -LiteralPath $agentsPath) { Read-Utf8 $agentsPath } else { '' }
-      # 只数行首的标记，避免正文里提到标记也被算进去
-      $starts = @($cur -split "`n" | Where-Object { $_.TrimStart().StartsWith($markerStart) })
-      $ends = @($cur -split "`n" | Where-Object { $_.Trim() -eq $markerEnd })
-      if ($starts.Count -gt 1 -or $ends.Count -gt 1) {
-        Warn ('AGENTS.md 里有 ' + $starts.Count + ' 个 START / ' + $ends.Count + ' 个 END 标记，状态异常，已跳过（请手工清理到各 1 个）')
-        Add-Action 'AGENTS' $agentsPath 'skip' ('ambiguous markers: ' + $starts.Count + '/' + $ends.Count)
-      } elseif ($starts.Count -eq 1 -and $ends.Count -eq 1) {
-        $i = $cur.IndexOf($markerStart)
-        $j = $cur.IndexOf($markerEnd, $i)
-        if ($j -lt 0) {
-          Warn '标记顺序异常（END 在 START 之前），已跳过'
-          Add-Action 'AGENTS' $agentsPath 'skip' 'marker order broken'
-        } else {
-          $tail = $j + $markerEnd.Length
-          $newText = $cur.Substring(0, $i) + $block + $cur.Substring($tail)
-          if ($CheckOnly) {
-            Warn '将替换 AGENTS.md 里的附录块（' + $block.Length + ' 字节）'
-            Add-Action 'AGENTS' $agentsPath 'would-replace' ($block.Length.ToString() + ' bytes')
-          } else {
-            $bk = Backup-File $agentsPath 'agents'
-            Write-Utf8 $agentsPath $newText
-            $chk = Read-Utf8 $agentsPath
-            $s2 = @($chk -split "`n" | Where-Object { $_.TrimStart().StartsWith($markerStart) }).Count
-            $e2 = @($chk -split "`n" | Where-Object { $_.Trim() -eq $markerEnd }).Count
-            if ($s2 -ne 1 -or $e2 -ne 1) { Fail ('写入后标记数异常（' + $s2 + '/' + $e2 + '），请用 -Rollback 还原') }
-            Ok ('已替换 AGENTS.md 附录块（标记数 1/1，备份：' + $bk + '）')
-            Add-Action 'AGENTS' $agentsPath 'replaced' ($block.Length.ToString() + ' bytes')
-          }
-        }
-      } else {
-        if ($CheckOnly) {
-          Warn '将把附录块追加到 AGENTS.md 末尾（' + $block.Length + ' 字节）'
-          Add-Action 'AGENTS' $agentsPath 'would-append' ($block.Length.ToString() + ' bytes')
-        } else {
-          $bk = if (Test-Path -LiteralPath $agentsPath) { Backup-File $agentsPath 'agents' } else { '(new file)' }
-          $sep = if ([string]::IsNullOrWhiteSpace($cur)) { '' } elseif ($cur.EndsWith("`n")) { "`n" } else { "`n`n" }
-          Write-Utf8 $agentsPath ($cur + $sep + $block + "`n")
-          $chk = Read-Utf8 $agentsPath
-          $s2 = @($chk -split "`n" | Where-Object { $_.TrimStart().StartsWith($markerStart) }).Count
-          $e2 = @($chk -split "`n" | Where-Object { $_.Trim() -eq $markerEnd }).Count
-          if ($s2 -ne 1 -or $e2 -ne 1) { Fail ('写入后标记数异常（' + $s2 + '/' + $e2 + '），请用 -Rollback 还原') }
-          Ok ('已追加 AGENTS.md 附录块（标记数 1/1，备份：' + $bk + '）')
-          Add-Action 'AGENTS' $agentsPath 'appended' ($block.Length.ToString() + ' bytes')
-        }
+    $hadAgents = Test-Path -LiteralPath $agentsPath
+    $bk = if ($hadAgents) { Backup-File $agentsPath 'agents' } else { '(new file)' }
+    $prevHome = $env:DSH_HOME
+    $prevElectron = $env:ELECTRON_RUN_AS_NODE
+    $env:DSH_HOME = $DshHome
+    $wArgList = @('--expose-internals', $helperPath, '--write-appendix')
+    $exe = Find-DshExe
+    $code = -1
+    if ($exe) {
+      $env:ELECTRON_RUN_AS_NODE = '1'
+      & $exe @wArgList 2>&1 | ForEach-Object {
+        if ($_ -is [System.Management.Automation.ErrorRecord]) { Write-Host $_.Exception.Message } else { Write-Host $_ }
       }
+      $code = $LASTEXITCODE
+    } else {
+      $nodeCmd = Get-Command node -ErrorAction SilentlyContinue
+      if ($nodeCmd) {
+        & $nodeCmd.Source @($helperPath, '--write-appendix') 2>&1 | ForEach-Object { Write-Host $_ }
+        $code = $LASTEXITCODE
+      }
+    }
+    if ($null -eq $prevHome) { Remove-Item Env:\DSH_HOME -ErrorAction SilentlyContinue } else { $env:DSH_HOME = $prevHome }
+    if ($null -eq $prevElectron) { Remove-Item Env:\ELECTRON_RUN_AS_NODE -ErrorAction SilentlyContinue } else { $env:ELECTRON_RUN_AS_NODE = $prevElectron }
+    if ($code -ne 0) {
+      Warn ('AGENTS.md 没写成功（退出码 ' + $code + '）：可加 -NoAppendix 跳过，或用 INSTALL.cmd 选 E 修复后重试')
+      Add-Action 'AGENTS' $agentsPath 'failed' ('exit ' + $code)
+    } else {
+      $chk = if (Test-Path -LiteralPath $agentsPath) { Read-Utf8 $agentsPath } else { '' }
+      $s2 = @($chk -split "`n" | Where-Object { $_.TrimStart().StartsWith($markerStart) }).Count
+      $e2 = @($chk -split "`n" | Where-Object { $_.Trim() -eq $markerEnd }).Count
+      $depth = 'ask'
+      $m = [regex]::Match($chk, '(?m)^[ \t]*##[ \t]*DEPTH_MODE:[ \t]*([A-Za-z]+)[ \t]*$')
+      if ($m.Success) { $depth = $m.Groups[1].Value.ToLower() }
+      if ($s2 -ne 1 -or $e2 -ne 1) { Fail ('写入后标记数异常（' + $s2 + '/' + $e2 + '），请用 -Rollback 还原') }
+      Ok ('已写入 AGENTS.md 对齐协议（标记数 1/1，DEPTH_MODE: ' + $depth + '，备份：' + $bk + '）')
+      Add-Action 'AGENTS' $agentsPath 'written' ('DEPTH_MODE: ' + $depth)
     }
   }
 }

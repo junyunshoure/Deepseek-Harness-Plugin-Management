@@ -39,9 +39,9 @@
 
 | 路径 | 里面有什么 | 为什么需要 |
 | --- | --- | --- |
-| `%LOCALAPPDATA%\DSHPluginsPack\v2.0.0-windows\installation-result.json` | 上次安装的完整结果（`ok`、失败项、错误原文） | 判断「装到哪一步断的」 |
+| `%LOCALAPPDATA%\DSHPluginsPack\v2.1.0-windows\installation-result.json` | 上次安装的完整结果（`ok`、失败项、错误原文） | 判断「装到哪一步断的」 |
 | `%LOCALAPPDATA%\DSHPluginsPack\last-result.json` | 最近一次任意动作（install / verify / doctor / rollback）的结果 | 最新现场，比上一份新 |
-| `…\v2.0.0-windows\backups\<时间戳>\deps-before.json` | 安装前 `{at, mode, dependencies, bundles}` 快照 | 回滚的唯一事实依据 |
+| `…\v2.1.0-windows\backups\<时间戳>\deps-before.json` | 安装前 `{at, mode, dependencies, bundles}` 快照 | 回滚的唯一事实依据 |
 | `%USERPROFILE%\.dsh\profiles\desktop\cordis.patch.yml` | 真正生效的插件条目（`id` / `name` / `config`） | 条目对不上就是这里对不上 |
 | `%USERPROFILE%\.dsh\profiles\desktop\package.json` | 当前 profile 的 dependencies | 与 `deps-before.json` 对比即知包动了什么 |
 | `%USERPROFILE%\.dsh\logs` | 运行日志，报错栈都在这 | 定位到具体包 / 具体行 |
@@ -53,8 +53,8 @@
 ```powershell
 $out = "$env:TEMP\dsh-context"; New-Item -ItemType Directory -Force $out | Out-Null
 $store = "$env:LOCALAPPDATA\DSHPluginsPack"; $prof = "$env:USERPROFILE\.dsh\profiles\desktop"
-$b = Get-ChildItem "$store\v2.0.0-windows\backups" -Directory | Sort-Object Name -Desc | Select -First 1
-Copy-Item "$store\v2.0.0-windows\installation-result.json","$store\last-result.json",`
+$b = Get-ChildItem "$store\v2.1.0-windows\backups" -Directory | Sort-Object Name -Desc | Select -First 1
+Copy-Item "$store\v2.1.0-windows\installation-result.json","$store\last-result.json",`
           "$prof\cordis.patch.yml","$prof\package.json",`
           "$($b.FullName)\deps-before.json","$env:USERPROFILE\.dsh\logs\*.log" $out -ErrorAction SilentlyContinue
 Get-ChildItem $out | Select-Object Name, Length
@@ -71,7 +71,7 @@ Get-ChildItem $out | Select-Object Name, Length
 - 【包路径】\inventory.json       （pluginRows 基准，256 条）
 - 【包路径】\migration.json       （kernel.recorded / packages / skills / modes）
 
-DSH 安装目录（Desktop 根）：【D:\AI\dsh2】。内核版本请你自己核对，不要用我说的。
+DSH 安装目录（Desktop 根）：【`%LOCALAPPDATA%\Programs\DeepSeek Harness`】。内核版本请你自己核对，不要用我说的。
 
 请分两轮做，不要一轮做完：
 第一轮（只读诊断）：跑核对脚本，回答三个问题——
@@ -122,7 +122,7 @@ DSH 安装目录（Desktop 根）：【D:\AI\dsh2】。内核版本请你自己�
 **A + B 一次查完**
 
 ```powershell
-$Desktop = "D:\AI\dsh2"        # 换成你的安装目录
+$Desktop = "$env:LOCALAPPDATA\Programs\DeepSeek Harness"   # 换成你的安装目录
 $Exe = Join-Path $Desktop "DeepSeek Harness.exe"
 $env:ELECTRON_RUN_AS_NODE = "1"
 $env:DSH_NM = Join-Path $Desktop "resources\app.asar\dsh\node_modules"
@@ -169,7 +169,7 @@ $env:ELECTRON_RUN_AS_NODE = "1"
 
 ### 3.4 安装器的定位逻辑（省得反复试错）
 
-`install-helper.cjs` 的 `locate()` 找两样东西：`dsh-app-boot\package.json`（判内核在）和 `dsh-desktop-host\lib\cli.js`（判安装器在）。缺后者时报错原文是「没有找到官方插件安装器（dsh-desktop-host/lib/cli.js），内核版本可能不匹配」——看到这句就先确认 `--desktop-dir` 指对了目录（`$env:DSH_DESKTOP_DIR` 也认），别反复双击 `INSTALL.cmd`。常见位置：`%LOCALAPPDATA%\Programs\DeepSeek Harness\DeepSeek Harness.exe`、`D:\AI\dsh2\DeepSeek Harness.exe`。
+`install-helper.cjs` 的 `locate()` 找两样东西：`dsh-app-boot\package.json`（判内核在）和 `dsh-desktop-host\lib\cli.js`（判安装器在）。缺后者时报错原文是「没有找到官方插件安装器（dsh-desktop-host/lib/cli.js），内核版本可能不匹配」——看到这句就先确认 `--desktop-dir` 指对了目录（`$env:DSH_DESKTOP_DIR` 也认），别反复双击 `INSTALL.cmd`。常见位置：`%LOCALAPPDATA%\Programs\DeepSeek Harness\DeepSeek Harness.exe`、`%ProgramFiles%\DeepSeek Harness\DeepSeek Harness.exe`。
 
 ### 3.5 三条都过 / 有一条不过，分别怎么办
 
@@ -201,7 +201,7 @@ cd "<包目录>"
 
 ```powershell
 $prof  = "$env:USERPROFILE\.dsh\profiles\desktop"
-$store = "$env:LOCALAPPDATA\DSHPluginsPack\v2.0.0-windows"
+$store = "$env:LOCALAPPDATA\DSHPluginsPack\v2.1.0-windows"
 $b = Get-ChildItem "$store\backups" -Directory | Sort-Object Name -Desc | Select-Object -First 1
 $before = Get-Content "$($b.FullName)\deps-before.json" -Raw | ConvertFrom-Json
 Copy-Item "$prof\package.json" "$prof\package.json.bak-$(Get-Date -f yyyyMMdd-HHmmss)" -Force
@@ -240,8 +240,8 @@ Rename-Item "$prof\pnpm-lock.yaml" "pnpm-lock.yaml.broken-$stamp" -ErrorAction S
 
 ```powershell
 $env:ELECTRON_RUN_AS_NODE = "1"
-$Exe = "D:\AI\dsh2\DeepSeek Harness.exe"
-$Cli = "D:\AI\dsh2\resources\app.asar\dsh\node_modules\@deepseek-ai\dsh-desktop-host\lib\cli.js"
+$Exe = "$env:LOCALAPPDATA\Programs\DeepSeek Harness\DeepSeek Harness.exe"
+$Cli = Join-Path (Split-Path $Exe) "resources\app.asar\dsh\node_modules\@deepseek-ai\dsh-desktop-host\lib\cli.js"
 & $Exe --expose-internals $Cli plugin --profile desktop add @scope/pkg-name@1.2.3      # registry 包，锁版本
 & $Exe --expose-internals $Cli plugin --profile desktop add "link:D:\work\my-plugin"   # 本地目录，改代码即时生效
 & $Exe --expose-internals $Cli plugin --profile desktop list                           # 看已装

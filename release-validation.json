@@ -1,6 +1,6 @@
 {
  "schema": 1,
- "generatedAt": "2026-10-29T05:11:43.172Z",
+ "generatedAt": "2026-10-29T05:49:21.838Z",
  "pack": "DSH-Plugins-v2.1.0",
  "version": "2.1.0",
  "kernel": {
@@ -89,7 +89,7 @@
    "detail": "links=0"
   },
   {
-   "name": "payload 文件数 ≥ 快照（10667）",
+   "name": "payload 文件数 ≥ 快照（10670）",
    "ok": true,
    "detail": "实际 10670 个 / 318.45 MB"
   },

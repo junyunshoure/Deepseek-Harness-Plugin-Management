@@ -300,7 +300,7 @@
   "docs": {
     "readme": "README.md",
     "manual": "docs/使用说明书.md",
-    "features": "docs/新功能说明_v2.0.0.md",
+    "features": "docs/新功能说明.md",
     "config": "docs/配置参考.md",
     "faq": "docs/常见问题.md",
     "services": "docs/服务部署指南.md",
