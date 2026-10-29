@@ -1,7 +1,7 @@
 # 功能 profile 索引
 默认只声明功能；先理解项目，再读取需要的独立手册。常开服务保留最小入口。
 选法：拿项目特征对一下「典型场景」，命中就直接读那一份，不要通读全部。
-常开清单由 catalog 默认值加 C:\Users\dengh\.dsh\profiles\desktop\feature-profiles\always.json 决定（格式：{"always":["web"],"off":["zotero"]}）；当前常开：context、core、goals、hindsight、knowledge、openviking、reme、skills。
+常开清单由 catalog 默认值加 %USERPROFILE%\.dsh\profiles\desktop\feature-profiles\always.json 决定（格式：{"always":["web"],"off":["zotero"]}）；当前常开：context、core、goals、hindsight、knowledge、openviking、reme、skills。
 - [context · 上下文管理](./context.md)（常开最小入口）：长对话压缩、恢复、上下文用量与缓存核对。
   - 典型场景：上下文吃紧、要压缩或回看被压内容
   - 大件拆分：快速开始在本页，完整参数见 [附录](./context.appendix.md)
@@ -19,15 +19,7 @@
 - [ego-browser · 独立浏览器](./ego-browser.md)：持久浏览器会话、网页交互、抓取与下载。
   - 典型场景：独立开浏览器抓页面或下载文件
   - 大件拆分：快速开始在本页，完整参数见 [附录](./ego-browser.appendix.md)
-- [extension-fact · extension-fact](./extension-fact.md)：当前运行时扩展提供的功能。
-  - 典型场景：当前运行时扩展提供的能力
 - [extension-memory · extension-memory](./extension-memory.md)：当前运行时扩展提供的功能。
-  - 典型场景：当前运行时扩展提供的能力
-- [extension-ralph · extension-ralph](./extension-ralph.md)：当前运行时扩展提供的功能。
-  - 典型场景：当前运行时扩展提供的能力
-- [extension-str · extension-str](./extension-str.md)：当前运行时扩展提供的功能。
-  - 典型场景：当前运行时扩展提供的能力
-- [extension-tool · extension-tool](./extension-tool.md)：当前运行时扩展提供的功能。
   - 典型场景：当前运行时扩展提供的能力
 - [genui · 对话交互界面](./genui.md)：展示交互卡片、表格、图表、表单及可视化。
   - 典型场景：回复要出表格、图表或交互卡片

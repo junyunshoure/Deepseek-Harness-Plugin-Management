@@ -1,6 +1,6 @@
 'use strict';
 /**
- * DeepSeek Harness 插件整合包 v2.0.0 —— 安装器核心（Windows）
+ * DeepSeek Harness 插件整合包 v2.1.0 —— 安装器核心（Windows）
  *
  * 设计原则
  *  1. 绝不联网：所有插件依赖已在 payload/node_modules 里，逐个用官方 `plugin add --offline` 挂载。
@@ -9,8 +9,15 @@
  *  4. 失败可见：任何一步失败都打印中文原因 + 已完成的步骤 + 备份路径，并写 last-result.json。
  *
  * 用法（一般由 INSTALL.cmd / VERIFY.cmd / DOCTOR.cmd / ROLLBACK.cmd 调用）：
- *   node install-helper.cjs --desktop-dir <目录> [--mode new|merge|backup] [--with-services]
+ *   node install-helper.cjs --desktop-dir <目录> [--mode new|merge|backup|upgrade|repair] [--with-services]
  *        [--no-launch] [--force-config] [--check-only] [--rollback <备份目录>] [--yes]
+ *        [--doctor] [--uninstall] [--services-only] [--prune-old [--keep-days N]]
+ *
+ * v2.1.0 新增两种模式（依据 _probe-v2.1.0 的实测结论，见 docs/升级与维护.md）：
+ *   upgrade  —— 已装过旧版整合包时用：把 6 个本地插件从旧载荷目录重指向新载荷目录。
+ *               实测结论：同名包二次 add 就是就地覆盖，不需要先 remove；旧链接残留不删，
+ *               所以本模式在收尾时逐个核对 profile/node_modules 链接指向并给出重定向表。
+ *   repair   —— 链接断了 / 载荷被移动后用：只重挂已声明的包，不新增、不删除任何依赖。
  */
 const fs = require('node:fs');
 const path = require('node:path');
@@ -82,7 +89,7 @@ function mergePatchFile(srcFile, dstFile) {
   if (!missing.length) return added;
   const header = [
     '',
-    '# === 以下条目由插件整合包 v2.0.0 追加（你的原有条目一条没动） ===',
+    '# === 以下条目由插件整合包 v2.1.0 追加（你的原有条目一条没动） ===',
     '# 想撤销：删掉这一整段，或跑 ROLLBACK.cmd 回到安装前。',
     '',
   ].join('\n');
@@ -158,6 +165,7 @@ function writeResult(payload) {
   if (flag('--rollback')) return rollbackMode(spec, opt('--backup', ''));
   if (flag('--uninstall')) return uninstallMode(spec);
   if (flag('--services-only')) return servicesMode(spec);
+  if (flag('--prune-old')) return pruneOldStores(spec);
 
   // ---------- 平台 ----------
   if (process.platform !== 'win32' || process.arch !== 'x64') {
@@ -174,7 +182,11 @@ function writeResult(payload) {
     } else {
       log('✓ 没有找到 DeepSeek Harness（不影响包校验；安装时再指定安装目录即可）。');
     }
+    const inv = readJson(path.join(ROOT, 'inventory.json'));
     log('✓ 本包版本：' + spec.version + '，插件包数：' + spec.packages.length + '，技能：' + (spec.skills || []).length);
+    log('✓ 载荷：' + inv.counts.payloadFiles + ' 个文件 / ' + (inv.counts.payloadBytes / 1048576).toFixed(2) + ' MB（已裁掉 ' +
+      inv.counts.trimmedFiles + ' 个开发件 / ' + (inv.counts.trimmedBytes / 1048576).toFixed(2) + ' MB）');
+    log('✓ 内核门禁：' + spec.kernel.required + '（0.2.x / 0.3.x 均放行，与本包基准不同只提示不阻断）');
     log('✓ 只做校验，未改动任何文件。');
     return;
   }
@@ -227,12 +239,12 @@ function writeResult(payload) {
         '用 INSTALL.cmd 会出现选择菜单；直接运行时加 --mode new|merge|backup。');
     }
   }
-  if (!['new', 'merge', 'backup'].includes(mode)) die('未知安装模式：' + mode);
+  if (!['new', 'merge', 'backup', 'upgrade', 'repair'].includes(mode)) die('未知安装模式：' + mode);
   if (mode === 'new' && hasForeign) {
     die('选的是“全新安装”，但目标 profile 已有其他插件（' + foreignDeps.length + ' 个依赖 / ' + foreignBundles.length + ' 个 bundle）。\n' +
       '请改用 B 智能合并（--mode merge）或 C 备份后覆盖（--mode backup）。');
   }
-  log('安装模式：' + ({ new: 'A 全新安装', merge: 'B 智能合并', backup: 'C 备份后覆盖' })[mode]);
+  log('安装模式：' + ({ new: 'A 全新安装', merge: 'B 智能合并', backup: 'C 备份后覆盖', upgrade: 'D 升级（重指向新载荷）', repair: 'E 修复（重挂已声明插件）' })[mode]);
   result.mode = mode;
 
   // ---------- 持久目录 ----------
@@ -241,13 +253,28 @@ function writeResult(payload) {
   if (store === ROOT || store.startsWith(ROOT + path.sep) || ROOT.startsWith(store + path.sep)) die('持久安装目录不能与解压目录重叠，请换一个目录。');
   if (store === home || store.startsWith(home + path.sep)) die('持久安装目录不能放在 DSH 数据目录里，请换一个目录。');
 
+  // ---------- 旧载荷探测（v2.1.0） ----------
+  // 载荷目录名带版本号，换版本后 6 个本地插件的 link: 会指向不存在的旧路径 —— 这就是升级失效的根因。
+  // 这里先把找到的旧载荷列出来，upgrade 模式据此给出「旧 → 新」重定向表。
+  const oldStores = listStores().filter(s => path.resolve(s.dir) !== path.resolve(store));
+  if (oldStores.length) {
+    log('');
+    log('发现其它版本的载荷目录（旧载荷不会自动删，保留 ' + (opt('--keep-days', '7')) + ' 天可用 --prune-old 清理）：');
+    for (const s of oldStores) log('  · ' + s.name + '  ' + s.dir + '  （' + s.files + ' 个文件）');
+  }
+  if (mode === 'upgrade' && !oldStores.length) {
+    warn('· 没找到旧版本载荷目录，upgrade 会按「重新指向本包载荷」执行，效果等同于 repair。');
+  }
+
   for (const [name, value] of Object.entries(before.dependencies || {})) {
     if (!spec.packages.some(p => p.name === name) && name !== spec.stateBundle) continue;
     const expect = path.join(store, 'payload', 'node_modules', ...name.split('/'));
     const okTarget = value === 'link:' + expect.replaceAll('\\', '/') || value === 'link:' + expect;
     if (!okTarget && mode !== 'backup') {
-      // 已存在同名包但指向别处（例如另一份整合包 / 用户自己装的）
-      warn('· 已存在同名包且指向其他目录，本模式下跳过：' + name);
+      // 已存在同名包但指向别处（例如另一份整合包 / 用户自己装的）。这里只是预演提示，措辞按模式区分，
+      // 免得 upgrade 模式下打印「跳过」让人误以为不会重指向（实际下面会逐个重挂）。
+      const verb = (mode === 'upgrade' || mode === 'repair') ? '将重指向载荷' : '本模式下跳过';
+      warn('· 已存在同名包指向其他目录，' + verb + '：' + name);
     }
   }
 
@@ -259,7 +286,15 @@ function writeResult(payload) {
     if (fs.existsSync(marker) && readJson(marker).id !== spec.id) die('这个持久目录属于另一个整合包，请换目录或先清理。');
     // 已存在的 payload 先删掉，避免新旧混装
     const oldPayload = path.join(store, 'payload');
-    if (fs.existsSync(oldPayload)) fs.rmSync(oldPayload, { recursive: true, force: true });
+    if (fs.existsSync(oldPayload)) {
+      try {
+        fs.rmSync(oldPayload, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
+      } catch (e) {
+        const park = path.join(store, 'payload.old-' + Date.now());
+        warn('· 旧 payload 删不干净（' + (e && e.code) + '），先改名让路：' + park);
+        fs.renameSync(oldPayload, park);
+      }
+    }
     for (const e of fs.readdirSync(ROOT, { withFileTypes: true })) {
       if (e.name === 'backups' || e.name === 'payload') continue;
       const s = path.join(ROOT, e.name), d = path.join(store, e.name);
@@ -308,7 +343,7 @@ function writeResult(payload) {
     return r.status;
   };
 
-  const installed = [], skipped = [], failed = [];
+  const installed = [], skipped = [], failed = [], warned = [], redirects = [];
   const targets = spec.packages.map(p => ({ ...p, dir: path.join(store, 'payload', 'node_modules', ...p.name.split('/')) }));
   targets.push({ name: spec.stateBundle, version: spec.version, dir: path.join(store, 'payload', 'migration-state'), kind: 'state' });
 
@@ -320,33 +355,109 @@ function writeResult(payload) {
     const pkgJson = path.join(p.dir, 'package.json');
     if (!fs.existsSync(pkgJson)) { failed.push(p.name + '（payload 里没有这个包）'); continue; }
     const meta = readJson(pkgJson);
+    if (mode === 'repair' && !cur) { skipped.push(p.name + '（repair 不新增未声明依赖）'); continue; }
     if (mode === 'merge' && cur && !sameTarget) { skipped.push(p.name + '（已有他人版本）'); log('· 跳过 ' + p.name + '：已存在且不是本包版本'); continue; }
     if (mode === 'merge' && sameTarget) { skipped.push(p.name + '（已装同版本）'); continue; }
+    if ((mode === 'upgrade' || mode === 'repair') && sameTarget) {
+      // 已指向本包载荷：upgrade 仍然重挂一次（幂等，实测 0.6 秒），保证 node_modules 链接实体与 package.json 一致
+      if (mode === 'repair') { skipped.push(p.name + '（链接已正确，repair 跳过）'); continue; }
+    }
+    if ((mode === 'upgrade' || mode === 'repair') && cur && !sameTarget) {
+      const wasLink = typeof cur === 'string' && cur.startsWith('link:');
+      if (wasLink) {
+        redirects.push({ name: p.name, from: curTarget || String(cur), to: p.dir });
+        log('· 重指向 ' + p.name + '：' + (curTarget || cur) + '  →  ' + p.dir);
+      } else {
+        log('· 改由载荷挂载 ' + p.name + '：' + cur + '  →  ' + p.dir);
+      }
+    }
+
+    // ---------- 三级回退挂载（v2.1.0） ----------
+    // ① 纯离线；② 离线但禁用 lockfile —— profile 里若存在 git 依赖（如 treg-dsh 的 codeload tarball）
+    // 且离线 store 里没有该 tarball，pnpm 会因为在「整张 lockfile 依赖图」上解析失败而连 link 包一起报
+    // ERR_PNPM_NO_OFFLINE_TARBALL；禁读 lockfile 后只按当前 dependencies 解析 link 目标，实测 0.8 秒通过且全程不联网。
+    // ③ 前两者都失败才联网。
+    const linkSpec = 'link:' + p.dir.replaceAll('\\', '/');
     log('\n[' + (i + 1) + '/' + targets.length + '] 挂载 ' + p.name + '@' + meta.version);
-    let status = runCli(['add', '--offline', '--ignore-scripts', '--save-exact', 'link:' + p.dir.replaceAll('\\', '/')], store);
+    let status = runCli(['add', '--offline', '--ignore-scripts', '--save-exact', linkSpec], store);
     if (status !== 0) {
-      warn('  离线挂载失败，改用普通模式重试（需要能访问 npm 源）…');
-      status = runCli(['add', '--ignore-scripts', '--save-exact', 'link:' + p.dir.replaceAll('\\', '/')], store);
+      warn('  纯离线挂载失败，改用「离线 + 禁用 lockfile」重试（仍然不联网）…');
+      status = runCli(['add', '--offline', '--config.lockfile=false', '--ignore-scripts', '--save-exact', linkSpec], store);
+    }
+    if (status !== 0) {
+      // 正常整合包路径不该走到这里：空壳 profile 里没有 git 依赖，1 级就过。
+      // 只有「profile 里还留着 github:/git+ 依赖、且离线 store 缺对应 tarball」时，
+      // pnpm 解析整张依赖图会连带把 link 包一起判失败。此时**默认不联网**：
+      // 联网会把 200+ 个实体包真装进 profile，破坏「全部 link 到载荷」的离线语义。
+      // 记入 warned 继续跑后面的包，最后统一提示；要联网补装请显式加 --allow-network。
+      if (!flag('--allow-network')) {
+        warned.push(p.name + '（离线解析失败，未联网）');
+        warn('  ! 挂载失败（离线解析被 profile 里的 git 依赖挡住）：' + p.name);
+        continue;
+      }
+      warn('  离线方式都失败，按 --allow-network 改用普通模式重试（需要能访问 npm 源）…');
+      status = runCli(['add', '--ignore-scripts', '--save-exact', linkSpec], store);
     }
     if (status !== 0) { failed.push(p.name); warn('  ✗ 挂载失败：' + p.name); continue; }
     installed.push(p.name + '@' + meta.version);
   }
 
+  // 升级/修复是「在已有 profile 上作业」：里面可能留着 github:/git+ 依赖，离线解析会挡住个别包的 link 挂载。
+  // 这种情况只告警、不中断（其余包已正确重指向），把手工补挂命令打出来；安装类模式则一律失败即停。
+  if (warned.length && (mode === 'new' || mode === 'merge' || mode === 'backup')) {
+    for (const w of warned) failed.push(w);
+    warned.length = 0;
+  }
   if (failed.length) {
     result.failed = failed;
     die('有 ' + failed.length + ' 个插件挂载失败：' + failed.join(', ') + '\n备份在：' + backup + '\n可以先用 ROLLBACK.cmd 退回，再重试。');
+  }
+  if (warned.length) {
+    result.warned = warned;
+    warn('');
+    warn('! 以下 ' + warned.length + ' 个插件没能挂载（profile 里的 git 依赖挡住了离线解析，本包没有联网）：');
+    for (const w of warned) warn('   · ' + w);
+    warn('  补挂办法（任选其一）：');
+    warn('   1) 先把那个 git 依赖替换成本包载荷（例如 dsh plugin remove treg-dsh 后重跑 upgrade），再重跑本安装器；');
+    warn('   2) 手动补挂：dsh plugin --profile desktop add link:' + path.join(store, 'payload', 'node_modules').replaceAll('\\', '/') + '/<包名>');
+    warn('   3) 愿意联网时加 --allow-network 重跑（会从 npm 源补拉缺失 tarball）。');
   }
 
   // ---------- 校验挂载结果 ----------
   const finalManifest = readJson(manifestFile);
   const finalBundles = finalManifest.dsh.profile.bundles;
   for (const p of targets) {
-    if (skipped.some(s => s.startsWith(p.name + '（已有他人'))) continue;
+    if (skipped.some(s => s.startsWith(p.name + '（'))) continue; // 本次被跳过的包没有动过，不参与「必须存在」断言
     const linked = path.join(profile, 'node_modules', ...p.name.split('/'));
     if (!fs.existsSync(linked)) { failed.push(p.name + '（没生成链接）'); continue; }
     if (!finalBundles.includes(p.name)) { failed.push(p.name + '（bundle 未启用）'); }
   }
   if (failed.length) die('挂载后的校验没通过：' + failed.join(', ') + '\n备份：' + backup);
+
+  // ---------- 升级/修复收尾：逐个核对 profile/node_modules 链接指向（v2.1.0） ----------
+  if (mode === 'upgrade' || mode === 'repair') {
+    const dangling = [];
+    for (const p of targets) {
+      const linkPath = path.join(profile, 'node_modules', ...p.name.split('/'));
+      const expect = path.resolve(p.dir);
+      if (!fs.existsSync(linkPath)) { dangling.push(p.name + '（链接不存在）'); continue; }
+      let real = '';
+      try { real = fs.realpathSync(linkPath); } catch { dangling.push(p.name + '（断链）'); continue; }
+      if (path.resolve(real).toLowerCase() !== expect.toLowerCase()) dangling.push(p.name + '（指向 ' + real + '）');
+    }
+    if (dangling.length) {
+      die('重指向后仍有 ' + dangling.length + ' 个插件没指到本包载荷：\n  ' + dangling.join('\n  ') +
+        '\n备份：' + backup + '\n可以先 ROLLBACK.cmd 退回，或手动删除 profile/node_modules 下对应链接后重跑 --mode repair。');
+    }
+    const afterBundles = (readJson(manifestFile).dsh.profile.bundles || []);
+    const missingB = targets.map(t => t.name).filter(n => !afterBundles.includes(n));
+    if (missingB.length) die('升级后这些 bundle 没启用：' + missingB.join(', ') + '\n备份：' + backup);
+    log('✓ 重指向核对通过：' + targets.length + ' 个插件全部指到 ' + path.join(store, 'payload', 'node_modules'));
+    if (redirects.length) {
+      log('✓ 本次重定向 ' + redirects.length + ' 个：');
+      for (const r of redirects) log('   · ' + r.name + '：' + r.from + '  →  ' + r.to);
+    }
+  }
 
   const composed = boot.loadProfileDirectory('dsh', profile, bootPkg);
   if (composed.skippedBundles.length) warn('⚠ 有 bundle 被跳过：' + composed.skippedBundles.join(', '));
@@ -418,7 +529,11 @@ function writeResult(payload) {
   // ---------- 技能 ----------
   const skillRes = { installed: [], skipped: [] };
   const skSrc = path.join(store, 'payload', 'skills');
-  const skTargets = { dsh: path.join(home, 'skills'), agents: path.join(os.homedir(), '.agents', 'skills') };
+  // --skills-root 只给演练/自定义用；正常安装保持两个默认根不变。
+  const skillsRootOverride = opt('--skills-root', '');
+  const skTargets = skillsRootOverride
+    ? { dsh: path.join(skillsRootOverride, 'dsh'), agents: path.join(skillsRootOverride, 'agents') }
+    : { dsh: path.join(home, 'skills'), agents: path.join(os.homedir(), '.agents', 'skills') };
   if (fs.existsSync(skSrc)) {
     for (const tier of fs.readdirSync(skSrc)) {
       const dst = skTargets[tier];
@@ -426,20 +541,37 @@ function writeResult(payload) {
       fs.mkdirSync(dst, { recursive: true });
       for (const name of fs.readdirSync(path.join(skSrc, tier))) {
         const s = path.join(skSrc, tier, name), d = path.join(dst, name);
-        if (fs.existsSync(d)) {
-          const bk = path.join(backup, 'skills', tier, name);
-          copyTree(d, bk);
-          fs.rmSync(d, { recursive: true, force: true });
-          skillRes.skipped.push(name + '（已存在，旧版备份到 backups）');
-        } else {
-          skillRes.installed.push(name);
+        // 单个技能失败不能拖垮整个安装（真机实测过 .agents\skills 下的 mkdir 偶发 EPERM：
+        // 多是安全软件/索引器瞬时占用）。这里最多重试 3 次，仍失败就告警并继续。
+        let lastErr = null, done = false;
+        for (let attempt = 1; attempt <= 3 && !done; attempt++) {
+          try {
+            if (fs.existsSync(d) || (() => { try { fs.lstatSync(d); return true; } catch { return false; } })()) {
+              const bk = path.join(backup, 'skills', tier, name);
+              if (fs.existsSync(d)) copyTree(d, bk);
+              fs.rmSync(d, { recursive: true, force: true });
+              if (!skillRes.skipped.some(x => x.startsWith(name))) skillRes.skipped.push(name + '（已存在，旧版备份到 backups）');
+            } else if (!skillRes.installed.includes(name)) {
+              skillRes.installed.push(name);
+            }
+            copyTree(s, d);
+            done = true;
+          } catch (e) {
+            lastErr = e;
+            Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 300 * attempt);
+          }
         }
-        copyTree(s, d);
+        if (!done) {
+          warn('  ! 技能没能写入：' + name + '（' + (lastErr && lastErr.message) + '）');
+          skillRes.failed = skillRes.failed || [];
+          skillRes.failed.push(name);
+        }
       }
     }
   }
   if (skillRes.installed.length) log('✓ 安装技能：' + skillRes.installed.join(', '));
   if (skillRes.skipped.length) log('· 技能覆盖（旧版已备份）：' + skillRes.skipped.join(', '));
+  if (skillRes.failed && skillRes.failed.length) warn('! 有 ' + skillRes.failed.length + ' 个技能没能写入（不阻断安装，可关掉安全软件后重跑 upgrade 补上）：' + skillRes.failed.join(', '));
 
   // ---------- 本地记忆服务（可选） ----------
   let servicesInfo = null;
@@ -458,6 +590,9 @@ function writeResult(payload) {
 
   // ---------- 结果 ----------
   result.ok = true;
+  result.packVersion = spec.version;
+  result.redirects = redirects;
+  result.oldStores = oldStores.map(s => ({ name: s.name, dir: s.dir }));
   result.finishedAt = new Date().toISOString();
   result.kernelVersion = k.version;
   result.home = home;
@@ -474,6 +609,8 @@ function writeResult(payload) {
   result.rowStateWarnings = stateDiff.length;
   result.nextSteps = [
     '打开 DeepSeek Harness：左侧栏应出现「技能融合 / 记忆融合 / 功能说明 / Ollama / 清理 / 工作台」等入口。',
+    '想让补丁效果常驻（AGENTS.md 对齐协议 / 环境自检）：运行 MAINTAIN.cmd（等价 install-helper --maintain 的 PowerShell 版 maintain.ps1）。',
+    '旧版本载荷目录不再需要时：VERIFY.cmd 里会提示，或用 --prune-old 清理（默认只删 7 天前的，且会跳过仍被引用的目录）。',
     '设置 → 模型：把 config/cordis.patch.yml 里的 https://YOUR-ENDPOINT.example.com 换成你自己的中转站或官方接口地址，填入密钥。',
     '需要本地记忆服务时运行 SETUP-SERVICES.cmd；需要撤回时运行 ROLLBACK.cmd。',
   ];
@@ -489,6 +626,7 @@ function writeResult(payload) {
   log('详细报告：' + path.join(store, 'installation-result.json'));
   if (fpHint.length) log('功能说明：' + fpHint.join('；'));
   log('下一步：打开 DeepSeek Harness，并把中转站地址/密钥填进设置 → 模型。');
+  if (redirects.length) log('本次重指向了 ' + redirects.length + ' 个本地插件（旧载荷目录可以留几天再清）。');
   log('==========================================');
 
   // ---------- 可选：自动启动并等待 GUI ----------
@@ -538,6 +676,65 @@ function resolveProfile() {
 function defaultStore(spec) {
   return path.join(process.env.LOCALAPPDATA || os.tmpdir(), 'DSHPluginsPack', 'v' + spec.version + '-windows');
 }
+// 列出 %LOCALAPPDATA%\\DSHPluginsPack 下所有 v*-windows 载荷目录（v2.1.0）
+function listStores() {
+  const base = path.join(process.env.LOCALAPPDATA || os.tmpdir(), 'DSHPluginsPack');
+  if (!fs.existsSync(base)) return [];
+  const out = [];
+  for (const e of fs.readdirSync(base, { withFileTypes: true })) {
+    if (!e.isDirectory() || !/^v.+-windows$/.test(e.name)) continue;
+    const dir = path.join(base, e.name);
+    const pj = path.join(dir, 'payload', 'node_modules');
+    if (!fs.existsSync(pj)) continue;
+    let files = 0;
+    const stack = [dir];
+    while (stack.length) {
+      const cur = stack.pop();
+      let ents = [];
+      try { ents = fs.readdirSync(cur, { withFileTypes: true }); } catch { continue; }
+      for (const x of ents) {
+        const q = path.join(cur, x.name);
+        if (x.isDirectory()) { stack.push(q); continue; }
+        files++;
+      }
+    }
+    out.push({ name: e.name, dir, files, mtime: fs.statSync(dir).mtimeMs });
+  }
+  return out.sort((a, b) => a.mtime - b.mtime);
+}
+
+// 清理旧载荷：默认只删 keep-days 天前的，且跳过仍被 profile 引用的目录（v2.1.0）
+async function pruneOldStores(spec) {
+  const keepDays = Number(opt('--keep-days', '7')) || 7;
+  const { manifest } = resolveProfile();
+  const deps = fs.existsSync(manifest) ? (readJson(manifest).dependencies || {}) : {};
+  const inUse = new Set();
+  for (const v of Object.values(deps)) {
+    if (typeof v === 'string' && v.startsWith('link:')) inUse.add(path.resolve(v.slice(5)).toLowerCase());
+  }
+  const stores = listStores();
+  const cut = Date.now() - keepDays * 86400000;
+  const del = [], keep = [];
+  for (const s of stores) {
+    const used = [...inUse].some(p => p.startsWith(path.resolve(s.dir).toLowerCase()));
+    if (used) { keep.push(s.name + '（仍被 profile 引用）'); continue; }
+    if (s.mtime > cut) { keep.push(s.name + '（未满 ' + keepDays + ' 天）'); continue; }
+    del.push(s);
+  }
+  log('\n================ 旧载荷清理 ================');
+  log('保留 ' + keepDays + ' 天内的载荷；仍被引用的永不删。');
+  for (const k of keep) log('  · 保留 ' + k);
+  for (const s of del) log('  · 删除 ' + s.name + '  ' + s.dir + '（' + s.files + ' 个文件）');
+  if (!del.length) { log('没有可清理的目录。'); }
+  else if (flag('--yes')) {
+    for (const s of del) { fs.rmSync(s.dir, { recursive: true, force: true }); log('  ✓ 已删 ' + s.name); }
+  } else {
+    log('以上只是预演。确认无误后加 --yes 执行：node install-helper.cjs --prune-old --yes');
+  }
+  log('==========================================');
+  writeResult({ mode: 'prune-old', ok: true, deleted: del.map(s => s.name), kept: keep, applied: flag('--yes'), at: new Date().toISOString() });
+}
+
 function listBackups(store) {
   const dir = path.join(store, 'backups');
   if (!fs.existsSync(dir)) return [];
@@ -636,6 +833,27 @@ async function doctorMode(spec) {
   else warnList.push('持久目录里没有安装记录：' + store);
   const bks = listBackups(store);
   ok.push('可回滚备份：' + bks.length + ' 个' + (bks.length ? '（最新 ' + path.basename(bks[bks.length - 1]) + '）' : ''));
+
+  // v2.1.0：旧载荷目录体检
+  const stores = listStores();
+  if (stores.length > 1) {
+    ok.push('载荷目录：' + stores.length + ' 个（' + stores.map(s => s.name + ' ' + s.files + 'f').join('，') + '）');
+    warnList.push('存在多份载荷目录，确认都指向当前版本后可用 --prune-old 清理旧的那份');
+  } else if (stores.length === 1) {
+    ok.push('载荷目录：' + stores[0].name + '（' + stores[0].files + ' 个文件）');
+  }
+
+  // v2.1.0：profile 里 link: 目标是否都真实存在（断链会让插件静默消失，DSH 却照常启动）
+  if (manifestData) {
+    const broken = [];
+    for (const [n, v] of Object.entries(manifestData.dependencies || {})) {
+      if (typeof v !== 'string' || !v.startsWith('link:')) continue;
+      const t = path.resolve(v.slice(5));
+      if (!fs.existsSync(t)) broken.push(n + ' → ' + t);
+    }
+    if (broken.length) bad.push('link: 目标不存在（插件会静默不加载）：\n      ' + broken.join('\n      '));
+    else if (Object.values(manifestData.dependencies || {}).some(v => typeof v === 'string' && v.startsWith('link:'))) ok.push('link: 目标全部存在');
+  }
 
   log('');
   for (const s of ok) log('  ✓ ' + s);
@@ -739,6 +957,8 @@ async function uninstallMode(spec) {
   log('· 技能文件保留未删（想删就手动去掉 ~/.dsh/skills 与 ~/.agents/skills 里对应目录）');
   log('· 配置备份：' + backup);
   log('· 持久目录仍保留：' + store + '（确认不再需要可整目录删除）');
+  const others = listStores().filter(s => path.resolve(s.dir) !== path.resolve(store));
+  if (others.length) log('· 另有 ' + others.length + ' 份旧载荷：' + others.map(s => s.name).join('、') + '（可用 --prune-old 清理）');
   log('重新打开 DeepSeek Harness 生效。');
   writeResult({ mode: 'uninstall', ok: true, removed, backup, at: new Date().toISOString() });
 }
@@ -782,7 +1002,7 @@ function installServicesAt(store, home) {
     return r.status === null ? 1 : r.status;
   }
   log('找到了服务本体（manifest.json），但没找到安装脚本（install-services.cjs / SETUP-SERVICES.ps1）。请这样做：');
-  log('  · 解压 DSH-Plugins-v2.0.0-Services.zip，直接双击它根目录的 SETUP-SERVICES.cmd（那里自带完整安装逻辑，不依赖本包）。');
+  log('  · 解压 DSH-Plugins-v2.0.0-Services.zip（服务包沿用 v2.0.0，内容未变），直接双击它根目录的 SETUP-SERVICES.cmd（那里自带完整安装逻辑，不依赖本包）。');
   log('  · 装完回到这里继续用 DSH 即可；详细步骤见 docs/服务部署指南.md。');
   return 2;
 }

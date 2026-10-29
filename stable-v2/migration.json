@@ -1,12 +1,12 @@
 {
-  "schema": 2,
+  "schema": 3,
   "id": "dsh-plugins-pack-v2",
   "channel": "stable-v2",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "kernel": {
-    "required": ">=0.2.0 <0.3.0",
+    "required": ">=0.2.0 <0.4.0",
     "recorded": "0.2.1-rc.2",
-    "note": "内核 0.2.x 均可安装；与 recorded 不同时会提示，并建议交给 AI agent 按 docs/AI-agent-适配指南.md 自主适配。"
+    "note": "内核 0.2.x / 0.3.x 均可安装（0.4 起才提示）。与 recorded 不同会给出提示，并建议把 docs/AI-agent-适配指南.md 交给 DSH 里的 AI agent 自主适配。"
   },
   "platform": "win32",
   "arch": "x64",
@@ -306,5 +306,15 @@
     "services": "docs/服务部署指南.md",
     "aiAgent": "docs/AI-agent-适配指南.md",
     "macos": "macos/INSTALL-MAC.md"
-  }
+  },
+  "packVersion": "2.1.0",
+  "mode": 2,
+  "supportedModes": [
+    "new",
+    "merge",
+    "backup",
+    "upgrade",
+    "repair"
+  ],
+  "storeLayout": "%LOCALAPPDATA%\\DSHPluginsPack\\v<version>-windows"
 }

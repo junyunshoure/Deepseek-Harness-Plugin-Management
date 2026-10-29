@@ -147,7 +147,7 @@ if (fs.existsSync(boot)) {
 **C 条目命中比对**
 
 ```powershell
-$pack  = "D:\AI work space\DeepSeek Harness\插件下载与管理\_build-v2.0.0\DSH-Plugins-v2.0.0"
+$pack  = "<包目录>"
 $rows  = (Get-Content "$pack\inventory.json" -Raw | ConvertFrom-Json).pluginRows.id
 $ids   = Select-String -Path "$env:USERPROFILE\.dsh\profiles\desktop\cordis.patch.yml" `
            -Pattern '^\s*-\s*id:\s*(\S+)' | ForEach-Object { $_.Matches[0].Groups[1].Value.Trim('"',"'") }
@@ -189,7 +189,7 @@ $env:ELECTRON_RUN_AS_NODE = "1"
 ### 一级：`ROLLBACK.cmd`
 
 ```powershell
-cd "D:\AI work space\DeepSeek Harness\插件下载与管理\_build-v2.0.0\DSH-Plugins-v2.0.0"
+cd "<包目录>"
 .\ROLLBACK.cmd
 ```
 

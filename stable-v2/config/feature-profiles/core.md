@@ -21,7 +21,6 @@
 - pwsh：Execute a PowerShell command (`pwsh -Command`) and return…
 - read：Read a UTF-8 text file and return line-numbered content.
 - read_image：Read a PNG/JPEG/WebP/GIF file and return the image itself.
-- run_code：Execute a TypeScript program against the available tools.
 - todo_write：Record and update a task list to plan multi-step work and…
 - working_directory：Read the current working directory, or change it with cd.
 - write：Create or fully replace a UTF-8 text file.

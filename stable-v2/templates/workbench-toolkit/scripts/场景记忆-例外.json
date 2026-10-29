@@ -1,0 +1,5 @@
+{
+  "_说明": "场景记忆.mjs 的例外场景清单（工具同目录，只有这一份）。结构照原模板：scenes[id] = { id, title, roots:[{label,path}], handler?, panels?[], aliasNames?[] }。本机当前无例外场景：所有场景都走 workbench/memory/<id>/ 标准布局。",
+  "updatedAt": "2026-10-29",
+  "scenes": {}
+}

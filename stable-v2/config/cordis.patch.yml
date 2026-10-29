@@ -1,16 +1,3 @@
-# =============================================================================
-# dsh profile patch 层（插件整合包 v2.0.0 提供的「开箱骨架」）
-#
-# 用法：把下面所有 https://YOUR-ENDPOINT.example.com 换成你自己的中转站或官方地址，
-#       再去「设置 → 模型」里把每个 provider 的密钥填上（密钥存在
-#       %USERPROFILE%\.dsh\.credentials.yaml，本文件里只有环境变量名，不含密钥）。
-#
-# 说明：
-#  · 本文件只负责「启用/停用哪些条目」+「模型列表长什么样」+「默认模型用哪个」。
-#  · 换不同的中转站：把 baseURL 换成对应地址即可；模型 id 要与中转站里的名字一致。
-#  · 只想用官方 DeepSeek：删掉 llm-pi-ai 这一段，保留 llm-deepseek，把它的 baseURL 换成官方地址。
-#  · 改完需要完全退出 App 再打开（或 Ctrl+R 刷新页面）才生效。
-# =============================================================================
 # Your patch layer for this dsh profile, applied after every bundle layer:
 # a top-level YAML array of loader patch entries (id-targeted config
 # overrides, disables, and insert lists; `!!js` expressions allowed).
@@ -52,7 +39,7 @@
   config:
     providers:
       openai:
-        baseURL: https://YOUR-ENDPOINT.example.com
+        baseURL: https://YOUR-ENDPOINT.example.com/v1
         models:
           - id: gpt-5.6-sol
             name: GPT-5.6 Sol
@@ -91,7 +78,7 @@
               - image
         apiKeyEnv: OPENAI_API_KEY
       anthropic:
-        baseURL: https://YOUR-ENDPOINT.example.com
+        baseURL: https://YOUR-ENDPOINT.example.com/v1
         models:
           - id: claude-opus-4-8
             name: Claude Opus 4.8
@@ -105,7 +92,7 @@
         displayName: cloude kiro
         apiKeyEnv: ANTHROPICMINI_API_KEY
         api: anthropic-messages
-        baseURL: https://YOUR-ENDPOINT.example.com
+        baseURL: https://YOUR-ENDPOINT.example.com/v1
         models:
           - id: claude-fable-5
             name: claude-fable-5
@@ -116,7 +103,7 @@
           - id: claude-sonnet-5
             name: claude-sonnet-5
       google:
-        baseURL: https://YOUR-ENDPOINT.example.com
+        baseURL: https://YOUR-ENDPOINT.example.com/v1
         models:
           - id: gemini-3.8-flash
             name: Gemini 3.8 Flash
@@ -129,7 +116,7 @@
       grok:
         apiKeyEnv: GROK_API_KEY
         api: anthropic-messages
-        baseURL: https://YOUR-ENDPOINT.example.com
+        baseURL: https://YOUR-ENDPOINT.example.com/v1
         models:
           - id: grok-4.7
             name: Grok 4.7
@@ -146,7 +133,7 @@
       openai-guankey:
         apiKeyEnv: OPENAI_GUANKEY_API_KEY
         api: openai-completions
-        baseURL: https://YOUR-ENDPOINT.example.com
+        baseURL: https://YOUR-ENDPOINT.example.com/v1
         models:
           - id: gpt-6-astra
             name: GPT-6 Astra
@@ -157,14 +144,14 @@
       deepseekzhongzhuan:
         apiKeyEnv: DEEPSEEKZHONGZHUAN_API_KEY
         api: openai-completions
-        baseURL: https://YOUR-ENDPOINT.example.com
+        baseURL: https://YOUR-ENDPOINT.example.com/v1
         models:
           - id: deepseek-v4.1-flash
             name: deepseek-v4.1-flash
 - id: llm-deepseek
   name: "@deepseek-ai/dsh-llm-deepseek-api-key"
   config:
-    baseURL: https://api.deepseek.com
+    baseURL: https://YOUR-ENDPOINT.example.com/v1
     retryPolicy:
       mode: normal
       retryableCodes:
@@ -203,4 +190,3 @@
     reasoningEffort: high
 - id: memory-fusion-runtime
   disabled: false
-

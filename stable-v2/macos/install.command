@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-#  DeepSeek Harness 插件整合包 v2.0.0 —— macOS 一键安装器（网络安装路线）
+#  DeepSeek Harness 插件整合包 v2.1.0 —— macOS 一键安装器（网络安装路线）
 #
 #  用法：
 #    ./install.command                     # 自动找 /Applications/DeepSeek Harness.app
@@ -20,7 +20,7 @@
 set -euo pipefail
 
 PACK_ID="dsh-plugins-pack-v2"
-PACK_VERSION="2.0.0"
+PACK_VERSION="2.1.0"
 PROFILE_NAME="desktop"
 PROFILE_DIR="$HOME/.dsh/profiles/$PROFILE_NAME"
 SKILLS_DSH="$HOME/.dsh/skills"
@@ -81,7 +81,7 @@ trap cleanup_on_exit EXIT
 
 usage() {
   cat <<'USAGE'
-DeepSeek Harness 插件整合包 v2.0.0 —— macOS 安装器
+DeepSeek Harness 插件整合包 v2.1.0 —— macOS 安装器
 
   --app <path>           指定 DeepSeek Harness.app（也可用环境变量 DSH_APP）
   --offline              不联网：把同目录 payload/node_modules 复制进 profile（需在本机自建）
@@ -418,7 +418,7 @@ const a = process.argv.slice(1);
 const tmp = a[0], out = a[1], app = a[2], kernel = a[3], backup = a[4], started = a[5], okN = a[6], failN = a[7];
 const list = (n) => { try { return fs.readFileSync(path.join(tmp, n), 'utf8').split('\n').map(s => s.trim()).filter(Boolean); } catch (e) { return []; } };
 const doc = {
-  pack: { id: 'dsh-plugins-pack-v2', version: '2.0.0', channel: 'stable-v2' },
+  pack: { id: 'dsh-plugins-pack-v2', version: '2.1.0', channel: 'stable-v2' },
   installer: 'macos/install.command',
   route: 'network',
   platform: 'darwin',

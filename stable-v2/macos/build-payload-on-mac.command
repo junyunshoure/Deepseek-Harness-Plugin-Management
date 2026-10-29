@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-#  DeepSeek Harness 插件整合包 v2.0.0 —— 在这台 Mac 上重建离线 payload
+#  DeepSeek Harness 插件整合包 v2.1.0 —— 在这台 Mac 上重建离线 payload
 #
 #  先说结论：在 Mac 上装插件不需要这个脚本。
 #    · macos/install.command 走的是「网络安装」：用 DSH 自带 Electron 当 node，

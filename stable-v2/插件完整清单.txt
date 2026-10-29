@@ -1,138 +1,355 @@
-﻿DeepSeek Harness 插件整合包 v2.0.0 —— 插件完整清单
-生成时间：2026-10-28T12:28:14.272Z
-内核版本（构建基准）：0.2.1-rc.2
-bundle 数量：36    插件条目总数：256
-==============================================================================
+DeepSeek Harness 插件整合包 v2.1.0 —— 插件完整清单
+生成时间：2026-10-29T05:11:40.485Z
+内核基准：0.2.1-rc.2（支持 >=0.2.0 <0.4.0）
 
-[01] @deepseek-ai/dsh-base  @unknown  (内核内置，条目 0，停用 0)
+== 一、依赖包（32 个） ==
+ 1. @changfenhuang/dsh-genui  0.11.4  [npm 包]
+ 2. @kenz1117/dsh-ui-usage-billing  1.4.34  [npm 包]
+ 3. @lemoncat7/dsh-knowledge  2.15.3  [npm 包]
+ 4. @linxin666/dsh-client-ui-git-graph  0.4.5  [npm 包]
+ 5. @linxin666/dsh-web-all  0.4.6  [npm 包]
+ 6. @liustack/modlens  3.26.6  [npm 包]
+ 7. @local/dsh-client-ui-workbench  0.1.0  [local-link]
+ 8. @tt-a1i/archify-dsh  1.0.0  [npm 包]
+ 9. @vectorize-io/hindsight-coding-agents  0.8.2  [npm 包]
+10. @wxg-prc-cpg/browser-skill-dsh-plugin  0.3.3  [npm 包]
+11. @wxg-prc-cpg/dsh-weknora  0.1.0  [npm 包]
+12. @xmanrui/dsh-im  4.39.0  [npm 包]
+13. billion-context  0.1.208  [npm 包]
+14. dsh-approval-gate  0.5.0  [npm 包]
+15. dsh-context  0.72.0  [npm 包]
+16. dsh-cost-meter  1.8.35  [npm 包]
+17. dsh-drawai  0.2.7  [npm 包]
+18. dsh-ego-browser  0.8.6  [npm 包]
+19. dsh-feature-profiles  0.1.0  [local-link]
+20. dsh-infinite-gen-5  1.1.0  [npm 包]
+21. dsh-mattpocock-skills-deck  1.9.0-beta.8  [npm 包]
+22. dsh-memory-fusion  1.0.0  [local-link]
+23. dsh-plugin-wallpaper-engine  1.3.1  [npm 包]
+24. dsh-purge  3.0.0  [local-link]
+25. dsh-rewind-plugin  0.15.3  [npm 包]
+26. dsh-skill-fusion  1.0.2  [local-link]
+27. dsh-ollama  0.1.0  [local-link]
+28. dsh-undo-savepoint  0.4.9  [npm 包]
+29. dsh-whale-widget  0.4.2  [npm 包]
+30. dsh-zotero  0.12.1  [npm 包]
+31. dshmarket  1.66.28  [npm 包]
+32. treg-dsh  0.27.0  [npm 包]
 
-[02] @deepseek-ai/dsh-web-app  @unknown  (内核内置，条目 2，停用 0)
-     √ web-startup  ←  @deepseek-ai/dsh-web-app/startup
-     √ web-runtime  ←  @deepseek-ai/dsh-web-app
+== 二、本地插件（6 个，随包实体化，不需要你本地源码） ==
+ 1. dsh-feature-profiles  0.1.0  [本地插件]  无第三方运行依赖（peer 由内核提供）
+ 2. dsh-memory-fusion  1.0.0  [本地插件]  无第三方运行依赖（peer 由内核提供）
+ 3. dsh-skill-fusion  1.0.2  [本地插件]  运行依赖：js-yaml
+ 4. dsh-ollama  0.1.0  [本地插件]  无第三方运行依赖（peer 由内核提供）
+ 5. dsh-purge  3.0.0  [本地插件]  无第三方运行依赖（peer 由内核提供）
+ 6. @local/dsh-client-ui-workbench  0.1.0  [本地插件]  无第三方运行依赖（peer 由内核提供）
 
-[03] dshmarket  @1.66.28  (社区插件，条目 1，停用 0)
-     √ dsh-market  ←  dshmarket
+== 三、技能（6 个） ==
+· cli-anything  →  ~/.dsh/skills
+· cli-hub-meta-skill  →  ~/.dsh/skills
+· solidworks-automation  →  ~/.dsh/skills
+· writing-for-agents  →  ~/.dsh/skills
+· hindsight-coding-agent  →  ~/.agents/skills
+· reverse-engineer-anything  →  ~/.agents/skills
 
-[04] @linxin666/dsh-web-all  @0.4.6  (社区插件，条目 15，停用 1)
-     √ web-ui-compat  ←  @linxin666/dsh-web-all
-     √ web-ui-settings  ←  @linxin666/dsh-web-all/settings
-     √ web-ui-plugin-manager  ←  @linxin666/dsh-web-all/plugin-manager
-     √ web-ui-market  ←  @linxin666/dsh-web-all/market
-     √ web-ui-task-board  ←  @linxin666/dsh-web-all/task-board
-     √ web-ui-task-board-github  ←  @linxin666/dsh-web-all/task-board-github
-     √ web-ui-git-graph  ←  @linxin666/dsh-web-all/git-graph
-     √ web-ui-remote-web-ui  ←  @linxin666/dsh-web-all/remote-web-ui
-     √ web-ui-update  ←  @linxin666/dsh-web-all/update
-     √ web-ui-ssh  ←  @linxin666/dsh-web-all/ssh
-     √ web-ui-liangshen  ←  @linxin666/dsh-web-all/liangshen
-     × web-ui-skill-explorer  ←  @linxin666/dsh-web-all/skill-explorer
-     √ web-ui-usage  ←  @linxin666/dsh-web-all/usage
-     √ web-ui-session-archive  ←  @linxin666/dsh-web-all/session-archive
-     √ web-ui-model-capabilities  ←  @linxin666/dsh-web-all/model-capabilities
+== 四、profile bundle 顺序（36 个） ==
+ 1. @deepseek-ai/dsh-base
+ 2. @deepseek-ai/dsh-web-app
+ 3. dshmarket
+ 4. @linxin666/dsh-web-all
+ 5. @deepseek-ai/dsh-experimental-agent-team-profile
+ 6. @deepseek-ai/dsh-experimental-auto-review
+ 7. dsh-undo-savepoint
+ 8. @liustack/modlens
+ 9. dsh-cost-meter
+10. @changfenhuang/dsh-genui
+11. @linxin666/dsh-client-ui-git-graph
+12. dsh-plugin-wallpaper-engine
+13. dsh-approval-gate
+14. @tt-a1i/archify-dsh
+15. dsh-rewind-plugin
+16. dsh-context
+17. dsh-whale-widget
+18. dsh-drawai
+19. @kenz1117/dsh-ui-usage-billing
+20. billion-context
+21. dsh-ego-browser
+22. @xmanrui/dsh-im
+23. dsh-zotero
+24. @local/dsh-client-ui-workbench
+25. @wxg-prc-cpg/browser-skill-dsh-plugin
+26. dsh-mattpocock-skills-deck
+27. @lemoncat7/dsh-knowledge
+28. @wxg-prc-cpg/dsh-weknora
+29. treg-dsh
+30. @vectorize-io/hindsight-coding-agents
+31. dsh-infinite-gen-5
+32. dsh-purge
+33. dsh-feature-profiles
+34. dsh-memory-fusion
+35. dsh-skill-fusion
+36. dsh-ollama
 
-[05] @deepseek-ai/dsh-experimental-agent-team-profile  @unknown  (内核内置，条目 0，停用 0)
+== 五、插件条目（256 条，disabled=21） ==
+安装完成后，设置 → 插件 里的这 256 条应与本表启停一致（名称 + 停用状态）。
+[停] tool-plugin-manager  ←  @deepseek-ai/dsh-plugin-manager/tools
+[启] plugin-manager  ←  @deepseek-ai/dsh-plugin-manager
+[启] timer  ←  @deepseek-ai/cordis-plugin-timer
+[启] hmr  ←  @deepseek-ai/dsh-hmr
+[启] llm  ←  @deepseek-ai/dsh-llm
+[启] deepseek-llm-api-extensions  ←  @deepseek-ai/dsh-deepseek-llm-api-extensions
+[启] session  ←  @deepseek-ai/dsh-session
+[启] session-log-deepseek  ←  @deepseek-ai/dsh-session-log-deepseek
+[启] typert  ←  @deepseek-ai/dsh-typert-registry
+[启] typert-loader  ←  @deepseek-ai/dsh-typert-loader
+[启] typert-gateway  ←  @deepseek-ai/dsh-api-gateway
+[启] remote-access  ←  @deepseek-ai/dsh-api-remote-access
+[启] session-title  ←  @deepseek-ai/dsh-session-title
+[启] session-title-llm  ←  @deepseek-ai/dsh-session-title-first-prompt-llm
+[启] user-questions  ←  @deepseek-ai/dsh-user-questions
+[启] agent  ←  @deepseek-ai/dsh-agent
+[启] plugin-package-inventory-deepseek  ←  @deepseek-ai/dsh-plugin-package-inventory-deepseek
+[启] agent-default-model  ←  @deepseek-ai/dsh-agent-default-model
+[启] jobs  ←  @deepseek-ai/dsh-jobs-local
+[启] llm-retry  ←  @deepseek-ai/dsh-llm-retry
+[启] config-editor  ←  @deepseek-ai/dsh-config-editor
+[启] settings  ←  @deepseek-ai/dsh-settings
+[启] authorization  ←  @deepseek-ai/dsh-authorization
+[启] deepseek-account  ←  @deepseek-ai/dsh-deepseek-account-platform
+[启] credentials  ←  @deepseek-ai/dsh-credentials-local
+[启] llm-pi-ai  ←  @deepseek-ai/dsh-llm-pi-ai
+[启] session-persistence-jsonl  ←  @deepseek-ai/dsh-session-persistence-jsonl
+[启] attachment-local  ←  @deepseek-ai/dsh-attachment-local
+[启] session-query-sqlite  ←  @deepseek-ai/dsh-session-query-sqlite
+[启] working-directory  ←  @deepseek-ai/dsh-working-directory
+[启] tool-working-directory  ←  @deepseek-ai/dsh-tool-working-directory
+[启] session-projection  ←  @deepseek-ai/dsh-session-projection
+[启] storage  ←  @deepseek-ai/dsh-storage
+[启] storage-json  ←  @deepseek-ai/dsh-storage-json
+[启] storage-domain  ←  @deepseek-ai/dsh-storage-domain
+[启] session-projection-cache  ←  @deepseek-ai/dsh-session-projection-cache
+[启] otel  ←  @deepseek-ai/dsh-otel
+[启] session-telemetry-otel  ←  @deepseek-ai/dsh-session-telemetry-otel
+[启] subprocess  ←  @deepseek-ai/dsh-subprocess-local
+[启] sandbox  ←  @deepseek-ai/dsh-sandbox-local
+[启] sandbox-policy  ←  @deepseek-ai/dsh-sandbox-policy
+[停] bash-sandbox  ←  @deepseek-ai/dsh-bash-sandbox
+[启] pwsh-sandbox  ←  @deepseek-ai/dsh-pwsh-sandbox
+[启] approval  ←  @deepseek-ai/dsh-user-approval
+[启] permission  ←  @deepseek-ai/dsh-permission-presets
+[启] shell-env  ←  @deepseek-ai/dsh-shell-env
+[停] tool-bash  ←  @deepseek-ai/dsh-tool-bash
+[启] tool-pwsh  ←  @deepseek-ai/dsh-tool-pwsh
+[启] tool-jobs  ←  @deepseek-ai/dsh-tool-jobs
+[启] fs-observation-policy  ←  @deepseek-ai/dsh-fs-observation-policy
+[启] tool-fs  ←  @deepseek-ai/dsh-tool-fs
+[启] tool-fs-search  ←  @deepseek-ai/dsh-tool-fs-search
+[停] agent-instructions  ←  @deepseek-ai/dsh-agent-instructions
+[启] skill  ←  @deepseek-ai/dsh-skill
+[停] skill-filesystem  ←  @deepseek-ai/dsh-skill-filesystem
+[停] tool-skill  ←  @deepseek-ai/dsh-tool-skill
+[启] commands  ←  @deepseek-ai/dsh-commands
+[启] command-feedback  ←  @deepseek-ai/dsh-command-feedback
+[启] goal  ←  @deepseek-ai/dsh-goal
+[启] goal-round-driver  ←  @deepseek-ai/dsh-goal-round-driver
+[停] command-goal  ←  @deepseek-ai/dsh-command-goal
+[停] plan-mode  ←  @deepseek-ai/dsh-plan-mode
+[启] token-meter  ←  @deepseek-ai/dsh-token-meter
+[停] compaction-basic  ←  @deepseek-ai/dsh-compaction-basic
+[停] command-compact  ←  @deepseek-ai/dsh-command-compact
+[启] subagent  ←  @deepseek-ai/dsh-subagent
+[启] subagent-spawn-in-process  ←  @deepseek-ai/dsh-subagent-spawn-in-process
+[启] subagent-fork-in-process  ←  @deepseek-ai/dsh-subagent-fork-in-process
+[停] tool-subagent-control  ←  @deepseek-ai/dsh-tool-subagent-control
+[停] tool-subagent-list-agents  ←  @deepseek-ai/dsh-tool-subagent-control/list-agents
+[停] tool-subagent  ←  @deepseek-ai/dsh-tool-subagent
+[停] tool-subagent-fork  ←  @deepseek-ai/dsh-tool-subagent
+[启] ptc-runtime  ←  @deepseek-ai/dsh-ptc-runtime-node
+[停] workflow-ptc  ←  @deepseek-ai/dsh-workflow-ptc
+[停] tool-workflow  ←  @deepseek-ai/dsh-tool-workflow
+[启] timeout-policy  ←  @deepseek-ai/dsh-tool-call-timeout-policy
+[启] spill-local  ←  @deepseek-ai/dsh-spill-local
+[启] spill-policy  ←  @deepseek-ai/dsh-spill-policy
+[启] session-checkpoint-policy  ←  @deepseek-ai/dsh-session-checkpoint-policy
+[停] tool-result-pruner  ←  @deepseek-ai/dsh-compaction-tool-result-pruner
+[启] image-offload  ←  @deepseek-ai/dsh-compaction-image-offload
+[停] tool-todo  ←  @deepseek-ai/dsh-tool-todo
+[停] tool-goal  ←  @deepseek-ai/dsh-tool-goal
+[启] repeat-tool-reminder  ←  @deepseek-ai/dsh-repeat-tool-reminder
+[启] web  ←  @deepseek-ai/dsh-web
+[启] web-search-deepseek  ←  @deepseek-ai/dsh-web-search-deepseek
+[启] web-deepseek-api  ←  @deepseek-ai/dsh-web-deepseek-api
+[启] web-fetch-http  ←  @deepseek-ai/dsh-web-fetch-http
+[停] tool-web  ←  @deepseek-ai/dsh-tool-web
+[启] mcp-resources  ←  @deepseek-ai/dsh-mcp-resources
+[启] tools  ←  @deepseek-ai/dsh-tools
+[启] system-prompt  ←  @deepseek-ai/dsh-system-prompt
+[启] agent-loop  ←  @deepseek-ai/dsh-agent-loop
+[启] fs-sandbox  ←  @deepseek-ai/dsh-fs-sandbox
+[启] llm-deepseek  ←  @deepseek-ai/dsh-llm-deepseek-api-key
+[启] llm-deepseek-account  ←  @deepseek-ai/dsh-llm-deepseek-account
+[启] desktop-product-telemetry  ←  @deepseek-ai/dsh-host-product-telemetry-otel
+[启] product-analytics  ←  @deepseek-ai/dsh-client-product-analytics
+[启] subagent-model-selection-settings  ←  @deepseek-ai/dsh-tool-subagent/model-selection-settings
+[启] message-feedback  ←  @deepseek-ai/dsh-message-feedback
+[启] session-log-download  ←  @deepseek-ai/dsh-session-log-export
+[启] open-in-app  ←  @deepseek-ai/dsh-host-open-in-app
+[启] ui-open-in-app  ←  @deepseek-ai/dsh-client-ui-open-in-app
+[启] workspace  ←  @deepseek-ai/dsh-workspace
+[启] session-reference  ←  @deepseek-ai/dsh-session-reference
+[启] file-reference-local  ←  @deepseek-ai/dsh-file-reference-local
+[启] session-stats  ←  @deepseek-ai/dsh-session-stats
+[启] session-turn-outline  ←  @deepseek-ai/dsh-session-turn-outline
+[启] directory-picker  ←  @deepseek-ai/dsh-host-directory-picker-auto
+[启] plugin-inventory  ←  @deepseek-ai/dsh-host-plugin-inventory
+[启] session-controller  ←  @deepseek-ai/dsh-api-session-controller
+[启] job-controller  ←  @deepseek-ai/dsh-api-job-controller
+[启] terminal-controller  ←  @deepseek-ai/dsh-api-terminal-controller
+[启] workspace-files  ←  @deepseek-ai/dsh-api-workspace-files
+[启] schedule  ←  @deepseek-ai/dsh-schedule
+[启] ui-settings-account  ←  @deepseek-ai/dsh-client-ui-settings-account
+[启] account-controller  ←  @deepseek-ai/dsh-api-account-controller
+[启] settings-controller  ←  @deepseek-ai/dsh-api-settings-controller
+[启] workspace-controller  ←  @deepseek-ai/dsh-api-workspace-controller
+[启] cordis-host-runner  ←  @deepseek-ai/dsh-cordis-host-runner
+[启] cordis-inspect-providers  ←  @deepseek-ai/dsh-tool-cordis/host
+[启] web-startup  ←  @deepseek-ai/dsh-web-app/startup
+[启] webserver  ←  @deepseek-ai/dsh-host-webserver
+[启] web-runtime  ←  @deepseek-ai/dsh-web-app
+[启] harness-dev-context  ←  @deepseek-ai/dsh-harness-dev-context
+[启] client-hmr  ←  @deepseek-ai/dsh-client-hmr
+[启] modules  ←  @deepseek-ai/dsh-client-modules
+[启] connection  ←  @deepseek-ai/dsh-client-connection
+[启] file-upload  ←  @deepseek-ai/dsh-client-file-upload
+[启] api-remotes  ←  @deepseek-ai/dsh-api-remotes
+[启] cordis-client-runner  ←  @deepseek-ai/dsh-cordis-client-runner
+[启] ui-theme  ←  @deepseek-ai/dsh-client-ui-theme
+[启] locale  ←  @deepseek-ai/dsh-client-locale
+[启] shortcuts  ←  @deepseek-ai/dsh-client-shortcuts
+[启] ui-shortcuts  ←  @deepseek-ai/dsh-client-ui-shortcuts
+[启] ui-layout  ←  @deepseek-ai/dsh-client-ui-layout
+[启] ui-renderer  ←  @deepseek-ai/dsh-client-ui-renderer
+[启] ui-session  ←  @deepseek-ai/dsh-client-ui-session
+[启] resources  ←  @deepseek-ai/dsh-client-resources
+[启] ui-sidebar  ←  @deepseek-ai/dsh-client-ui-sidebar
+[启] ui-sidebar-right  ←  @deepseek-ai/dsh-client-ui-sidebar-right
+[启] office-to-pdf  ←  @deepseek-ai/dsh-office-to-pdf
+[启] ui-sidebar-documentpreview  ←  @deepseek-ai/dsh-client-ui-sidebar-documentpreview
+[启] ui-sidebar-browser  ←  @deepseek-ai/dsh-client-ui-sidebar-browser
+[启] ui-sidebar-terminal  ←  @deepseek-ai/dsh-client-ui-sidebar-terminal
+[启] ui-sidebar-files  ←  @deepseek-ai/dsh-client-ui-sidebar-files
+[启] ui-settings  ←  @deepseek-ai/dsh-client-ui-settings
+[启] ui-settings-general  ←  @deepseek-ai/dsh-client-ui-settings-general
+[启] ui-settings-models  ←  @deepseek-ai/dsh-client-ui-settings-models
+[启] ui-plugin-manager  ←  @deepseek-ai/dsh-client-ui-plugin-manager
+[启] ui-settings-plugin-inventory  ←  @deepseek-ai/dsh-client-ui-settings-plugin-inventory
+[启] ui-conversation  ←  @deepseek-ai/dsh-client-ui-conversation
+[启] ui-approval  ←  @deepseek-ai/dsh-client-ui-approval
+[启] ui-chat  ←  @deepseek-ai/dsh-client-ui-chat
+[启] ui-brand-official  ←  @deepseek-ai/dsh-client-ui-brand-official
+[启] ui-attachment  ←  @deepseek-ai/dsh-client-ui-attachment
+[启] ui-tool  ←  @deepseek-ai/dsh-client-ui-tool
+[启] ui-cordis  ←  @deepseek-ai/dsh-client-ui-cordis
+[启] ui-deliverables  ←  @deepseek-ai/dsh-client-ui-deliverables
+[启] workspace-changes  ←  @deepseek-ai/dsh-workspace-changes
+[启] ui-workspace  ←  @deepseek-ai/dsh-client-ui-workspace
+[启] ui-workflow-run  ←  @deepseek-ai/dsh-client-ui-workflow-run
+[启] ui-input-trigger  ←  @deepseek-ai/dsh-client-ui-input-trigger
+[启] ui-commands  ←  @deepseek-ai/dsh-client-ui-commands
+[启] ui-skill  ←  @deepseek-ai/dsh-client-ui-skill
+[启] ui-subagent  ←  @deepseek-ai/dsh-client-ui-subagent
+[启] ui-reference  ←  @deepseek-ai/dsh-client-ui-reference
+[启] ui-secret-mask  ←  @deepseek-ai/dsh-client-ui-secret-mask
+[启] ui-jobs  ←  @deepseek-ai/dsh-client-ui-jobs
+[启] ui-schedule  ←  @deepseek-ai/dsh-client-ui-schedule
+[启] ui-goal  ←  @deepseek-ai/dsh-client-ui-goal
+[启] ui-message-feedback  ←  @deepseek-ai/dsh-client-ui-message-feedback
+[启] ui-model-selection  ←  @deepseek-ai/dsh-client-ui-model-selection
+[启] ui-deepseek-model-label-1017  ←  @deepseek-ai/dsh-client-ui-deepseek-model-label-1017
+[启] ui-permission  ←  @deepseek-ai/dsh-client-ui-permission-presets
+[启] ui-agent-preset  ←  @deepseek-ai/dsh-client-ui-agent-preset
+[启] ui-settings-session-log  ←  @deepseek-ai/dsh-client-ui-settings-session-log
+[启] ui-settings-plugins  ←  @deepseek-ai/dsh-client-ui-settings-plugins
+[启] ui-settings-shell  ←  @deepseek-ai/dsh-client-ui-settings-shell
+[启] ui-settings-agent-loop  ←  @deepseek-ai/dsh-client-ui-settings-agent-loop
+[启] ui-settings-subagent  ←  @deepseek-ai/dsh-client-ui-settings-subagent
+[启] ui-settings-web-search  ←  @deepseek-ai/dsh-client-ui-settings-web-search
+[启] ui-plan  ←  @deepseek-ai/dsh-client-ui-plan
+[启] ui-user-questions  ←  @deepseek-ai/dsh-client-ui-user-questions
+[启] ui-trajectory  ←  @deepseek-ai/dsh-client-ui-trajectory
+[启] agent-preset-registry  ←  @deepseek-ai/dsh-agent-preset-registry
+[启] preset-standard  ←  @deepseek-ai/dsh-agent-preset
+[启] preset-ptc  ←  @deepseek-ai/dsh-agent-preset
+[启] preset-minimal  ←  @deepseek-ai/dsh-agent-preset
+[启] preset-cordis  ←  @deepseek-ai/dsh-agent-preset
+[启] dsh-market  ←  dshmarket
+[启] web-ui-compat  ←  @linxin666/dsh-web-all
+[启] web-ui-settings  ←  @linxin666/dsh-web-all/settings
+[启] web-ui-plugin-manager  ←  @linxin666/dsh-web-all/plugin-manager
+[启] web-ui-market  ←  @linxin666/dsh-web-all/market
+[启] web-ui-task-board  ←  @linxin666/dsh-web-all/task-board
+[启] web-ui-task-board-github  ←  @linxin666/dsh-web-all/task-board-github
+[启] web-ui-git-graph  ←  @linxin666/dsh-web-all/git-graph
+[启] web-ui-remote-web-ui  ←  @linxin666/dsh-web-all/remote-web-ui
+[启] web-ui-update  ←  @linxin666/dsh-web-all/update
+[启] web-ui-ssh  ←  @linxin666/dsh-web-all/ssh
+[启] web-ui-liangshen  ←  @linxin666/dsh-web-all/liangshen
+[停] web-ui-skill-explorer  ←  @linxin666/dsh-web-all/skill-explorer
+[启] web-ui-usage  ←  @linxin666/dsh-web-all/usage
+[启] web-ui-session-archive  ←  @linxin666/dsh-web-all/session-archive
+[启] web-ui-model-capabilities  ←  @linxin666/dsh-web-all/model-capabilities
+[启] web-ui-i18n  ←  @linxin666/dsh-i18n
+[启] web-ui-community-plugins  ←  @linxin666/dsh-client-ui-community-plugins
+[启] web-ui-pet  ←  @linxin666/dsh-pet
+[启] web-ui-preset-center  ←  @linxin666/dsh-client-ui-preset-center
+[启] web-ui-skin-center  ←  @linxin666/dsh-client-ui-skin-center
+[启] agent-team  ←  @deepseek-ai/dsh-experimental-agent-team
+[启] tool-agent-team  ←  @deepseek-ai/dsh-experimental-tool-agent-team
+[启] ui-agent-team  ←  @deepseek-ai/dsh-experimental-client-ui-agent-team
+[启] auto-review  ←  @deepseek-ai/dsh-experimental-auto-review
+[启] dsh-undo  ←  dsh-undo-savepoint
+[启] modlens  ←  @liustack/modlens
+[启] cost-meter  ←  dsh-cost-meter
+[启] genui  ←  @changfenhuang/dsh-genui
+[启] ui-git-graph  ←  @linxin666/dsh-client-ui-git-graph
+[启] wallpaper-engine  ←  dsh-plugin-wallpaper-engine
+[启] dsh-approval-gate  ←  dsh-approval-gate
+[启] archify-skill-filesystem  ←  @deepseek-ai/dsh-skill-filesystem
+[启] dsh-rewind-plugin  ←  dsh-rewind-plugin
+[启] dsh-context  ←  dsh-context
+[启] dsh-whale-widget  ←  dsh-whale-widget
+[启] drawai  ←  dsh-drawai
+[启] ui-usage-billing  ←  @kenz1117/dsh-ui-usage-billing
+[启] bili-native  ←  billion-context
+[启] bili-compaction-gate  ←  billion-context/dsh-compaction-gate
+[启] ego-browser  ←  dsh-ego-browser
+[启] xmanrui-dsh-im  ←  @xmanrui/dsh-im
+[启] zotero  ←  dsh-zotero
+[启] ui-workbench  ←  @local/dsh-client-ui-workbench
+[启] browserskill  ←  @wxg-prc-cpg/browser-skill-dsh-plugin
+[启] dsh-mattpocock-skills-deck  ←  dsh-mattpocock-skills-deck
+[启] dsh-mattpocock-skills-deck-tools  ←  dsh-mattpocock-skills-deck/tools
+[启] knowledge  ←  @lemoncat7/dsh-knowledge
+[启] weknora  ←  @wxg-prc-cpg/dsh-weknora
+[启] treg-skill  ←  treg-dsh
+[启] treg-mcp  ←  @deepseek-ai/dsh-mcp-client
+[启] hindsight  ←  @vectorize-io/hindsight-coding-agents/dsh
+[启] dsh-infinite-gen-5  ←  dsh-infinite-gen-5
+[启] dsh-purge  ←  dsh-purge
+[启] dsh-purge-redteam  ←  dsh-purge/redteam
+[启] dsh-purge-redteam-store  ←  dsh-purge/redteam/store
+[启] dsh-purge-redteam-ui  ←  dsh-purge/redteam/ui
+[启] dsh-purge-reverse  ←  dsh-purge/reverse
+[启] dsh-purge-reverse-store  ←  dsh-purge/reverse/store
+[启] dsh-purge-reverse-ui  ←  dsh-purge/reverse/ui
+[启] feature-profiles  ←  dsh-feature-profiles
+[启] memory-fusion-runtime  ←  dsh-memory-fusion
+[启] skill-fusion  ←  dsh-skill-fusion/host
+[启] skill-fusion-ui  ←  dsh-skill-fusion
+[启] dsh-ollama  ←  dsh-ollama/host
+[启] dsh-ollama-ui  ←  dsh-ollama
 
-[06] @deepseek-ai/dsh-experimental-auto-review  @unknown  (内核内置，条目 1，停用 0)
-     √ auto-review  ←  @deepseek-ai/dsh-experimental-auto-review
-
-[07] dsh-undo-savepoint  @0.4.9  (社区插件，条目 1，停用 0)
-     √ dsh-undo  ←  dsh-undo-savepoint
-
-[08] @liustack/modlens  @3.26.6  (社区插件，条目 1，停用 0)
-     √ modlens  ←  @liustack/modlens
-
-[09] dsh-cost-meter  @1.8.35  (社区插件，条目 1，停用 0)
-     √ cost-meter  ←  dsh-cost-meter
-
-[10] @changfenhuang/dsh-genui  @0.11.4  (社区插件，条目 1，停用 0)
-     √ genui  ←  @changfenhuang/dsh-genui
-
-[11] @linxin666/dsh-client-ui-git-graph  @0.4.5  (社区插件，条目 1，停用 0)
-     √ ui-git-graph  ←  @linxin666/dsh-client-ui-git-graph
-
-[12] dsh-plugin-wallpaper-engine  @1.3.1  (社区插件，条目 1，停用 0)
-     √ wallpaper-engine  ←  dsh-plugin-wallpaper-engine
-
-[13] dsh-approval-gate  @0.5.0  (社区插件，条目 1，停用 0)
-     √ dsh-approval-gate  ←  dsh-approval-gate
-
-[14] @tt-a1i/archify-dsh  @1.0.0  (社区插件，条目 0，停用 0)
-
-[15] dsh-rewind-plugin  @0.15.3  (社区插件，条目 1，停用 0)
-     √ dsh-rewind-plugin  ←  dsh-rewind-plugin
-
-[16] dsh-context  @0.72.0  (社区插件，条目 1，停用 0)
-     √ dsh-context  ←  dsh-context
-
-[17] dsh-whale-widget  @0.4.2  (社区插件，条目 1，停用 0)
-     √ dsh-whale-widget  ←  dsh-whale-widget
-
-[18] dsh-drawai  @0.2.7  (社区插件，条目 1，停用 0)
-     √ drawai  ←  dsh-drawai
-
-[19] @kenz1117/dsh-ui-usage-billing  @1.4.34  (社区插件，条目 1，停用 0)
-     √ ui-usage-billing  ←  @kenz1117/dsh-ui-usage-billing
-
-[20] billion-context  @0.1.208  (社区插件，条目 2，停用 0)
-     √ bili-native  ←  billion-context
-     √ bili-compaction-gate  ←  billion-context/dsh-compaction-gate
-
-[21] dsh-ego-browser  @0.8.6  (社区插件，条目 1，停用 0)
-     √ ego-browser  ←  dsh-ego-browser
-
-[22] @xmanrui/dsh-im  @4.39.0  (社区插件，条目 1，停用 0)
-     √ xmanrui-dsh-im  ←  @xmanrui/dsh-im
-
-[23] dsh-zotero  @0.12.1  (社区插件，条目 1，停用 0)
-     √ zotero  ←  dsh-zotero
-
-[24] @local/dsh-client-ui-workbench  @0.1.0  (本地插件，条目 1，停用 0)
-     √ ui-workbench  ←  @local/dsh-client-ui-workbench
-
-[25] @wxg-prc-cpg/browser-skill-dsh-plugin  @0.3.3  (社区插件，条目 1，停用 0)
-     √ browserskill  ←  @wxg-prc-cpg/browser-skill-dsh-plugin
-
-[26] dsh-mattpocock-skills-deck  @1.9.0-beta.8  (社区插件，条目 2，停用 0)
-     √ dsh-mattpocock-skills-deck  ←  dsh-mattpocock-skills-deck
-     √ dsh-mattpocock-skills-deck-tools  ←  dsh-mattpocock-skills-deck/tools
-
-[27] @lemoncat7/dsh-knowledge  @2.15.3  (社区插件，条目 1，停用 0)
-     √ knowledge  ←  @lemoncat7/dsh-knowledge
-
-[28] @wxg-prc-cpg/dsh-weknora  @0.1.0  (社区插件，条目 1，停用 0)
-     √ weknora  ←  @wxg-prc-cpg/dsh-weknora
-
-[29] treg-dsh  @0.27.0  (社区插件，条目 1，停用 0)
-     √ treg-skill  ←  treg-dsh
-
-[30] @vectorize-io/hindsight-coding-agents  @0.8.2  (社区插件，条目 1，停用 0)
-     √ hindsight  ←  @vectorize-io/hindsight-coding-agents/dsh
-
-[31] dsh-infinite-gen-5  @1.1.0  (社区插件，条目 1，停用 0)
-     √ dsh-infinite-gen-5  ←  dsh-infinite-gen-5
-
-[32] dsh-purge  @3.0.0  (本地插件，条目 7，停用 0)
-     √ dsh-purge  ←  dsh-purge
-     √ dsh-purge-redteam  ←  dsh-purge/redteam
-     √ dsh-purge-redteam-store  ←  dsh-purge/redteam/store
-     √ dsh-purge-redteam-ui  ←  dsh-purge/redteam/ui
-     √ dsh-purge-reverse  ←  dsh-purge/reverse
-     √ dsh-purge-reverse-store  ←  dsh-purge/reverse/store
-     √ dsh-purge-reverse-ui  ←  dsh-purge/reverse/ui
-
-[33] dsh-feature-profiles  @0.1.0  (本地插件，条目 1，停用 0)
-     √ feature-profiles  ←  dsh-feature-profiles
-
-[34] dsh-memory-fusion  @1.0.0  (本地插件，条目 1，停用 0)
-     √ memory-fusion-runtime  ←  dsh-memory-fusion
-
-[35] dsh-skill-fusion  @1.0.2  (本地插件，条目 2，停用 0)
-     √ skill-fusion  ←  dsh-skill-fusion/host
-     √ skill-fusion-ui  ←  dsh-skill-fusion
-
-[36] dsh-ollama  @0.1.0  (本地插件，条目 2，停用 0)
-     √ dsh-ollama  ←  dsh-ollama/host
-     √ dsh-ollama-ui  ←  dsh-ollama
-
-==============================================================================
-说明：× 表示该条目在整合包快照中处于停用状态（配置保留，可随时在 GUI 中重新启用）。
+== 六、体积与裁剪 ==
+payload：10667 个文件 / 318.79 MB
+已裁掉：1101 个文件 / 18.10 MB（sourcemap / tests / examples / .github / coverage / CHANGELOG 等纯开发件）
+裁剪规则：dev-only whitelist (*.map / tests / test / examples / .github / coverage / benchmark / tsconfig / vitest / eslint / prettier / CHANGELOG), runtime-deps-only node_modules for link plugins
