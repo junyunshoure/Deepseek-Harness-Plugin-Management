@@ -1,30 +1,30 @@
 {
   "schema": 1,
   "algorithm": "sha256",
-  "generatedAt": "2026-10-29T15:52:34.514Z",
-  "root": "DSH-Plugins-v2.1.1",
-  "packVersion": "2.1.1",
+  "generatedAt": "2026-10-30T00:38:45.604Z",
+  "root": "DSH-Plugins-v2.1.2",
+  "packVersion": "2.1.2",
   "counts": {
     "files": 23263,
-    "bytes": 528584330
+    "bytes": 528594087
   },
   "fileCount": 23263,
   "note": "entries = 发布根全部文件 − checksums.json − release-validation.json（R9 契约）",
   "files": [
     {
       "path": "CHANGELOG.md",
-      "size": 10461,
-      "sha256": "4e59902db755cda54a801f6ceaaa53d6de0e030d06105ef46ec9a65d82462d28"
+      "size": 12614,
+      "sha256": "68c5511604d4c11e84817ef656ee0b70bd9ce3b032998e3993e6da379d03acf8"
     },
     {
       "path": "DOCTOR.cmd",
       "size": 247,
-      "sha256": "3f981ae219296a5fd9d6a9d2200a3c8946fc3cac8c45ddd908c2943616723076"
+      "sha256": "56317e231186eec7d4bda8c769b24e90ddf6ad30fe4bf9c23530e013ac79d271"
     },
     {
       "path": "INSTALL.cmd",
       "size": 197,
-      "sha256": "9c6a1ae23371af7a1bf6abe537eadae26050e14451b9590c69b1e8e692e3a6f3"
+      "sha256": "72b381aeb82a89c70437047ea63fdd6b015e2865c84b175e933e13c9c536e94b"
     },
     {
       "path": "LICENSE",
@@ -34,42 +34,42 @@
     {
       "path": "MAINTAIN.cmd",
       "size": 267,
-      "sha256": "e37635a2dc37ea06ec5c657d0844ae3f730e1b5f4bebc19ab697e438603b6495"
+      "sha256": "407392569bc1ff5d1aa9acb47274543ff8c9ff66ef1518bb712cf423b996e992"
     },
     {
       "path": "PRUNE.cmd",
       "size": 246,
-      "sha256": "147455c2ccf16a2517556b17c77018b622952b004b910eff7b4e6c2929b8f0b2"
+      "sha256": "e1ad5b4625c22cc885d2324f8b550b44a65b8b69fa3b42f509b76c4fd7957b7e"
     },
     {
       "path": "README.md",
-      "size": 13095,
-      "sha256": "a0637335a64f3c1db6b16364674868f10eb84d80cd90e64864dabf47d07b41ca"
+      "size": 15879,
+      "sha256": "5d4815781db94f17a152525c5b47c4dd94f2e08027a516b5dfac4776b36bfff5"
     },
     {
       "path": "ROLLBACK.cmd",
       "size": 220,
-      "sha256": "84b672d0136d3249d6f2d455bb64055aad6fafed8ef0dd454bc17becde11e5e3"
+      "sha256": "d29a8bf5ae8a13758854421a5e4cfe60062ae31357605a50491fd5fd34f08c1c"
     },
     {
       "path": "SETUP-SERVICES.cmd",
       "size": 262,
-      "sha256": "4fcff95dbe259bf24df8331edd6e34c63689167b6cae0d2cea3141a73962f06a"
+      "sha256": "215ca5ba08b7a7d82930744584a5edf21c6dcf497f74b2dec9e14cce4e834ad7"
     },
     {
       "path": "UNINSTALL.cmd",
       "size": 251,
-      "sha256": "dfd373562567fedec2f55253a4c81abe5befcd1067831c8cc0c0ff50adfe9b14"
+      "sha256": "c976753dbc79e3a95f9a3f5e982548f81504d34427abe9090178da849861e7b5"
     },
     {
       "path": "UPGRADE.cmd",
       "size": 239,
-      "sha256": "ed75622699fea568d19c5debb6efad2dcbc4ef2f8931e154f954f9d68eb54a88"
+      "sha256": "9aa969d261d3cc5262efbeb43d3afba61fb315ac36d1b0b7881b819285c39cd3"
     },
     {
       "path": "VERIFY.cmd",
       "size": 211,
-      "sha256": "397c43f3dda041e8fc17450a60cb2c0112c668560df930e19b556cbe77cf68b9"
+      "sha256": "fc20b8d80186c56d9a668c82f38df8ca9ba0a4d38b797cad707bb8927d9111c5"
     },
     {
       "path": "appendix/AGENTS.appendix.md",
@@ -344,47 +344,47 @@
     {
       "path": "docs/AI-agent-适配指南.md",
       "size": 17835,
-      "sha256": "ce0a60ad8a8326a2eeba24f7320a287570c78550adff245e7d3dc790a919d847"
+      "sha256": "ae971a0df8cca89d11713868d08baebd41e48c2d505766e4d696f156e51c7449"
     },
     {
       "path": "docs/使用说明书.md",
       "size": 27440,
-      "sha256": "fb8a787bc3fdb2c1e9fbb85e3189f34207b2cc8d93b001019d35b4acc49c1d9f"
+      "sha256": "4fd9767edcb1724dcb3f846e3ba8b52e33a8b1b53f91b14272e941b4a50b8eb9"
     },
     {
       "path": "docs/常见问题.md",
       "size": 32649,
-      "sha256": "3ec7fde0c80739218f2d600d96571b4f2ae252dcca5ad4882ece056f1b2e8ad3"
+      "sha256": "f021e3fe9925593f024e8d94b291d51e9cb3e06503186bf0aa0d32dc92bff790"
     },
     {
       "path": "docs/新功能说明.md",
-      "size": 16944,
-      "sha256": "b608b956e39cb4f889ba4d322884f5a9884e0847491c53a413b7f143c4cc2e41"
+      "size": 16981,
+      "sha256": "62ef8ad27653b468d39cdf89b94767c6ff876a55ec16a2d8cac10d9f924bacc1"
     },
     {
       "path": "docs/服务部署指南.md",
       "size": 19437,
-      "sha256": "14aa28348c7d94159cf0f9be029721054b711e74df8614c7bd9befcdb02c6563"
+      "sha256": "13218fb240f0829afcc254cf016d4979e7150a516e3063bc0cb0c52c7b9a5c0d"
     },
     {
       "path": "docs/配置参考.md",
       "size": 21088,
-      "sha256": "df2e8536e760831d2b615d02eae23258fcfc049199416758ce595e39ce6741a6"
+      "sha256": "abc898c325aa74fb6e3de073cd716f8a0bcae7c407ad8da74201338269fdf375"
     },
     {
       "path": "install-helper.cjs",
-      "size": 74645,
-      "sha256": "a0aa843a689852ba318674ba0aa6f7f96b76e997ffecdff70760848be6623b3e"
+      "size": 79428,
+      "sha256": "53adade6ec2cf64951224dc4edf331b4cda92f95f8fb6b18390ba1aff89342d9"
     },
     {
       "path": "install.ps1",
       "size": 12811,
-      "sha256": "13de756efaea60f7abcfdf9af986070114d143323dee047f7ffd2b23f5b3fdd3"
+      "sha256": "4afddfd9549d927e4ab6eafc2554362ac0d73eb5d72cd1c8299e6dbfb13f46d0"
     },
     {
       "path": "inventory.json",
       "size": 74253,
-      "sha256": "16ae32c3f57fcf06a0b1e03b227cd672219398bc1e0344843352a2ec51a1208a"
+      "sha256": "4fd6df457b5067fa3aed3d2ffcc5b578a16cc5ed716e20fc44639bc6f8996d5c"
     },
     {
       "path": "macos/INSTALL-MAC.md",
@@ -409,12 +409,12 @@
     {
       "path": "maintain.ps1",
       "size": 29078,
-      "sha256": "3fdf8c633466621d2f6b0e3eeed4bce6a0724598ac8a0ad2f47703cdd954fbda"
+      "sha256": "750738d77178246b599127e9060c08113606a5d9ea7df41761c91c6c9ba1bd56"
     },
     {
       "path": "migration.json",
       "size": 7440,
-      "sha256": "212bf52e40310eaaeffa72e0ac83ca2ca94134e0718f904ac7a63002499c716f"
+      "sha256": "25484f8810aff7653c8545a5686f197eab375d07a59dda8d57aab6cbddf218cd"
     },
     {
       "path": "payload/migration-state/cordis.patch.yml",
@@ -429,7 +429,7 @@
     {
       "path": "payload/migration-state/package.json",
       "size": 401,
-      "sha256": "dc9370667db96a794b40c33ebe42fea2b622308f9d450bda06b446a61ffda106"
+      "sha256": "8a684c4730e3cea1e354b30d89a113d2d4131bf28d0ee5a92830697c75963c35"
     },
     {
       "path": "payload/node_modules/.bin/acorn",
@@ -116324,7 +116324,7 @@
     {
       "path": "插件完整清单.txt",
       "size": 20186,
-      "sha256": "b3b47a8b02a439c778aac02fbfd7ba501d512d7be3dacec744c396fb4784bc46"
+      "sha256": "e3603f0ecee5af2a5927c2a9f73ec56923f0516e0f52f19a1b415faa2bf51b20"
     }
   ]
 }

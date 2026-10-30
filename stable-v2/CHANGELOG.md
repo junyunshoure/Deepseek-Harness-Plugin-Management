@@ -4,6 +4,29 @@
 
 ---
 
+## v2.1.2（2026-10-30）— 只修 bug：修掉 v2.1.1 的「假失败」退出码
+
+**一句话**：v2.1.1 的载荷与能力一个字没动，修的是它收尾断言把「启停状态快照」当成第 33 个插件去比
+`profile.bundles` —— 于是 33/33 全部挂好、条目组合也通过，仍以 exit 1 收场。外部用户报告的两个退出码
+（upgrade 的「bundle 未启用」、repair 的「没指到本包载荷」同源）都指向这一处。
+
+| # | 修了什么 | 位置 | 现象 |
+|---|---|---|---|
+| 1 | 真插件与状态快照拆成 `pluginTargets` / `stateTargets`，收尾断言各看各的 | `install-helper.cjs` 挂载清单构造 + 两处收尾校验 | upgrade 末行必报 `✗ 升级后这些 bundle 没启用：dsh-migration-plugin-state`，退出码 1 |
+| 2 | 重叠检查加 `ROOT !== store` 快速通道 | 同一文件，持久目录判定 | 在持久目录里原地 `--mode repair` 被「不能让目录重叠」挡死 |
+| 3 | 启停差异的判定与文案共用 normalize，并打印原始值 | 插件组合校验 | 打印「期望 停用，实际 停用」这种自相矛盾的结果 |
+| 4 | 启动前先探活已有实例；`waitForPort` 双通道，上限 120 秒 → 20 秒 | 安装收尾自动启动 | GUI 已开着仍空等 2 分钟后报「没探测到界面端口」 |
+| 5 | `EPERM` 技能写入失败补动作提示 | 技能安装循环 | 只说「没能写入」，用户不知道下一步 |
+| 6 | `install.ps1` 的 `$PackVersion`、`maintain.ps1` 的 `$patchVersion` 同步到 2.1.2（v2.1.1 漏改，一直显示 2.1.0） | 两个入口脚本 | 横幅与 `--version` 报的是旧版本号 |
+| 7 | README 规模行改回实测值（23,263 文件 / payload 503.24 MB） | `README.md` | v2.1.1 发版时漏改，仍写着 v2.1.0 的 10,763 文件 / 318.45 MB |
+
+**payload 与 v2.1.1 逐文件相同**：23,172 文件 / 503.24 MB / 249 个内嵌 `node_modules`，`compare-payload.mjs` 比对缺 0。
+
+验收：`validate-release` 18/18；新增 `tests/state-bundle-guard.test.mjs` 正反例双通过；隔离 `DSH_HOME` 跑
+`--mode new` / `upgrade` / `repair` / `--check-only` 四模式全绿。
+
+---
+
 ## v2.1.1（2026-10-29）— 撤回瘦身 + 修 3 个真 bug
 
 **一句话**：v2.1.0 的载荷裁剪害人，v2.1.1 把载荷口径**退回 v2.0.0 的完整复制**，并修掉外部实测暴露的 3 个真 bug；对齐提问协议在 Windows 与 macOS 都自动写入。

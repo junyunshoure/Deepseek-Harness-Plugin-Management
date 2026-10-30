@@ -1,5 +1,5 @@
 ﻿<#
-  DeepSeek Harness 插件整合包 v2.1.0 —— 维护引擎（Windows）
+  DeepSeek Harness 插件整合包 v2.1.2 —— 维护引擎（Windows）
   把 v2.0.1-patch.1 / v2.0.2-patch.1 的补丁动作折进来，装完包就能直接跑，不用再记命令。
 
   动作清单：
@@ -38,7 +38,7 @@ try { [Console]::OutputEncoding = [Text.Encoding]::UTF8 } catch {}
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
 $patchId = 'maintenance-20261029'
-$patchVersion = 'v2.1.0'
+$patchVersion = 'v2.1.2'
 $store = Join-Path $env:LOCALAPPDATA ('DSHPluginMigration\' + $patchId)
 $deprecated = @('dsh-my-skill-manager', 'dsh-shared', 'dsh-skill-hub')
 $llmVars = @('LLM_BACKEND', 'LLM_MODEL_NAME', 'LLM_BASE_URL', 'LLM_API_KEY')

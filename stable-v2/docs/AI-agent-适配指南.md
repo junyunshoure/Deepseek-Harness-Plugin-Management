@@ -39,9 +39,9 @@
 
 | 路径 | 里面有什么 | 为什么需要 |
 | --- | --- | --- |
-| `%LOCALAPPDATA%\DSHPluginsPack\v2.1.1-windows\installation-result.json` | 上次安装的完整结果（`ok`、失败项、错误原文） | 判断「装到哪一步断的」 |
+| `%LOCALAPPDATA%\DSHPluginsPack\v2.1.2-windows\installation-result.json` | 上次安装的完整结果（`ok`、失败项、错误原文） | 判断「装到哪一步断的」 |
 | `%LOCALAPPDATA%\DSHPluginsPack\last-result.json` | 最近一次任意动作（install / verify / doctor / rollback）的结果 | 最新现场，比上一份新 |
-| `…\v2.1.1-windows\backups\<时间戳>\deps-before.json` | 安装前 `{at, mode, dependencies, bundles}` 快照 | 回滚的唯一事实依据 |
+| `…\v2.1.2-windows\backups\<时间戳>\deps-before.json` | 安装前 `{at, mode, dependencies, bundles}` 快照 | 回滚的唯一事实依据 |
 | `%USERPROFILE%\.dsh\profiles\desktop\cordis.patch.yml` | 真正生效的插件条目（`id` / `name` / `config`） | 条目对不上就是这里对不上 |
 | `%USERPROFILE%\.dsh\profiles\desktop\package.json` | 当前 profile 的 dependencies | 与 `deps-before.json` 对比即知包动了什么 |
 | `%USERPROFILE%\.dsh\logs` | 运行日志，报错栈都在这 | 定位到具体包 / 具体行 |
@@ -53,8 +53,8 @@
 ```powershell
 $out = "$env:TEMP\dsh-context"; New-Item -ItemType Directory -Force $out | Out-Null
 $store = "$env:LOCALAPPDATA\DSHPluginsPack"; $prof = "$env:USERPROFILE\.dsh\profiles\desktop"
-$b = Get-ChildItem "$store\v2.1.1-windows\backups" -Directory | Sort-Object Name -Desc | Select -First 1
-Copy-Item "$store\v2.1.1-windows\installation-result.json","$store\last-result.json",`
+$b = Get-ChildItem "$store\v2.1.2-windows\backups" -Directory | Sort-Object Name -Desc | Select -First 1
+Copy-Item "$store\v2.1.2-windows\installation-result.json","$store\last-result.json",`
           "$prof\cordis.patch.yml","$prof\package.json",`
           "$($b.FullName)\deps-before.json","$env:USERPROFILE\.dsh\logs\*.log" $out -ErrorAction SilentlyContinue
 Get-ChildItem $out | Select-Object Name, Length
@@ -201,7 +201,7 @@ cd "<包目录>"
 
 ```powershell
 $prof  = "$env:USERPROFILE\.dsh\profiles\desktop"
-$store = "$env:LOCALAPPDATA\DSHPluginsPack\v2.1.1-windows"
+$store = "$env:LOCALAPPDATA\DSHPluginsPack\v2.1.2-windows"
 $b = Get-ChildItem "$store\backups" -Directory | Sort-Object Name -Desc | Select-Object -First 1
 $before = Get-Content "$($b.FullName)\deps-before.json" -Raw | ConvertFrom-Json
 Copy-Item "$prof\package.json" "$prof\package.json.bak-$(Get-Date -f yyyyMMdd-HHmmss)" -Force

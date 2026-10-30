@@ -1,6 +1,6 @@
 'use strict';
 /**
- * DeepSeek Harness 插件整合包 v2.1.1 —— 安装器核心（Windows）
+ * DeepSeek Harness 插件整合包 v2.1.2 —— 安装器核心（Windows）
  *
  * 设计原则
  *  1. 绝不联网：所有插件依赖已在 payload/node_modules 里，逐个用官方 `plugin add --offline` 挂载。
@@ -23,6 +23,14 @@
  *               实测结论：同名包二次 add 就是就地覆盖，不需要先 remove；旧链接残留不删，
  *               所以本模式在收尾时逐个核对 profile/node_modules 链接指向并给出重定向表。
  *   repair   —— 链接断了 / 载荷被移动后用：只重挂已声明的包，不新增、不删除任何依赖。
+ *
+ * v2.1.2 修的是 v2.1.1 里一处「自毁式断言」：启停状态快照 dsh-migration-plugin-state 被并进
+ * 统一的 targets 列表后，两处收尾校验（挂载后校验 / upgrade 后 bundle 核对）拿它去比
+ * profile.bundles，而它按设计不进 bundles —— 于是 33/33 全挂好、条目组合也通过，收尾仍判
+ * 「bundle 未启用」并以 exit 1 结束：用户看到「升级失败」，载荷却已经是新目录。
+ * 本版把真插件与状态快照分开存（pluginTargets / stateTargets），断言各看各的数组。
+ * 另外三处顺手修：① 在持久目录里原地 repair 被「目录重叠」检查挡住；② EPERM 技能写入
+ * 失败只说「没能写入」、不给动作；③ GUI 已在运行时安装器仍死等 120 秒端口。
  */
 const fs = require('node:fs');
 const path = require('node:path');
@@ -109,7 +117,7 @@ function mergePatchFile(srcFile, dstFile) {
   if (!missing.length) return added;
   const header = [
     '',
-    '# === 以下条目由插件整合包 v2.1.1 追加（你的原有条目一条没动） ===',
+    '# === 以下条目由插件整合包 v2.1.2 追加（你的原有条目一条没动） ===',
     '# 想撤销：删掉这一整段，或跑 ROLLBACK.cmd 回到安装前。',
     '',
   ].join('\n');
@@ -530,7 +538,9 @@ function writeAppendixMode() {
   // ---------- 持久目录 ----------
   const defaultStore = path.join(process.env.LOCALAPPDATA || os.tmpdir(), 'DSHPluginsPack', 'v' + spec.version + '-windows');
   const store = path.resolve(opt('--store', defaultStore));
-  if (store === ROOT || store.startsWith(ROOT + path.sep) || ROOT.startsWith(store + path.sep)) die('持久安装目录不能与解压目录重叠，请换一个目录。');
+  // v2.1.2：ROOT === store 是「在持久目录里原地 repair」的合法形态（下面复制分支会整段跳过），
+  // 旧判断把它和「解压目录套在持久目录里」混为一谈，导致升级失败后再也救不回来。
+  if (ROOT !== store && (store.startsWith(ROOT + path.sep) || ROOT.startsWith(store + path.sep))) die('持久安装目录不能与解压目录重叠，请换一个目录。');
   if (store === home || store.startsWith(home + path.sep)) die('持久安装目录不能放在 DSH 数据目录里，请换一个目录。');
 
   // ---------- 旧载荷探测（v2.1.0） ----------
@@ -626,8 +636,14 @@ function writeAppendixMode() {
   };
 
   const installed = [], skipped = [], failed = [], warned = [], redirects = [];
-  const targets = spec.packages.map(p => ({ ...p, dir: path.join(store, 'payload', 'node_modules', ...p.name.split('/')) }));
-  targets.push({ name: spec.stateBundle, version: spec.version, dir: path.join(store, 'payload', 'migration-state'), kind: 'state' });
+  // v2.1.2：真插件与「启停状态快照 bundle」分开存。v2.1.1 只在这一行写了 kind: 'state'，
+  // 下游两处收尾断言都没读它（全文件仅此一处 kind 赋值、零处读取），于是 state bundle
+  // 被当成第 33 个插件去比 profile.bundles —— 它按设计不进 bundles，必然缺 1 条。
+  // 分开存之后，断言各看各的数组，以后再加新 kind 也不会被误判。
+  const pluginTargets = spec.packages.map(p => ({ ...p, isState: false, dir: path.join(store, 'payload', 'node_modules', ...p.name.split('/')) }));
+  const stateTargets = [{ name: spec.stateBundle, version: spec.version, isState: true, dir: path.join(store, 'payload', 'migration-state') }];
+  // 挂载阶段仍然全挂：state bundle 也要 add 进 profile 依赖，只是它不参与 bundle 启停断言。
+  const targets = [...pluginTargets, ...stateTargets];
 
   for (let i = 0; i < targets.length; i++) {
     const p = targets[i];
@@ -708,11 +724,16 @@ function writeAppendixMode() {
   // ---------- 校验挂载结果 ----------
   const finalManifest = readJson(manifestFile);
   const finalBundles = finalManifest.dsh.profile.bundles;
-  for (const p of targets) {
+  // v2.1.2：只校验真插件（state bundle 按设计不进 profile.bundles，见挂载清单处的说明）。
+  // 同时去掉上游遗留的 @junyunshoure/ 前缀过滤 —— 本地插件早已改名成 @local/ 与裸名，
+  // 那条过滤会让这里一个包都不检查，断言等于没写。
+  for (const p of pluginTargets) {
     if (skipped.some(s => s.startsWith(p.name + '（'))) continue; // 本次被跳过的包没有动过，不参与「必须存在」断言
     const linked = path.join(profile, 'node_modules', ...p.name.split('/'));
     if (!fs.existsSync(linked)) { failed.push(p.name + '（没生成链接）'); continue; }
-    if (!finalBundles.includes(p.name)) { failed.push(p.name + '（bundle 未启用）'); }
+    // v2.1.2：只有自己声明了 dsh.bundle.patch 的包才应该出现在 profile.bundles 里。
+    // 硬要求「每个包都在 bundles」会在遇到纯依赖包时误报，声明式判断更准。
+    if (!finalBundles.includes(p.name) && declaresBundle(p.dir)) { failed.push(p.name + '（bundle 未启用）'); }
   }
   if (failed.length) die('挂载后的校验没通过：' + failed.join(', ') + '\n备份：' + backup);
 
@@ -732,9 +753,12 @@ function writeAppendixMode() {
         '\n备份：' + backup + '\n可以先 ROLLBACK.cmd 退回，或手动删除 profile/node_modules 下对应链接后重跑 --mode repair。');
     }
     const afterBundles = (readJson(manifestFile).dsh.profile.bundles || []);
-    const missingB = targets.map(t => t.name).filter(n => !afterBundles.includes(n));
+    // v2.1.2：这里原本用 targets（含 state bundle）去比 afterBundles，state 必然缺 1 条 →
+    // 每次 upgrade 都以「升级后这些 bundle 没启用」exit 1 收场。只用真插件比。
+    const missingB = pluginTargets.map(t => t.name).filter(n => !afterBundles.includes(n));
     if (missingB.length) die('升级后这些 bundle 没启用：' + missingB.join(', ') + '\n备份：' + backup);
-    log('✓ 重指向核对通过：' + targets.length + ' 个插件全部指到 ' + path.join(store, 'payload', 'node_modules'));
+    log('✓ 重指向核对通过：' + pluginTargets.length + ' 个插件全部指到 ' + path.join(store, 'payload', 'node_modules')
+      + '（另有启停状态快照 ' + spec.stateBundle + ' 一并重指向，它不参与 bundle 启停）');
     if (redirects.length) {
       log('✓ 本次重定向 ' + redirects.length + ' 个：');
       for (const r of redirects) log('   · ' + r.name + '：' + r.from + '  →  ' + r.to);
@@ -749,8 +773,15 @@ function writeAppendixMode() {
   for (const exp of inv.pluginRows) {
     const act = rows.find(r => r.id === exp.id);
     if (!act) { rowProblems.push('缺少条目 ' + exp.id); continue; }
-    if (exp.disabled !== undefined && !exp.disabledExpression && (act.disabled === true) !== exp.disabled) {
-      rowProblems.push('启停状态不一致 ' + exp.id + '（期望 ' + (exp.disabled ? '停用' : '启用') + '，实际 ' + (act.disabled ? '停用' : '启用') + '）');
+    // v2.1.2：判定与文案共用同一个 normalize。旧代码判定用 (act.disabled === true)、文案用
+    // 真值判断，遇到字符串 'true' 就打印「期望 停用，实际 停用」这种自相矛盾的结果。
+    const normDisabled = (v) => v === true || v === 'true' || v === 1 || v === '1';
+    if (exp.disabled !== undefined && !exp.disabledExpression) {
+      const want = normDisabled(exp.disabled), got = normDisabled(act.disabled);
+      if (want !== got) {
+        rowProblems.push((want ? '应停用但实际在启用 ' : '应启用但实际被停用 ') + exp.id
+          + '（快照 ' + JSON.stringify(exp.disabled) + '，实际 ' + JSON.stringify(act.disabled) + '）');
+      }
     }
   }
   const missingRows = rowProblems.filter(p => p.startsWith('缺少条目'));
@@ -845,6 +876,10 @@ function writeAppendixMode() {
         }
         if (!done) {
           warn('  ! 技能没能写入：' + name + '（' + (lastErr && lastErr.message) + '）');
+          // v2.1.2：外部用户实测就是 EPERM（%APPDATA%\DeepSeek Harness 的文件锁被另一个实例/
+          // 索引器/杀软握着）。只报「没能写入」，用户不知道下一步做什么。
+          warn('    多半是另一个 DeepSeek Harness 还在运行，或被杀软/索引器占用：');
+          warn('    先完全退出 DSH（托盘图标与后台进程都要退），再重跑 VERIFY.cmd 即可；已装好的插件不受影响。');
           skillRes.failed = skillRes.failed || [];
           skillRes.failed.push(name);
         }
@@ -953,7 +988,16 @@ function writeAppendixMode() {
       log('\n正在启动 DeepSeek Harness（首次加载插件约 20–60 秒）…');
       const child = spawn(k.exe, [], { detached: true, stdio: 'ignore', windowsHide: false });
       child.unref();
-      const port = await waitForPort(child.pid, 120000);
+      // v2.1.2：先看是不是已经有实例在跑（升级/修复场景最常见）。DSH 是单实例应用，
+      // 新 spawn 出来的进程会自己退出、端口只挂在旧进程上，按 child.pid 死等 120 秒纯属空耗。
+      const already = guiPort();
+      if (already && already.port) {
+        log('✓ 检测到 DeepSeek Harness 已在运行：http://127.0.0.1:' + already.port + '（重启它即可加载新插件）');
+      } else {
+        const port = await waitForPort(child.pid, 20000);
+        if (port) log('✓ 主界面已就绪：http://127.0.0.1:' + port);
+        else warn('⚠ 没能在 20 秒内探测到界面端口，请手动从桌面图标打开；插件已装好，不影响使用。');
+      }
       if (port) log('✓ 主界面已就绪：http://127.0.0.1:' + port);
       else warn('⚠ 没能在 2 分钟内探测到界面端口，请手动从桌面图标打开；插件已装好，不影响使用。');
     } catch (e) {
@@ -969,6 +1013,8 @@ function writeAppendixMode() {
 });
 
 // 轮询子进程的监听端口（只在本机回环上探测）
+// v2.1.2：双通道 —— 既认新子进程的监听口，也认「已经在运行的那个实例」的监听口。
+// 单实例锁让后者成为升级场景的唯一真相来源，只看 pid 会白等到超时。
 function waitForPort(pid, timeoutMs) {
   const script = `$p=${pid}; try { (Get-NetTCPConnection -State Listen -OwningProcess $p -ErrorAction Stop | Where-Object { $_.LocalAddress -in @('127.0.0.1','0.0.0.0','::1') } | Select-Object -First 1 -ExpandProperty LocalPort) } catch { '' }`;
   const start = Date.now();
@@ -978,6 +1024,8 @@ function waitForPort(pid, timeoutMs) {
         const r = spawnSync('powershell', ['-NoProfile', '-NonInteractive', '-Command', script], { encoding: 'utf8', windowsHide: true, timeout: 8000 });
         const n = String(r.stdout || '').trim();
         if (n && /^\d+$/.test(n)) return resolve(Number(n));
+        const ex = guiPort();
+        if (ex && ex.port) return resolve(ex.port);
       } catch { /* ignore */ }
       if (Date.now() - start > timeoutMs) return resolve(null);
       setTimeout(tick, 2000);
@@ -991,6 +1039,14 @@ function resolveProfile() {
   const home = path.resolve(process.env.DSH_HOME || path.join(os.homedir(), '.dsh'));
   return { home, profile: path.join(home, 'profiles', 'desktop'), manifest: path.join(home, 'profiles', 'desktop', 'package.json') };
 }
+/** v2.1.2：这个包自己是否声明了 dsh.bundle.patch（声明了才该出现在 profile.bundles 里）。 */
+function declaresBundle(dir) {
+  try {
+    const pj = readJson(path.join(dir, 'package.json'));
+    return !!(pj.dsh && pj.dsh.bundle && pj.dsh.bundle.patch);
+  } catch { return false; }
+}
+
 function defaultStore(spec) {
   return path.join(process.env.LOCALAPPDATA || os.tmpdir(), 'DSHPluginsPack', 'v' + spec.version + '-windows');
 }
