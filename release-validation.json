@@ -1,8 +1,8 @@
 {
  "schema": 1,
- "generatedAt": "2026-10-30T00:38:53.928Z",
- "pack": "DSH-Plugins-v2.1.2",
- "version": "2.1.2",
+ "generatedAt": "2026-10-30T10:12:31.900Z",
+ "pack": "DSH-Plugins-v2.1.3",
+ "version": "2.1.3",
  "kernel": {
   "required": ">=0.2.0 <0.4.0",
   "recorded": "0.2.1-rc.2",
@@ -10,8 +10,8 @@
  },
  "platform": "win32/x64",
  "summary": {
-  "total": 19,
-  "passed": 19,
+  "total": 21,
+  "passed": 21,
   "failed": 0
  },
  "checks": [
@@ -136,6 +136,16 @@
     "missing": [],
     "forbiddenPresent": []
    }
+  },
+  {
+   "name": "20. v2.1.3 安装器修复点全在（ISSUE-1/ISSUE-2）",
+   "ok": true,
+   "detail": "9/9 处修复在，2 处旧写法已清除"
+  },
+  {
+   "name": "21. v2.1.3 vendor patch 与配置侧改动全在（ISSUE-1/3/4）",
+   "ok": true,
+   "detail": "6/6 处通过（weknora / dsh-purge / package.json / cordis.patch.yml）"
   },
   {
    "name": "无残留临时/备份文件",

@@ -1,7 +1,7 @@
 {
   "schema": "dsh-plugin-pack-inventory/v3",
-  "packVersion": "2.1.2",
-  "version": "2.1.2",
+  "packVersion": "2.1.3",
+  "version": "2.1.3",
   "generatedAt": "2026-10-29T15:15:02.633Z",
   "packEdition": "windows",
   "maintainedAt": null,
@@ -1617,7 +1617,7 @@
   "integrity": [],
   "kernel": {
     "expected": "0.2.x / 0.3.x 二选（不硬拒）",
-    "builtAgainst": "2.1.2"
+    "builtAgainst": "2.1.3"
   },
   "kernelVersionBuilt": "0.2.1-rc.2",
   "profileBundles": [

@@ -1,5 +1,5 @@
 ﻿<#
-  DeepSeek Harness 插件整合包 v2.1.2 —— 统一入口（Windows）
+  DeepSeek Harness 插件整合包 v2.1.3 —— 统一入口（Windows）
   由 INSTALL.cmd / VERIFY.cmd / DOCTOR.cmd / ROLLBACK.cmd / UNINSTALL.cmd /
   SETUP-SERVICES.cmd / MAINTAIN.cmd / UPGRADE.cmd 调用。
   不联网（除非显式 -AllowNetwork）、不改系统设置、只操作 DSH 的 profile 目录与本包持久目录。
@@ -28,7 +28,7 @@ try { [Console]::OutputEncoding = [Text.Encoding]::UTF8 } catch {}
 $Root = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $Root
 
-$PackVersion = '2.1.2'
+$PackVersion = '2.1.3'
 
 function Write-Title($text) {
   Write-Host ''

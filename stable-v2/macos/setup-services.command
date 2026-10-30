@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-#  DeepSeek Harness 插件整合包 v2.1.0 —— macOS 本地记忆服务安装向导
+#  DeepSeek Harness 插件整合包 v2.1.3 —— macOS 本地记忆服务安装向导
 #
 #  安装对象（都是可选组件，不装 DSH 也能正常用）：
 #    ReMe       端口 2333   个人记忆（uv venv + reme-ai）
@@ -77,7 +77,7 @@ port_listen() {
   lsof -nP -iTCP:"$port" -sTCP:LISTEN 2>/dev/null | awk 'NR==2{print $1" pid="$2}' || true
 }
 
-title "DeepSeek Harness 插件整合包 v2.1.0 —— macOS 本地记忆服务"
+title "DeepSeek Harness 插件整合包 v2.1.3 —— macOS 本地记忆服务"
 
 # ----------------------------------------------------------------------------
 step "环境检查"

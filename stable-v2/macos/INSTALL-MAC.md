@@ -1,4 +1,4 @@
-# macOS 安装说明 —— DeepSeek Harness 插件整合包 v2.1.0
+# macOS 安装说明 —— DeepSeek Harness 插件整合包 v2.1.3
 
 这份文档只讲 Mac。Windows 用户看包根的 `README.md` 与 `INSTALL.cmd`。
 
@@ -51,10 +51,10 @@
 
 ### 第 1 步：解压
 
-用系统「归档实用工具」或 Keka / The Unarchiver 解压 `DSH-Plugins-v2.1.0.zip`，得到：
+用系统「归档实用工具」或 Keka / The Unarchiver 解压 `DSH-Plugins-v2.1.3.zip`，得到：
 
 ```
-DSH-Plugins-v2.1.0/
+DSH-Plugins-v2.1.3/
 ├── config/                 # 配置与 47 篇功能说明
 ├── payload/                # Windows 版离线依赖（Mac 上用不到，见第 5 节）
 ├── macos/
@@ -65,7 +65,7 @@ DSH-Plugins-v2.1.0/
 └── migration.json          # 33 个包的清单：32 个 registry + 6 个 local-link
 ```
 
-**不要在压缩包里直接双击运行脚本**，先完整解压到本地磁盘（例如 `~/Downloads/DSH-Plugins-v2.1.0/`）。
+**不要在压缩包里直接双击运行脚本**，先完整解压到本地磁盘（例如 `~/Downloads/DSH-Plugins-v2.1.3/`）。
 
 ### 第 2 步：右键打开 install.command
 
@@ -74,7 +74,7 @@ DSH-Plugins-v2.1.0/
 如果还是被拦，或者提示「无法验证开发者」，在终端里去掉隔离标记并补执行权限：
 
 ```bash
-cd ~/Downloads/DSH-Plugins-v2.1.0/macos
+cd ~/Downloads/DSH-Plugins-v2.1.3/macos
 xattr -d com.apple.quarantine install.command setup-services.command build-payload-on-mac.command
 chmod +x install.command setup-services.command build-payload-on-mac.command
 ./install.command
@@ -220,7 +220,7 @@ for p in 2333 1933 8888; do printf "%s -> " "$p"; curl -s -o /dev/null -m 2 -w "
 **一句话：把下面这段连同 `~/.dsh/profiles/desktop/installation-result-mac.json` 一起发给 DSH 里的 AI agent。**
 
 ```
-这台 Mac 装了 DSH 插件整合包 v2.1.0（macos/install.command，网络安装路线），出问题了。
+这台 Mac 装了 DSH 插件整合包 v2.1.3（macos/install.command，网络安装路线），出问题了。
 现场信息：~/.dsh/profiles/desktop/installation-result-mac.json
 备份目录：~/.dsh/profiles/desktop/backups/mac-<时间戳>/
 App：/Applications/DeepSeek Harness.app

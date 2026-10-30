@@ -1,30 +1,30 @@
 {
   "schema": 1,
   "algorithm": "sha256",
-  "generatedAt": "2026-10-30T00:38:45.604Z",
-  "root": "DSH-Plugins-v2.1.2",
-  "packVersion": "2.1.2",
+  "generatedAt": "2026-10-30T10:12:20.858Z",
+  "root": "DSH-Plugins-v2.1.3",
+  "packVersion": "2.1.3",
   "counts": {
     "files": 23263,
-    "bytes": 528594087
+    "bytes": 528623533
   },
   "fileCount": 23263,
   "note": "entries = 发布根全部文件 − checksums.json − release-validation.json（R9 契约）",
   "files": [
     {
       "path": "CHANGELOG.md",
-      "size": 12614,
-      "sha256": "68c5511604d4c11e84817ef656ee0b70bd9ce3b032998e3993e6da379d03acf8"
+      "size": 16442,
+      "sha256": "135e020a65a41dd673a11dee82ccd9417b235cdf2f0ced3ccac544bb909bea64"
     },
     {
       "path": "DOCTOR.cmd",
       "size": 247,
-      "sha256": "56317e231186eec7d4bda8c769b24e90ddf6ad30fe4bf9c23530e013ac79d271"
+      "sha256": "593e0483c9d964353486d04293b1fc3771615b6d4b2d02337b794dcec316fc4b"
     },
     {
       "path": "INSTALL.cmd",
       "size": 197,
-      "sha256": "72b381aeb82a89c70437047ea63fdd6b015e2865c84b175e933e13c9c536e94b"
+      "sha256": "fc9f68c91929b714c341951d20d20aa7b80439dc7964f36854a0b9afff6ec6c1"
     },
     {
       "path": "LICENSE",
@@ -34,42 +34,42 @@
     {
       "path": "MAINTAIN.cmd",
       "size": 267,
-      "sha256": "407392569bc1ff5d1aa9acb47274543ff8c9ff66ef1518bb712cf423b996e992"
+      "sha256": "9c02f3d9345fbe22db79f8286e8e1c28a7bfd249c8465abb6e22eab844450e0b"
     },
     {
       "path": "PRUNE.cmd",
       "size": 246,
-      "sha256": "e1ad5b4625c22cc885d2324f8b550b44a65b8b69fa3b42f509b76c4fd7957b7e"
+      "sha256": "4d1c8b4fb156620b121a94a3ddfe5d1e5a96f03c895dd1288f1e221c54938574"
     },
     {
       "path": "README.md",
-      "size": 15879,
-      "sha256": "5d4815781db94f17a152525c5b47c4dd94f2e08027a516b5dfac4776b36bfff5"
+      "size": 19796,
+      "sha256": "83fa239ba01f7a2f8e8e260f63803ba25a0a549da56a5588b6f9ef62b24dc750"
     },
     {
       "path": "ROLLBACK.cmd",
       "size": 220,
-      "sha256": "d29a8bf5ae8a13758854421a5e4cfe60062ae31357605a50491fd5fd34f08c1c"
+      "sha256": "7e6143fc6f834627e753107d138dd236650982d0b18471e9918b419dc260fd0a"
     },
     {
       "path": "SETUP-SERVICES.cmd",
       "size": 262,
-      "sha256": "215ca5ba08b7a7d82930744584a5edf21c6dcf497f74b2dec9e14cce4e834ad7"
+      "sha256": "f64787b06167b03ac37f2ac29a4e8a56623f3f6ec758872f2b2d21ff4159f0f9"
     },
     {
       "path": "UNINSTALL.cmd",
       "size": 251,
-      "sha256": "c976753dbc79e3a95f9a3f5e982548f81504d34427abe9090178da849861e7b5"
+      "sha256": "9795a6113d288d21574aed515fb40f2787e5de7b4132b7eeed74ee2105918e82"
     },
     {
       "path": "UPGRADE.cmd",
       "size": 239,
-      "sha256": "9aa969d261d3cc5262efbeb43d3afba61fb315ac36d1b0b7881b819285c39cd3"
+      "sha256": "c333a199adbcdd0bb57a49ce6480ef14af44dc4e4b0625e6957c033935a186a7"
     },
     {
       "path": "VERIFY.cmd",
       "size": 211,
-      "sha256": "fc20b8d80186c56d9a668c82f38df8ca9ba0a4d38b797cad707bb8927d9111c5"
+      "sha256": "759d69d816eab185ce6589b94f192eef220712a8048b4d764bbe4188ecd49cb2"
     },
     {
       "path": "appendix/AGENTS.appendix.md",
@@ -83,8 +83,8 @@
     },
     {
       "path": "config/cordis.patch.yml",
-      "size": 1168,
-      "sha256": "b79dcde57263725ac7a88cdcb820ed7e51b6b89bb76f8ef854e64e2c69cfe36c"
+      "size": 1751,
+      "sha256": "ef85287d5d20250c150dcc0f33da701d6d58d81c3f4356e85d22089e6e5d6c7f"
     },
     {
       "path": "config/cordis.yml",
@@ -333,8 +333,8 @@
     },
     {
       "path": "config/package.json",
-      "size": 3028,
-      "sha256": "6dbf87eef9ef583173581bea8ad357cb54dfe772145b0711f158a600772e387b"
+      "size": 3027,
+      "sha256": "19f6ea93504b4830d3d920763e2e79e33fab6d08761debbf1f6e4b937f4fcfe2"
     },
     {
       "path": "config/pnpm-workspace.yaml",
@@ -344,77 +344,77 @@
     {
       "path": "docs/AI-agent-适配指南.md",
       "size": 17835,
-      "sha256": "ae971a0df8cca89d11713868d08baebd41e48c2d505766e4d696f156e51c7449"
+      "sha256": "d326924c8840df32d4ae7c657bb7c55ac52773d0ee48db4f8658999ede784cee"
     },
     {
       "path": "docs/使用说明书.md",
       "size": 27440,
-      "sha256": "4fd9767edcb1724dcb3f846e3ba8b52e33a8b1b53f91b14272e941b4a50b8eb9"
+      "sha256": "991e80a391e8c7f6784b8bca9e7c94b35165ed722cb54d424365415c4fcde574"
     },
     {
       "path": "docs/常见问题.md",
-      "size": 32649,
-      "sha256": "f021e3fe9925593f024e8d94b291d51e9cb3e06503186bf0aa0d32dc92bff790"
+      "size": 35690,
+      "sha256": "8858365b69cef61bbbf484e38f8b73fdeebf2f32d5d11a4ee25ede3ef75fdaf4"
     },
     {
       "path": "docs/新功能说明.md",
-      "size": 16981,
-      "sha256": "62ef8ad27653b468d39cdf89b94767c6ff876a55ec16a2d8cac10d9f924bacc1"
+      "size": 20076,
+      "sha256": "7692526a98612ff311d8db835e7f3ff30ce4e63fd7659b12962dcc372e6601b5"
     },
     {
       "path": "docs/服务部署指南.md",
-      "size": 19437,
-      "sha256": "13218fb240f0829afcc254cf016d4979e7150a516e3063bc0cb0c52c7b9a5c0d"
+      "size": 19445,
+      "sha256": "0efb7787433154b018b517f861dff340fa88916b852a21c7824f552f5263fe93"
     },
     {
       "path": "docs/配置参考.md",
       "size": 21088,
-      "sha256": "abc898c325aa74fb6e3de073cd716f8a0bcae7c407ad8da74201338269fdf375"
+      "sha256": "f2c39afd9391959c2dd18e22667f685d4707cea44987d99dc3d851f052e1569e"
     },
     {
       "path": "install-helper.cjs",
-      "size": 79428,
-      "sha256": "53adade6ec2cf64951224dc4edf331b4cda92f95f8fb6b18390ba1aff89342d9"
+      "size": 91000,
+      "sha256": "11eb861e6ca0558fb960087fec038a8d3db0063c6ac69d99e869e75f547a5d3d"
     },
     {
       "path": "install.ps1",
       "size": 12811,
-      "sha256": "4afddfd9549d927e4ab6eafc2554362ac0d73eb5d72cd1c8299e6dbfb13f46d0"
+      "sha256": "c10cdfdf8dc8631bad6c5932d60c1f1c0b5f5793094be13e8802f1b5d02e0e4c"
     },
     {
       "path": "inventory.json",
       "size": 74253,
-      "sha256": "4fd6df457b5067fa3aed3d2ffcc5b578a16cc5ed716e20fc44639bc6f8996d5c"
+      "sha256": "a93ca900618277c274ba006fc07b79535a4c4a182467d5c951c21217ab8d1698"
     },
     {
       "path": "macos/INSTALL-MAC.md",
       "size": 12456,
-      "sha256": "f8686254358443c3981eaef687dab5d0fe0ea0ba91ab72d0d7f82f453a9211f6"
+      "sha256": "a3fa8fb5122eb4f794fce6d281cbdd783f8a8b7195efca8c8d48b024521b96ab"
     },
     {
       "path": "macos/build-payload-on-mac.command",
       "size": 12768,
-      "sha256": "6d66af6e637ccc4a51a7a7798fd28c5a2937babb1720a6593c6f21978a24cbca"
+      "sha256": "80cd14f7332ca52bf09f018413fb9f158c838ca5f5d9d0a1273b32c33bc9de20"
     },
     {
       "path": "macos/install.command",
       "size": 28365,
-      "sha256": "6a7e327653cc9564e8ba83f87789610606c567e2f54c913c862968688a595f9f"
+      "sha256": "da3b920677415d91896053aacb1e5a76b4775b71e2d08904a87d643be9349906"
     },
     {
       "path": "macos/setup-services.command",
       "size": 12958,
-      "sha256": "4ce87458ff2ab47cee20764fd16259337603fa18a694a8076ce37fcf61db83d2"
+      "sha256": "68b54e09e7a38ff0eda3f4c3eda9d8dfa151e7f805a1b3b0abc426da7ba53cf0"
     },
     {
       "path": "maintain.ps1",
       "size": 29078,
-      "sha256": "750738d77178246b599127e9060c08113606a5d9ea7df41761c91c6c9ba1bd56"
+      "sha256": "547fcee2e2085ccec0ac6a41b70c65b7e6ed13e4c490aa3d38bf9ab7064d67c9"
     },
     {
       "path": "migration.json",
       "size": 7440,
-      "sha256": "25484f8810aff7653c8545a5686f197eab375d07a59dda8d57aab6cbddf218cd"
+      "sha256": "6b8d65c07d61d0d0c1ca349cda1446f3f33ba47330640b3e109b89b360923486"
     },
     {
       "path": "payload/migration-state/cordis.patch.yml",
@@ -429,7 +429,7 @@
     {
       "path": "payload/migration-state/package.json",
       "size": 401,
-      "sha256": "8a684c4730e3cea1e354b30d89a113d2d4131bf28d0ee5a92830697c75963c35"
+      "sha256": "4b864e909d097faffc90380540f3a8d678da94a8ae528138bf77c40f2dcadbcc"
     },
     {
       "path": "payload/node_modules/.bin/acorn",
@@ -27283,8 +27283,8 @@
     },
     {
       "path": "payload/node_modules/@wxg-prc-cpg/dsh-weknora/dist/index.js",
-      "size": 1378,
-      "sha256": "cef6aabdac9357bbc4bf948c81d0415f0a1d1f637a44bff9738ee70e84b2bd01"
+      "size": 2952,
+      "sha256": "c78230d303789b918ba1c50ecd2861264b5442b2021133ada2dcddf20ce2f24f"
     },
     {
       "path": "payload/node_modules/@wxg-prc-cpg/dsh-weknora/dist/index.js.map",
@@ -56583,8 +56583,8 @@
     },
     {
       "path": "payload/node_modules/dsh-purge/lib/core.js",
-      "size": 345858,
-      "sha256": "cb0291ff034c1b90c888a66a49e648a7ed9d517239dc6a1d57508992a8b6f55f"
+      "size": 347687,
+      "sha256": "bfb03e76784bff7e324dfc3938701055bfeb91a4950972408c3dba9357af38a1"
     },
     {
       "path": "payload/node_modules/dsh-purge/lib/desktop.js",

@@ -28,3 +28,13 @@
   disabled: false
 - id: memory-fusion-runtime
   disabled: false
+# pack-patch 2.1.3（ISSUE-1）：billion-context 默认 autoUpdate=true，装完会自己把
+# payload/node_modules/billion-context 换成 npm 上的新版本，checksums.json 立刻失配，
+# 于是之后每次 VERIFY.cmd 都报「文件内容与校验清单不符」。这里在插件进程内把开关关掉；
+# 安装器还会同时写 ~/.config/billion-context/billion-context.json 的 autoUpdate:false，
+# 依赖也钉成了精确版本 —— 三重保险，任一生效即可。
+- id: bili-native
+  name: billion-context
+  env:
+    ACP_AUTO_UPDATE: "0"
+  disabled: false

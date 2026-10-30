@@ -4,6 +4,34 @@
 
 ---
 
+## v2.1.3（2026-10-30）— 四条外部反馈全修 + 插件包与服务包一起重出
+
+**一句话**：v2.1.2 的插件行为一个字没动，修的是「装完之后一直骗你失败」的四条 —— 自更新插件与校验清单的永久冲突、
+把配置缺口当升级失败、没有 WeKnora 服务却注册 5 分钟超时的工具、把用户改过的稿当默认稿静默回滚。
+本版起 `-Services` 服务包不再沿用 v2.0.0，与插件包一起重出并同步版本号。
+
+| # | 修了什么 | 位置 | 外部现象 |
+|---|---|---|---|
+| 1 | 校验器跳过自更新包文件（`SELF_UPDATING_PREFIXES`）；失败改为「缺文件 / 内容变了」分组报告，删掉「下载或解压损坏」误导 | `install-helper.cjs` `verifyFiles()` | `VERIFY.cmd` 永久报 `billion-context/CONFIGURATION.md` 不符，重下重装无效 |
+| 2 | `DOCTOR.cmd` 新增随机 32 文件哈希抽查（`--hash-sample N` 可调），只 warn 并指路 VERIFY | 同上 `doctorMode()` | 体检全绿、校验红，两套结论互相打脸 |
+| 3 | 三重关闭 `billion-context` 自更新：`cordis.patch.yml` 注入 `ACP_AUTO_UPDATE=0`、写 `~/.config/billion-context/billion-context.json` 的 `autoUpdate:false`、依赖钉成 `0.1.208` | `config/cordis.patch.yml`、`config/package.json`、`install-helper.cjs` | 装完当天正常，第二天起校验必红（插件已自更新到 0.1.209） |
+| 4 | 挂载后自动把「声明了 `dsh.bundle.patch` 却没进 `profile.bundles`」的包补进 bundles，并打印补入清单 | `install-helper.cjs` 挂载后校验段 | 33 个插件全挂好、界面照开，末行仍 exit 1 报 `bundle 未启用` |
+| 5 | 两处收尾断言从 `die` 降级为 `warn` + 可复制修复命令；链接缺失/缺包/缺条目仍 `die` | 同上 `:736` / upgrade 收尾 | 「半完成」被伪装成「升级失败」，用户不敢重试 |
+| 6 | 任何失败收场先打三行「当前处于哪一步 / 载荷已换到新目录 / 怎么回滚或就地修」 | 顶层 `catch` | 看到 ✗ 就以为什么都没发生，直接重装 |
+| 7 | vendor patch：`@wxg-prc-cpg/dsh-weknora@0.1.0` 在 `apply()` 前 500 ms 探活，探不到只注册 `listKnowledgeBases` | `payload/node_modules/@wxg-prc-cpg/dsh-weknora/dist/index.js` | 没装 WeKnora 时 `ask` 卡 5 分钟（`chatTimeoutMs: 300000`） |
+| 8 | vendor patch：`dsh-purge@3.0.0` 先认「用户保存过且哈希一致」，覆盖前备份 + `emitWarning` + state 记 `lastRestore` | `payload/node_modules/dsh-purge/lib/core.js`（同步 `Xsdsh-purge/lib/core.js`） | 在默认稿上改几行保存，重启即被静默回滚 |
+| 9 | `install.ps1` / `maintain.ps1` / 9 个 `.cmd` / `migration.json` / `inventory.json` / `migration-state` / macOS 四件套版本号统一 2.1.3（macOS 侧此前一直停在 2.1.0） | 各入口脚本与清单 | 横幅、`--version`、macOS 向导报的版本号与实际不一致 |
+| 10 | 服务包重出：`payload/services/manifest.json` 版本 2.0.0 → 2.1.3，打 `DSH-Plugins-v2.1.3-Services.zip` | `_build-v2.1.3/DSH-Plugins-v2.1.3-Services` | 服务包一直停在 v2.0.0，与插件包版本对不上 |
+
+**payload 变化（只有这两个包，可逐字节核对）**：
+`billion-context` 一个文件都没改（只是依赖钉住 + 关闭自更新）；`dsh-weknora` 的 `dist/index.js` 与 `dsh-purge` 的 `lib/core.js` 各两处 `pack-patch 2.1.3` 注释块。
+其余 30 个插件与全部技能、能力手册、templates 逐字节未动。
+
+验收：`tests/issue-guard.test.mjs` 正反例双通过（四条各一组）；隔离 `DSH_HOME` 跑 `new` / `upgrade` / `repair` / `--check-only` / `doctor` 全绿；
+`validate-release` **20/20**（新增第 20 条：防回退 —— `verifyFiles` 必须含 `SELF_UPDATING_PREFIXES`，`:736` 不得再往 `failed` 里 push）。
+
+---
+
 ## v2.1.2（2026-10-30）— 只修 bug：修掉 v2.1.1 的「假失败」退出码
 
 **一句话**：v2.1.1 的载荷与能力一个字没动，修的是它收尾断言把「启停状态快照」当成第 33 个插件去比

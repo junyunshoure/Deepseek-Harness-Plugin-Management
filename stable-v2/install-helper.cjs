@@ -1,6 +1,6 @@
 'use strict';
 /**
- * DeepSeek Harness 插件整合包 v2.1.2 —— 安装器核心（Windows）
+ * DeepSeek Harness 插件整合包 v2.1.3 —— 安装器核心（Windows）
  *
  * 设计原则
  *  1. 绝不联网：所有插件依赖已在 payload/node_modules 里，逐个用官方 `plugin add --offline` 挂载。
@@ -29,6 +29,18 @@
  * profile.bundles，而它按设计不进 bundles —— 于是 33/33 全挂好、条目组合也通过，收尾仍判
  * 「bundle 未启用」并以 exit 1 结束：用户看到「升级失败」，载荷却已经是新目录。
  * 本版把真插件与状态快照分开存（pluginTargets / stateTargets），断言各看各的数组。
+ *
+ * v2.1.3 收的是外部用户对 v2.1.2 的实测反馈（四条），全部只动安装器与配置，插件行为零改动：
+ *  1) VERIFY.cmd 永久报「文件内容与校验清单不符：payload/node_modules/billion-context/...」，
+ *     根因是 billion-context 默认 autoUpdate=true，装完自己把包换了 → 与 checksums.json 失配。
+ *     本版三重掐死：cordis.patch.yml 注入 ACP_AUTO_UPDATE=0、安装器写 billion-context 配置文件
+ *     的 autoUpdate:false、依赖钉成精确版本；同时校验器把自更新包列入跳过名单，并把失败分成
+ *     「缺文件 / 内容变了」两组报，不再一律说「下载或解压损坏」。
+ *  2) 声明了 dsh.bundle.patch 却没进 profile.bundles 的包，旧版只记一条失败就让 UPGRADE exit 1，
+ *     可载荷其实已经换好（半完成）。本版先自动补进 bundles，再补不上才 warn，不再判失败。
+ *  3) weknora 在服务不在时仍注册全部工具且无存活探测 —— 属 payload 内第三方包，见
+ *     tools/patch-payload-213.mjs 的 pack-patch 注释。
+ *  4) dsh-purge 把带 ChatML 头的用户稿当插件默认稿无条件回滚 —— 同上，见 payload 补丁脚本。
  * 另外三处顺手修：① 在持久目录里原地 repair 被「目录重叠」检查挡住；② EPERM 技能写入
  * 失败只说「没能写入」、不给动作；③ GUI 已在运行时安装器仍死等 120 秒端口。
  */
@@ -42,6 +54,14 @@ const { pathToFileURL } = require('node:url');
 const ROOT = __dirname;
 const readJson = p => JSON.parse(fs.readFileSync(p, 'utf8').replace(/^\uFEFF/, ''));
 const sha256 = p => crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
+
+/**
+ * pack-patch 2.1.3（ISSUE-1）：这些包会「自己更新自己」，发布时封存的哈希注定对不上。
+ * 校验器跳过它们，安装器则把它们的自更新开关关掉（见 disableBillionContextAutoUpdate）。
+ * 只放确凿会自更新的包；放太多会让完整性校验名存实亡。
+ */
+const SELF_UPDATING_PREFIXES = ['payload/node_modules/billion-context/'];
+const isSelfUpdating = rel => SELF_UPDATING_PREFIXES.some(p => String(rel).replace(/\\/g, '/').startsWith(p));
 const log = (...a) => console.log(...a);
 const warn = (...a) => console.warn(...a);
 const die = m => { throw new Error(m); };
@@ -117,7 +137,7 @@ function mergePatchFile(srcFile, dstFile) {
   if (!missing.length) return added;
   const header = [
     '',
-    '# === 以下条目由插件整合包 v2.1.2 追加（你的原有条目一条没动） ===',
+    '# === 以下条目由插件整合包 v2.1.3 追加（你的原有条目一条没动） ===',
     '# 想撤销：删掉这一整段，或跑 ROLLBACK.cmd 回到安装前。',
     '',
   ].join('\n');
@@ -129,16 +149,48 @@ function mergePatchFile(srcFile, dstFile) {
 
 function verifyFiles(base, quiet) {
   const sums = readJson(path.join(base, 'checksums.json'));
-  let n = 0;
+  let n = 0, skippedSelf = 0;
   const rootAbs = path.resolve(base);
+  const missing = [], changed = [];
   for (const item of sums.files) {
+    // pack-patch 2.1.3（ISSUE-1）：自更新包的文件由它自己改写，与发布时封存的哈希无关。
+    // 旧版把它们一起比，于是「装完当天 exit 0，第二天起 VERIFY 永远 exit 1」。
+    if (isSelfUpdating(item.path)) { skippedSelf++; continue; }
     const f = path.resolve(rootAbs, item.path);
     if (!f.startsWith(rootAbs + path.sep)) die('校验清单里出现越界路径：' + item.path);
-    if (!fs.existsSync(f)) die('缺少文件（包可能没有完整解压，或解压工具丢了长路径文件）：' + item.path);
-    if (sha256(f) !== item.sha256) die('文件内容与校验清单不符（下载或解压损坏）：' + item.path);
+    if (!fs.existsSync(f)) { missing.push(item.path); continue; }
+    if (sha256(f) !== item.sha256) { changed.push(item.path); continue; }
     n++;
   }
-  if (!quiet) log('✓ SHA-256 完整性校验通过：' + n + ' 个文件');
+  if (missing.length || changed.length) {
+    // pack-patch 2.1.3（ISSUE-1）：旧版一句话「下载或解压损坏」把三种完全不同的原因混成一种，
+    // 外部用户照它重装了三次压缩包也没好（真正原因是插件自更新）。这里分组报，并给下一步。
+    const L = [];
+    L.push('有 ' + (missing.length + changed.length) + ' 个文件与校验清单不符。');
+    if (missing.length) {
+      L.push('');
+      L.push('缺少 ' + missing.length + ' 个文件（最常见原因：压缩包没解压完整，或解压工具丢了长路径文件）：');
+      for (const p of missing.slice(0, 5)) L.push('  · 缺：' + p);
+      if (missing.length > 5) L.push('  · …另有 ' + (missing.length - 5) + ' 个');
+    }
+    if (changed.length) {
+      L.push('');
+      L.push('内容变了 ' + changed.length + ' 个文件（被别的程序改写过，或你手动改过包内文件）：');
+      for (const p of changed.slice(0, 5)) L.push('  · 改过：' + p);
+      if (changed.length > 5) L.push('  · …另有 ' + (changed.length - 5) + ' 个');
+      L.push('');
+      L.push('下一步（按顺序试，别急着重下 191 MB）：');
+      L.push('  1) 如果改动的都是会自动更新的插件文件：属正常现象，直接加 --skip-verify 重跑；');
+      L.push('  2) 只想确认包本身完整：VERIFY.cmd 先只读校验、不动任何文件，同一个输出就是结论；');
+      L.push('  3) 确实怀疑下载坏了：重下一次并用 .sha256 核对压缩包（不是核对解压后的文件）。');
+    }
+    if (skippedSelf) {
+      L.push('');
+      L.push('另：自更新类插件跳过 ' + skippedSelf + ' 个文件未比对（' + SELF_UPDATING_PREFIXES.join('、') + '）。');
+    }
+    die(L.join('\n'));
+  }
+  if (!quiet) log('✓ SHA-256 完整性校验通过：' + n + ' 个文件' + (skippedSelf ? '（另有 ' + skippedSelf + ' 个自更新包文件按约定跳过）' : ''));
   return n;
 }
 
@@ -721,21 +773,55 @@ function writeAppendixMode() {
     warn('   3) 愿意联网时加 --allow-network 重跑（会从 npm 源补拉缺失 tarball）。');
   }
 
+  // ---------- pack-patch 2.1.3（ISSUE-2）：把缺的 bundle 补进去 ----------
+  // 外部实测：33 个插件全挂好、界面照开，只因某个包「声明了 dsh.bundle.patch 却没进
+  // profile.bundles」就以 exit 1 收场，用户以为升级失败。声明了补丁却不在 bundles 里，
+  // 那个补丁永远不会生效 —— 这是该自动补的配置缺口，不是用户的错，也不该判失败。
+  const autoBundled = [];
+  try {
+    const mf = readJson(manifestFile);
+    const have = new Set((mf.dsh && mf.dsh.profile && mf.dsh.profile.bundles) || []);
+    for (const p of pluginTargets) {
+      if (have.has(p.name)) continue;
+      if (skipped.some(s => s.startsWith(p.name + '（'))) continue;
+      if (!fs.existsSync(path.join(profile, 'node_modules', ...p.name.split('/')))) continue;
+      if (!declaresBundle(p.dir)) continue;
+      have.add(p.name);
+      autoBundled.push(p.name);
+    }
+    if (autoBundled.length) {
+      const next = [...have];
+      mf.dsh = mf.dsh || {};
+      mf.dsh.profile = mf.dsh.profile || {};
+      mf.dsh.profile.bundles = next;
+      // 走内核自己的写入器，保持与 dsh 相同的排版与去重规则
+      boot.writeProfileBundles(profile, mf, next);
+      log('✓ 自动补启用 bundle：' + autoBundled.join(', ') + '（它们自带 dsh.bundle.patch，旧 profile 里没启用）');
+    }
+  } catch (e) { warn('! 自动补 bundle 没成功（' + (e.message || e) + '）：这不影响插件本身，只是对应补丁层不生效'); }
+
   // ---------- 校验挂载结果 ----------
   const finalManifest = readJson(manifestFile);
   const finalBundles = finalManifest.dsh.profile.bundles;
   // v2.1.2：只校验真插件（state bundle 按设计不进 profile.bundles，见挂载清单处的说明）。
   // 同时去掉上游遗留的 @junyunshoure/ 前缀过滤 —— 本地插件早已改名成 @local/ 与裸名，
   // 那条过滤会让这里一个包都不检查，断言等于没写。
+  const bundleWarn = [];
   for (const p of pluginTargets) {
     if (skipped.some(s => s.startsWith(p.name + '（'))) continue; // 本次被跳过的包没有动过，不参与「必须存在」断言
     const linked = path.join(profile, 'node_modules', ...p.name.split('/'));
     if (!fs.existsSync(linked)) { failed.push(p.name + '（没生成链接）'); continue; }
     // v2.1.2：只有自己声明了 dsh.bundle.patch 的包才应该出现在 profile.bundles 里。
     // 硬要求「每个包都在 bundles」会在遇到纯依赖包时误报，声明式判断更准。
-    if (!finalBundles.includes(p.name) && declaresBundle(p.dir)) { failed.push(p.name + '（bundle 未启用）'); }
+    // pack-patch 2.1.3（ISSUE-2）：上面已经自动补过一次；仍然缺的只提醒，不再判失败。
+    // 链接缺失、payload 缺包、条目缺失这些「真的坏了」的情况照旧 die。
+    if (!finalBundles.includes(p.name) && declaresBundle(p.dir)) { bundleWarn.push(p.name); }
   }
   if (failed.length) die('挂载后的校验没通过：' + failed.join(', ') + '\n备份：' + backup);
+  if (bundleWarn.length) {
+    warn('! 这些插件声明了 dsh.bundle.patch 但没启用在 profile.bundles 里，对应补丁层不会生效：' + bundleWarn.join(', '));
+    warn('  手动补：把名字加进 ' + manifestFile + ' 的 dsh.profile.bundles 数组，或在 GUI 的插件页启用后重启。');
+  }
 
   // ---------- 升级/修复收尾：逐个核对 profile/node_modules 链接指向（v2.1.0） ----------
   if (mode === 'upgrade' || mode === 'repair') {
@@ -756,7 +842,13 @@ function writeAppendixMode() {
     // v2.1.2：这里原本用 targets（含 state bundle）去比 afterBundles，state 必然缺 1 条 →
     // 每次 upgrade 都以「升级后这些 bundle 没启用」exit 1 收场。只用真插件比。
     const missingB = pluginTargets.map(t => t.name).filter(n => !afterBundles.includes(n));
-    if (missingB.length) die('升级后这些 bundle 没启用：' + missingB.join(', ') + '\n备份：' + backup);
+    // pack-patch 2.1.3（ISSUE-2）：这里原本 die → 升级末行 exit 1，而载荷其实已经换好。
+    // 半完成要如实说出来（并指路），不能伪装成「升级失败」。
+    if (missingB.length) {
+      warn('! 升级后这些 bundle 没启用：' + missingB.join(', '));
+      warn('  载荷已换到新目录、插件本身可用；缺的是它们的补丁层。补法：在 ' + manifestFile);
+      warn('  的 dsh.profile.bundles 里补上这些名字，然后重启 DSH（或重跑 UPGRADE.cmd，本版会自动补）。');
+    }
     log('✓ 重指向核对通过：' + pluginTargets.length + ' 个插件全部指到 ' + path.join(store, 'payload', 'node_modules')
       + '（另有启停状态快照 ' + spec.stateBundle + ' 一并重指向，它不参与 bundle 启停）');
     if (redirects.length) {
@@ -829,6 +921,20 @@ function writeAppendixMode() {
   if (cfgWritten.length) log('✓ 写入配置：' + cfgWritten.join(', '));
   if (cfgMerged.length) log('✓ 合并配置：' + cfgMerged.join('; '));
   if (cfgKept.length) log('· 保留你原有配置：' + cfgKept.join('; '));
+
+  // pack-patch 2.1.3（ISSUE-1）：把自更新插件的开关关掉（三重修复的第二重）
+  let bcGuard = null;
+  try {
+    bcGuard = disableBillionContextAutoUpdate();
+    if (bcGuard.mode === 'already') log('· billion-context 自更新已关闭（无需改动）');
+    else if (bcGuard.mode === 'created' || bcGuard.mode === 'updated') {
+      log('✓ 关闭 billion-context 自更新：' + bcGuard.file + (bcGuard.backup ? '（原文件已备份：' + bcGuard.backup + '）' : ''));
+      log('  · 原因：它一旦自更新，payload 里的文件就与校验清单不符，之后每次 VERIFY 都会报错。');
+    } else {
+      warn('! billion-context 自更新没能关闭（' + (bcGuard.error || '未知原因') + '）：配置文件只读或目录不可写。');
+      warn('  · 影响：它若自己升级，VERIFY 会报「内容变了」；可加 --skip-verify 绕过，或在插件的设置页关掉自动更新。');
+    }
+  } catch (e) { warn('! 关闭 billion-context 自更新时出错（' + (e.message || e) + '），不影响安装'); }
 
   // ---------- feature-profiles 文档 ----------
   const fpHint = [];
@@ -951,6 +1057,8 @@ function writeAppendixMode() {
   result.skills = skillRes;
   result.featureProfiles = fpHint;
   result.services = servicesInfo;
+  result.autoBundles = autoBundled;
+  result.billionContextGuard = bcGuard;
   result.rowCount = rows.length;
   result.bundleCount = finalBundles.length;
   result.rowStateWarnings = stateDiff.length;
@@ -1007,6 +1115,12 @@ function writeAppendixMode() {
 })().catch(e => {
   const msg = String((e && (e.message || e.stack)) || e);
   console.error('\n✗ 安装未完成：' + msg);
+  // pack-patch 2.1.3（ISSUE-2）：外部用户看到 ✗ 就以为「什么都没发生」，于是不敢重试、直接重装。
+  // 这种「半完成」恰恰是最需要说清楚的形态：载荷换了、配置可能只写了一部分、备份还在。
+  console.error('  当前处于哪一步（别急着重装）：');
+  console.error('   · 载荷通常已经换到新目录，旧版本在 backups 下完整保留；');
+  console.error('   · 配置可能只写了一半 —— 想退回安装前就双击 ROLLBACK.cmd；');
+  console.error('   · 想就地修好：先完全退出 DSH（含托盘与后台进程），再跑 UPGRADE.cmd。');
   if (/--mode|空壳|安装方式/.test(msg)) console.error('提示：双击 INSTALL.cmd 会给你 A/B/C 三种安装方式的选择。');
   writeResult({ ok: false, error: msg, at: new Date().toISOString() });
   process.exitCode = 1;
@@ -1045,6 +1159,39 @@ function declaresBundle(dir) {
     const pj = readJson(path.join(dir, 'package.json'));
     return !!(pj.dsh && pj.dsh.bundle && pj.dsh.bundle.patch);
   } catch { return false; }
+}
+
+/**
+ * pack-patch 2.1.3（ISSUE-1）：掐掉 billion-context 的自更新。
+ *
+ * 它默认 autoUpdate=true，装完当天就会把自己换成 npm 上的新版本，于是
+ * payload/node_modules/billion-context/** 与 checksums.json 立刻失配，之后每次
+ * VERIFY 都报「文件内容与校验清单不符」。这是三重修复里的第二重：
+ *   ① config/cordis.patch.yml 给该插件注入 env ACP_AUTO_UPDATE=0（插件进程内直接生效）
+ *   ② 这里写 ~/.config/billion-context/billion-context.json 的 autoUpdate:false（落盘生效，
+ *      连插件自己的 CLI 子进程也认）
+ *   ③ config/package.json 把依赖从 ^0.1.208 钉成 0.1.208（下次装包不会再漂）
+ * 幂等：已经是 false 就什么都不做；写前备份；写不动只告警（只读目录/权限问题不该挡住安装）。
+ */
+function disableBillionContextAutoUpdate() {
+  const cfgDir = process.env.BILI_CONFIG_DIR || path.join(os.homedir(), '.config', 'billion-context');
+  const cfgFile = process.env.BILI_CONFIG_FILE || path.join(cfgDir, 'billion-context.json');
+  let doc = {};
+  let existed = false;
+  try { if (fs.existsSync(cfgFile)) { existed = true; doc = readJson(cfgFile); } } catch { doc = {}; }
+  if (doc && doc.autoUpdate === false) return { file: cfgFile, mode: 'already' };
+  try {
+    fs.mkdirSync(path.dirname(cfgFile), { recursive: true });
+    let backup = '';
+    if (existed) {
+      backup = cfgFile + '.bak-' + stamp();
+      fs.copyFileSync(cfgFile, backup);
+    }
+    fs.writeFileSync(cfgFile, JSON.stringify({ ...doc, autoUpdate: false }, null, 2) + '\n', 'utf8');
+    return { file: cfgFile, mode: existed ? 'updated' : 'created', backup };
+  } catch (e) {
+    return { file: cfgFile, mode: 'failed', error: (e && e.message) || String(e) };
+  }
 }
 
 function defaultStore(spec) {
@@ -1207,6 +1354,31 @@ async function doctorMode(spec) {
   else warnList.push('持久目录里没有安装记录：' + store);
   const bks = listBackups(store);
   ok.push('可回滚备份：' + bks.length + ' 个' + (bks.length ? '（最新 ' + path.basename(bks[bks.length - 1]) + '）' : ''));
+
+  // pack-patch 2.1.3（ISSUE-1）：DOCTOR 原本一次哈希都不算，所以「校验清单已经对不上」这件事
+  // 只有 VERIFY 才看得见。这里抽 32 个随机文件核一遍（默认就抽，可用 --hash-sample N 调），
+  // 只 warn + 指路 VERIFY，不下「阻塞」结论（抽样本来就可能漏）。
+  try {
+    const sumsPath = path.join(store, 'checksums.json');
+    if (fs.existsSync(sumsPath)) {
+      const sums = readJson(sumsPath);
+      const pool = sums.files.filter(f => !isSelfUpdating(f.path));
+      const want = Math.min(Math.max(Number(opt('--hash-sample', '32')) || 32, 1), pool.length);
+      const picked = new Set();
+      let guard = 0;
+      while (picked.size < want && guard++ < want * 30) picked.add(Math.floor(Math.random() * pool.length));
+      const badFiles = [];
+      for (const i of picked) {
+        const item = pool[i];
+        const abs = path.join(store, item.path);
+        if (!fs.existsSync(abs)) { badFiles.push('缺 ' + item.path); continue; }
+        if (sha256(abs) !== item.sha256) badFiles.push('改 ' + item.path);
+      }
+      if (badFiles.length) warnList.push('哈希抽查 ' + badFiles.length + '/' + picked.size + ' 个文件与清单不符（' + store + '）：'
+        + badFiles.slice(0, 3).join('；') + ' —— 要逐字核对整包请跑 VERIFY.cmd');
+      else ok.push('哈希抽查：随机 ' + picked.size + ' 个文件全部一致（' + store + '）');
+    }
+  } catch (e) { warnList.push('哈希抽查没跑起来（' + (e.message || e) + '），可忽略'); }
 
   // v2.1.0：旧载荷目录体检
   const stores = listStores();
@@ -1376,7 +1548,7 @@ function installServicesAt(store, home) {
     return r.status === null ? 1 : r.status;
   }
   log('找到了服务本体（manifest.json），但没找到安装脚本（install-services.cjs / SETUP-SERVICES.ps1）。请这样做：');
-  log('  · 解压 DSH-Plugins-v2.0.0-Services.zip（服务包沿用 v2.0.0，内容未变），直接双击它根目录的 SETUP-SERVICES.cmd（那里自带完整安装逻辑，不依赖本包）。');
+  log('  · 解压 DSH-Plugins-v2.1.3-Services.zip（服务包与插件包同版本 2.1.3），直接双击它根目录的 SETUP-SERVICES.cmd（那里自带完整安装逻辑，不依赖本包）。');
   log('  · 装完回到这里继续用 DSH 即可；详细步骤见 docs/服务部署指南.md。');
   return 2;
 }

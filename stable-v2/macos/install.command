@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-#  DeepSeek Harness 插件整合包 v2.1.0 —— macOS 一键安装器（网络安装路线）
+#  DeepSeek Harness 插件整合包 v2.1.3 —— macOS 一键安装器（网络安装路线）
 #
 #  用法：
 #    ./install.command                     # 自动找 /Applications/DeepSeek Harness.app
@@ -221,7 +221,7 @@ write_appendix() {
 
 usage() {
   cat <<'USAGE'
-DeepSeek Harness 插件整合包 v2.1.0 —— macOS 安装器
+DeepSeek Harness 插件整合包 v2.1.3 —— macOS 安装器
 
   --app <path>           指定 DeepSeek Harness.app（也可用环境变量 DSH_APP）
   --offline              不联网：把同目录 payload/node_modules 复制进 profile（需在本机自建）
